@@ -172,7 +172,7 @@ function drawChart_3() {
         ['Otras Ciudades' ,'18', '29%', '$281.861.317', '56%'],
         ['TOTAL', '63','100%', '$501.759.250', '100%']];
 
-    drawTable('table2_div',['CIUDAD','Nº','%','VALOR','%'],dataArray);
+    drawTable('table3_div',['CIUDAD','Nº','%','VALOR','%'],dataArray);
 
 }
 
