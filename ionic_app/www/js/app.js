@@ -16,7 +16,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.services',
           }
           return req;
         }
-      }
+      };
     });
   })
 .run(function($ionicPlatform) {
@@ -32,3 +32,4 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.services',
     }
   });
 })
+;

@@ -25,7 +25,13 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('categoriasCtrl', function($scope) {
+.controller('categoriasCtrl', function($scope,UserService,CategoryService) {
+    $scope.user = UserService.getUser();
+    //$scope.categories = [{"IDCATEGORIA": "2", "NOMBRE": "Categoria 1"},{"IDCATEGORIA": "3", "NOMBRE": "Categoria 2"}];
+    //$scope.categories = CategoryService.getCategories($scope.user);
+    $scope.categories = CategoryService.getCategories($scope.user).then(function(data) {
+      $scope.categories = data;
+    });
 
 })
 
@@ -36,3 +42,4 @@ angular.module('app.controllers', [])
 .controller('detalleDeLaNoticiaCtrl', function($scope) {
 
 })
+;

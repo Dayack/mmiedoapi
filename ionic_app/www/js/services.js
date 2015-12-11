@@ -27,12 +27,12 @@ angular.module('app.services', [])
      * @param user
      * @param password
      */
-    this.login = function (user,password) {
+    this.login = function (username,password) {
       var defer = $q.defer();
-      HttpService.login(user,password).then(function(data) {
+      HttpService.login(username,password).then(function(data) {
         //the answer from the HTTP was ok, not error and if user/password is ok
         if (data !== null && data != "error" && (data!==false)) {
-            user = data.data;
+            user = data;
             defer.resolve("OK");
         } else {
           user = null;
@@ -42,7 +42,46 @@ angular.module('app.services', [])
       return defer.promise;
     };
 
+    this.getUser = function() {
+      return user;
+    };
 })
+
+/**
+ * Category Service, used to save user info
+ */
+.service('CategoryService', function(HttpService,$q){
+    var categories = null;
+    var categoriesUser = null;
+
+    /**
+     *  getCategories, will get all user's categories
+     * @param user
+     */
+    
+    this.getCategories = function (user) {
+      var defer = $q.defer();
+      if (categoriesUser === user) {
+        defer.resolve(categories);
+      } else {
+        HttpService.getCategories(user).then(function(data) {
+          if (data !== null && data != "error" && (data!==false)) {
+            categoriesUser = user;
+            categories = data;
+            categories.unshift({"IDCATEGORIA": "0", "NOMBRE": "TODAS"});
+            defer.resolve(categories);
+          } else {
+            categories = null;
+            categoriesUser = null;
+            defer.resolve(null);
+          }
+        })
+      }
+
+      return defer.promise;
+    };
+})
+
 /**
  * HTTP Service, this service will centralize all API calls
  */
@@ -94,6 +133,37 @@ angular.module('app.services', [])
       });*/
     return deferred.promise;
     };
+
+    this.getCategories = function(user) {
+      //MOCKED REQUEST
+      //---DELETE THIS WHEN THE REQUEST IS WORKING
+      var deferred = $q.defer();
+      if (user.LOGIN ==='demo.old') {
+        deferred.resolve([
+          {"IDCATEGORIA": "2", "NOMBRE": "AYUNTAMIENTO TELDE. PARTIDOS POLITICOS"},
+          {"IDCATEGORIA": "3", "NOMBRE": "PUBLICIDAD CONSEJERIA DE TURISMO"},
+          {"IDCATEGORIA": "4", "NOMBRE": "PUBLICIDAD CONSEJERIA DE ECONOMIA Y HACIENDA"},
+          {"IDCATEGORIA": "33", "NOMBRE": "COALICION POR GRAN CANARIA"}
+        ]);
+      } else {
+        deferred.resolve([]);
+      }
+      // END MOCKED REQUEST
+      /*
+       REAL REQUEST
+       $http.get('/getcategorias/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()).success(function(data,status){
+        if (data instanceof Array && data.length >0) {
+          deferred.resolve(data);
+        } else {
+          deferred.resolve([]);
+        }
+
+      }).error(function(data,status){
+        deferred.resolve("error");
+      });*/
+    return deferred.promise;
+    };
+
   })
 ;
 
