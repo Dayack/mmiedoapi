@@ -66,12 +66,10 @@ angular.module('app.routes', [])
 
 
 
-    .state('menu.detalleDeLaNoticia', {
-      url: '/detail/:id',
-      'side-menu21': {
+    .state('detalle', {
+      url: '/detail',      
         templateUrl: 'templates/detalleDeLaNoticia.html',
-        controller: 'detalleDeLaNoticiaCtrl'
-      }
+        controller: 'detalleCtrl'
     })
 
 

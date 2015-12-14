@@ -53,13 +53,24 @@ angular.module('app.controllers', [])
     });
     $scope.goToNew =function(detailNew){
 
-      $state.go('menu.detalleDeLaNoticia',{id:detailNew.id});
+      $state.go('detalle');
     };
 })
 
-.controller('detalleDeLaNoticiaCtrl', function($scope,$ionicNavBarDelegate,HttpService) {
+.controller('detalleCtrl', function($scope,UserService,CategoryService,$state,UserService,$ionicNavBarDelegate) {
     $ionicNavBarDelegate.showBackButton(true);//disable the back button
 
+    $scope.user = UserService.getUser();
+    //$scope.categories = [{"IDCATEGORIA": "2", "NOMBRE": "Categoria 1"},{"IDCATEGORIA": "3", "NOMBRE": "Categoria 2"}];
+    //$scope.categories = CategoryService.getCategories($scope.user);
+    $scope.categories = CategoryService.getCategories($scope.user).then(function(data) {
+      $scope.categories = data;
+    });
 
+    $scope.selectCategory= function(category){
+      CategoryService.setCurrentCategory(category);
+     // $state.go('menu.noticias');
+      $state.go('menu.detalle');
+    };
 })
 ;
