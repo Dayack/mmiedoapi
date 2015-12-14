@@ -40,19 +40,26 @@ function createChart() {
 
 var data;
 
+//arrays of series
+//graph1, the MEDIA must be in the same order: press, radio, tv, internet
+var news_graph1 = [17,12,8,21];
+var valor_graph1 = [198009548,243861317,37836670,22051715];
+
 // Callback that creates and populates a data table,
 // instantiates the pie chart, passes in the data and
 // draws it.
 function drawChart_1() {
-
+	var graph_data= [ ['Media', 'noticias', 'valor']];
+	var medias = ['Prensa','Radio','Televisión','Internet'];
+	var j = 0; //pos in the input array of data
+	for (var i=0; i< medias.length;i++) {
+		graph_data[i+1] = [medias[i]];
+		graph_data[i+1].push(news_graph1[j]);
+		graph_data[i+1].push(valor_graph1[j]);
+		j++;
+	}
     // Create the data table.
-    data = new google.visualization.arrayToDataTable([
-        ['Media', 'noticias', 'valor'],
-        ['Prensa', 17, 198009548],
-        ['Radio', 17, 243861317],
-        ['Television', 8, 37836670],
-        ['Internet', 21, 22051715]
-    ]);
+    data = new google.visualization.arrayToDataTable(graph_data);
 
     // Set chart options
     var options = {
@@ -97,7 +104,8 @@ function drawChart_1() {
         ['INTERNET', '21', '33%', '$22.051.715', '4%'],
         ['TOTAL', '63', '100%', '$501.759.250', '100%']];
 
-    drawTable('table_div', ['MEDIO', 'Nº Noticias', '%', 'VALOR', '%'], dataArray);
+    dataTable = generateTableData(graph_data,['','','$x']);
+    drawTable('table_div',['MEDIO','Nº Noticias','%','VALOR','%'],dataTable);
 }
 
 // Callback that creates and populates a data table,
@@ -248,4 +256,70 @@ function selectHandler(e) {
         var idx = parts[parts.indexOf('label') + 1];
         console.log(data.getValue(parseInt(idx), 0));
     }
+}
+
+//generate data for tables, with values in string, formated 
+//the format is an array with the next format: ['','x%,'$x','']... t
+//where the '' is a position without format, the x% is the value with a postfix of %
+// and $x is a prefix with $.. DONT ADD THE FORMAT FOR THE GENERATED %
+function generateTableData(dataArray,format){
+	//the data always add an TOTAL row in the end
+	tableData=[];
+	percents=[];
+	totals = [];
+	totals[0]='';//first column empty for name
+	for (var i=1; i<dataArray.length;i++){
+		tableData[i-1] = [];
+		//the first column is the name, push it
+		tableData[i-1].push(dataArray[i][0]);	
+		var offset = 0;//offset to leave space to the percents
+		for (var j=1;j<dataArray[i].length;j++) {
+			if (format[j].startsWith('x')) {
+				tableData[i-1].push(formatNumber(dataArray[i][j])+format[j].substring(1,format[j].length));				
+			} else if (format[j].endsWith('x')) {
+				tableData[i-1].push(formatNumber(dataArray[i][j])+ format[j].substring(0,format[j].length-1));				
+			}  else {
+				tableData[i-1].push(formatNumber(dataArray[i][j]));
+			}
+			tableData[i-1].push('percent');
+			//add a blank space to add later the percent
+			if (totals[j] ===undefined) {
+				totals[j]=0;
+			}
+			totals[j] = totals[j] + dataArray[i][j];
+		}
+	}
+	//now we have an data matrix with the spaces in blank to be filled with the percents
+	for (var i=0;i<tableData.length;i++){
+		//position in the totals array
+		var pos=0;
+		var totalPos = 1;
+		for (var j = 0;j<tableData[i].length;j++) {
+			if (tableData[i][j] === 'percent') {
+				var num = ( (dataArray[i+1][pos-1]*100)/ totals[totalPos]);
+				num = Math.round(num * 100) / 100;
+				tableData[i][j] = formatNumber(num)+'%';
+				totalPos++;
+			} else {
+				pos++;
+			}
+		}
+	}
+	//now add the last row, the TOTALS
+	tableData.push(['TOTAL']);
+	for (var j = 1; j< totals.length;j++) {
+		var value = totals[j].toString();
+		if (format[j].startsWith('x')) {
+			value = formatNumber(totals[j])+format[j].substring(1,format[j].length);				
+		} else if (format[j].endsWith('x')) {
+			value=formatNumber(totals[j])+ format[j].substring(0,format[j].length-1);				
+		}  
+		tableData[tableData.length-1].push(value);
+		tableData[tableData.length-1].push('100%');
+	}
+	return tableData;
+}
+//format numbers to xx,xxx.xx
+function formatNumber (num) {
+    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")
 }
