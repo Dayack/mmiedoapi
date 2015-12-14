@@ -9,9 +9,7 @@ var cities = ['Bogotá',
     'Medellín'];
 
 
-var selectedCities = [];
 
-var data;
 
 //arrays of series
 //graph1, the MEDIA must be in the same order: press, radio, tv, internet
@@ -22,8 +20,14 @@ var news_graph2 = [ 17,20];
 var valor_graph2 = [243861317,198009548];
 //third graph news by cities //same order that the city array
 var news_graph3 = [1,2,3,4,5,6,7];
+var valor_graph3 = [243861317,198009548,243861317,243861317,243861317,243861317,243861317];
 
 
+
+//vars for internal functionality
+var selectedCities = [];
+
+var data;
 function createCitiesSelector() {
 
 
@@ -33,8 +37,18 @@ function createCitiesSelector() {
                 text : item
             }));
         });
-    jQuery('#citySelector').chosen().change(function(){
+    //max 12 items
+
+    //IF NOT CITIES ARE SELECTED: AUTOSELECT THE FIRST 12
+    if (selectedCities.length ===0) {
+        selectedCities = cities.slice(0,12);
+    }
+    jQuery('#citySelector').chosen({max_selected_options: 12}).change(function(){
         selectedCities= jQuery("#citySelector").chosen().val();
+        if (selectedCities === null) {
+            selectedCities = [];
+        }
+        drawChart_3();
     });
 
 
@@ -183,6 +197,7 @@ function drawChart_2() {
 
 function drawChart_3() {
 
+
     var colors = ['red','blue','yellow','green','brown','purple','orange'];
     //the array generator must select the cities that are selected by the user, and the rest in one bar
     //at the end of the graph
@@ -191,46 +206,52 @@ function drawChart_3() {
     // to get the data for the graph, and the data for the table
 
 
-    var graph_data = ['Ciudad', 'noticias'];
-    var graph_data_table = [];
+    var graph_data = [['Ciudad', 'noticias']];
+    var graph_data_table = [['Ciudad', 'noticias']];
     var j = 0;
     var other_cities= ['Otras Ciudades',0];
+    var other_cities_table= ['Otras Ciudades',0,0];
     //now loop all the cities, asking if are selected or not
+    //selected Cities only can contain max 12 items
+    var posGraph = 1;
     for (var i=0; i< cities.length;i++) {
         if (selectedCities.indexOf(cities[i]) <0) {
             //city not selected
             other_cities[1] =  other_cities[1]+ news_graph3[i];
+            other_cities_table[1] =  other_cities_table[1]+ news_graph3[i];
+            other_cities_table[2] =  other_cities_table[2]+ valor_graph3[i];
         } else {
-            graph_data[i + 1] = [cities[i]];
-            graph_data[i + 1].push(news_graph3[j]);
+            graph_data[posGraph] = [cities[i]];
+            graph_data[posGraph].push(news_graph3[j]);
+            //for table
+            graph_data_table[posGraph] = [cities[i]];
+            graph_data_table[posGraph].push(news_graph3[j]);
+            graph_data_table[posGraph].push(valor_graph3[j]);
+            posGraph++;
         }
         j++;
     }
     //now add the last bar, the 'Other Cities'
-    graph_data.push(other_cities);
-    //clone the data, for the table
-    graph_data_table = graph_data.slice(0);
-    //now add the colors for the graph:
-    graph_data[0].push( {role: 'style'});
-
-    for (var k = 0;k<graph_data.length;k++) {
+    if (cities.length> selectedCities.length) {
+        graph_data.push(other_cities);
+        graph_data_table.push(other_cities_table);
 
     }
 
-    var cityData = [
-        [],
-        ['Barranquilla', 17, 'red'],
-        ['Santa Marta', 20, 'blue'],
-        ['Cali', 20, 'green'],
-        ['Pereira', 20, 'yellow'],
-        ['Medellín', 20, 'blue']
-    ];
+    dataTable = generateTableData(graph_data_table,['','','$x']);
+    //now add the colors for the graph:
+    graph_data[0].push( {role: 'style'});
+    var colorPos = 0;
+    for (var k = 1;k<graph_data.length;k++) {
+        graph_data[k].push(colors[colorPos % colors.length]);
+        colorPos++;
+    }
 
-    //create the data for graph
+
 
 
     // Create the data table.
-    data = new google.visualization.arrayToDataTable(cityData);
+    data = new google.visualization.arrayToDataTable(graph_data);
 
     // Set chart options
     var options = {
@@ -257,16 +278,15 @@ function drawChart_3() {
         jQuery(axisItems[i]).css("cursor", "pointer");
     }
 //all data
-    var totalDataArray = [['Bogotá', '45', '71%', '220.009', '44%'],
+    /*var totalDataArray = [['Bogotá', '45', '71%', '220.009', '44%'],
         ['Barranquilla', '18', '29%', '$281.861.317', '56%'],
         ['Santa Marta', '18', '29%', '$281.861.317', '56%'],
         ['Cali', '18', '29%', '$281.861.317', '56%'],
         ['Armenia', '18', '29%', '$281.861.317', '56%'],
         ['Pereira', '18', '29%', '$281.861.317', '56%'],
         ['Medellín', '18', '29%', '$281.861.317', '56%'],
-        ['TOTAL', '63', '100%', '$501.759.250', '100%']];
-
-    drawTable('table3_div', ['CIUDAD', 'Nº', '%', 'VALOR', '%'], totalDataArray);
+        ['TOTAL', '63', '100%', '$501.759.250', '100%']];*/
+    drawTable('table3_div', ['CIUDAD', 'Nº', '%', 'VALOR', '%'], dataTable);
 
 }
 
