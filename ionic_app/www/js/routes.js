@@ -7,37 +7,37 @@ angular.module('app.routes', [])
   // Set up the various states which the app can be in.
   // Each state's controller can be found in controllers.js
   $stateProvider
-    
-      
+
+
     .state('menu', {
       url: '/side-menu',
       abstract:true,
       templateUrl: 'templates/menu.html'
     })
-      
-    
-      
-        
+
+
+
+
     .state('login', {
       url: '/login',
       templateUrl: 'templates/login.html',
       controller: 'loginCtrl'
     })
-        
-      
-    
-      
-        
+
+
+
+
+
     .state('medios', {
       url: '/media',
       templateUrl: 'templates/medios.html',
       controller: 'mediosCtrl'
     })
-        
-      
-    
-      
-        
+
+
+
+
+
     .state('menu.categorias', {
       url: '/categories',
       views: {
@@ -47,11 +47,11 @@ angular.module('app.routes', [])
         }
       }
     })
-        
-      
-    
-      
-        
+
+
+
+
+
     .state('menu.noticias', {
       url: '/news',
       views: {
@@ -61,18 +61,20 @@ angular.module('app.routes', [])
         }
       }
     })
-        
-      
-    
-      
-        
-    .state('detalleDeLaNoticia', {
-      url: '/detail',
-      templateUrl: 'templates/detalleDeLaNoticia.html',
-      controller: 'detalleDeLaNoticiaCtrl'
+
+
+
+
+
+    .state('menu.detalleDeLaNoticia', {
+      url: '/detail/:id',
+      'side-menu21': {
+        templateUrl: 'templates/detalleDeLaNoticia.html',
+        controller: 'detalleDeLaNoticiaCtrl'
+      }
     })
-        
-      
+
+
     ;
 
   // if none of the above states are matched, use this as the fallback

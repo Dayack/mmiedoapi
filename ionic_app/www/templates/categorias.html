@@ -1,5 +1,5 @@
 <ion-view style="" title="Categorias">
     <ion-content class="has-header" overflow-scroll="true" padding="'true'">
-        <a style="" class="button button-stable button-block " href="#/media" ng-repeat="category in categories">{{ category.NOMBRE }}</a>
+        <a style="" class="button button-stable button-block " ng-click="selectCategory(category)" ng-repeat="category in categories">{{ category.NOMBRE }}</a>
     </ion-content>
 </ion-view>
