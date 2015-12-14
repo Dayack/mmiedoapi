@@ -1,5 +1,34 @@
 window.onload = createChart()
+//all cities loaded
+var cities = ['Bogotá',
+    'Barranquilla',
+    'Santa Marta',
+    'Cali',
+    'Armenia',
+    'Pereira',
+    'Medellín'];
 
+
+var selectedCities = [];
+
+function createCitiesSelector() {
+
+
+        jQuery.each(cities, function (i, item) {
+            jQuery('#citySelector').append(jQuery('<option>', {
+                value: item,
+                text : item
+            }));
+        });
+    jQuery('#citySelector').chosen().change(function(){
+        selectedCities= jQuery("#citySelector").chosen().val();
+    });
+
+
+
+}
+
+createCitiesSelector();
 //Graph 1
 function createChart() {
     // Load the Visualization API and the piechart package.
@@ -62,13 +91,13 @@ function drawChart_1() {
 
     google.visualization.events.addListener(chart, 'click', selectHandler)
 
-    var dataArray = [ ['PRENSA','17','27%','$198.009','39%'],
-        ['RADIO' ,'17', '27%', '$243.861.317', '49%'],
+    var dataArray = [['PRENSA', '17', '27%', '$198.009', '39%'],
+        ['RADIO', '17', '27%', '$243.861.317', '49%'],
         ['TELEVISION', '8', '13%', '$37.836.670', '8%'],
-        ['INTERNET', '21', '33%' ,'$22.051.715' ,'4%'],
-        ['TOTAL', '63','100%', '$501.759.250', '100%']];
+        ['INTERNET', '21', '33%', '$22.051.715', '4%'],
+        ['TOTAL', '63', '100%', '$501.759.250', '100%']];
 
-    drawTable('table_div',['MEDIO','Nº Noticias','%','VALOR','%'],dataArray);
+    drawTable('table_div', ['MEDIO', 'Nº Noticias', '%', 'VALOR', '%'], dataArray);
 }
 
 // Callback that creates and populates a data table,
@@ -122,24 +151,32 @@ function drawChart_2() {
     google.visualization.events.addListener(chart, 'click', selectHandler)
 
 
-    var dataArray = [ ['Nacional','45','71%','220.009','44%'],
-        ['Regional' ,'18', '29%', '$281.861.317', '56%'],
-        ['TOTAL', '63','100%', '$501.759.250', '100%']];
+    var dataArray = [['Nacional', '45', '71%', '220.009', '44%'],
+        ['Regional', '18', '29%', '$281.861.317', '56%'],
+        ['TOTAL', '63', '100%', '$501.759.250', '100%']];
 
-    drawTable('table2_div',['CUBRIMIENTO','Nº Noticias','%','VALOR','%'],dataArray);
+    drawTable('table2_div', ['CUBRIMIENTO', 'Nº Noticias', '%', 'VALOR', '%'], dataArray);
 }
 
 
 function drawChart_3() {
 
+    var colors = ['red','blue','yellow','green','brown','purple','orange'];
+//all cities with its data
+    var cityData = [
+        ['Ciudad', 'noticias', {role: 'style'}],
+        ['Barranquilla', 17, 'red'],
+        ['Santa Marta', 20, 'blue'],
+        ['Cali', 20, 'green'],
+        ['Pereira', 20, 'yellow'],
+        ['Medellín', 20, 'blue']
+    ];
+
+    //create the data for graph
+
+
     // Create the data table.
-    data = new google.visualization.arrayToDataTable([
-        ['Ciudad', 'noticias', { role: 'style' }],
-        ['Bogotá', 17,'red'],
-        ['Barranquilla', 20,'blue'],
-        ['Santa Marta', 25,'green'],
-        ['Otras Ciudades', 4,'purple']
-    ]);
+    data = new google.visualization.arrayToDataTable(cityData);
 
     // Set chart options
     var options = {
@@ -165,27 +202,30 @@ function drawChart_3() {
         });
         jQuery(axisItems[i]).css("cursor", "pointer");
     }
+//all data
+    var totalDataArray = [['Bogotá', '45', '71%', '220.009', '44%'],
+        ['Barranquilla', '18', '29%', '$281.861.317', '56%'],
+        ['Santa Marta', '18', '29%', '$281.861.317', '56%'],
+        ['Cali', '18', '29%', '$281.861.317', '56%'],
+        ['Armenia', '18', '29%', '$281.861.317', '56%'],
+        ['Pereira', '18', '29%', '$281.861.317', '56%'],
+        ['Medellín', '18', '29%', '$281.861.317', '56%'],
+        ['TOTAL', '63', '100%', '$501.759.250', '100%']];
 
-    var dataArray = [ ['Bogotá','45','71%','220.009','44%'],
-        ['Barranquilla' ,'18', '29%', '$281.861.317', '56%'],
-        ['Santa Marta' ,'18', '29%', '$281.861.317', '56%'],
-        ['Otras Ciudades' ,'18', '29%', '$281.861.317', '56%'],
-        ['TOTAL', '63','100%', '$501.759.250', '100%']];
-
-    drawTable('table3_div',['CIUDAD','Nº','%','VALOR','%'],dataArray);
+    drawTable('table3_div', ['CIUDAD', 'Nº', '%', 'VALOR', '%'], totalDataArray);
 
 }
 
 
-function drawTable(id,names,input_data) {
+function drawTable(id, names, input_data) {
     var data = new google.visualization.DataTable();
-    for (var i =0; i< names.length; i++) {
-        data.addColumn('string',names[i]);
+    for (var i = 0; i < names.length; i++) {
+        data.addColumn('string', names[i]);
     }
     data.addRows(input_data.length);
-    for (var j = 0; j<input_data.length; j++) {
-        for (var k = 0; k<input_data[j].length;k++) {
-            data.setCell(j,k,input_data[j][k]);
+    for (var j = 0; j < input_data.length; j++) {
+        for (var k = 0; k < input_data[j].length; k++) {
+            data.setCell(j, k, input_data[j][k]);
         }
     }
     var view = new google.visualization.DataView(data);
@@ -200,6 +240,7 @@ function drawCharts() {
     drawChart_1();
     drawChart_2();
     drawChart_3();
+    createCitiesSelector();
 }
 function selectHandler(e) {
     var parts = e.targetID.split('#');
