@@ -53,6 +53,7 @@ angular.module('app.services', [])
 .service('CategoryService', function(HttpService,$q){
     var categories = null;
     var categoriesUser = null;
+    var currentCategory = null;
 
     /**
      *  getCategories, will get all user's categories
@@ -75,10 +76,18 @@ angular.module('app.services', [])
             categoriesUser = null;
             defer.resolve(null);
           }
-        })
+        });
       }
 
       return defer.promise;
+    };
+
+    this.setCurrentCategory = function(category) {
+      currentCategory = category;
+    };
+
+    this.getCurrentCategory = function() {
+      return currentCategory;
     };
 })
 
