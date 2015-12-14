@@ -1,16 +1,10 @@
 window.onload = createChart()
 //all cities loaded
-var cities = ['Bogotá',
-    'Barranquilla',
-    'Santa Marta',
-    'Cali',
-    'Armenia',
-    'Pereira',
-    'Medellín'];
 
 
 
-
+/************ VARS TO BE OVERWRITTEN ************/
+var cities = ['Bogotá','Barranquilla','Santa Marta','Cali','Armenia','Pereira','Medellín'];
 //arrays of series
 //graph1, the MEDIA must be in the same order: press, radio, tv, internet
 var news_graph1 = [17,12,8,21];
@@ -23,7 +17,7 @@ var news_graph3 = [1,2,3,4,5,6,7];
 var valor_graph3 = [243861317,198009548,243861317,243861317,243861317,243861317,243861317];
 
 
-
+/***************************************/
 //vars for internal functionality
 var selectedCities = [];
 
