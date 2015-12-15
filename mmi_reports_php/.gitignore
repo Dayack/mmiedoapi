@@ -10,3 +10,6 @@
 /vendor/
 /bin/
 /composer.phar
+.idea/
+mmi_reports_php.iml
+
