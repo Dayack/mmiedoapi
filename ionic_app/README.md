@@ -6,7 +6,7 @@ Quick Start
 npm install -g cordova ionic
 git clone https://github.com/edosoft/mmi
 cd mmi/ionic_app
-npm install
+npm install  
 ionic serve
 ``` 
 
