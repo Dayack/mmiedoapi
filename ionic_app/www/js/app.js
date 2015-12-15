@@ -9,6 +9,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.services',
   .config(function($httpProvider) {
     $httpProvider.interceptors.push(function(){
       return {
+        //TESTING
         request: function(req) {
           // transform all request that start with / to the defined url
           if (req.url.charAt(0) ==='/') {
