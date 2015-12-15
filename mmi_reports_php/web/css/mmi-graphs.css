@@ -1,3 +1,41 @@
+
+/*scale of the tables, the google tables are too larges*/
 .graph-table tr {
     height: 30px !important;
+}
+
+.graph-table td {
+    padding: 5px !important;
+}
+
+.graph-table .google-visualization-table {
+    height: auto !important;
+}
+
+.graph-table .google-visualization-table>div:first-child {
+    height: auto !important;
+}
+
+.graph-table .google-visualization-table-table {
+    height: auto !important;
+    border: 1px solid black !important;
+}
+
+.graph-table th {
+    background-image: none !important;
+    background-color: #7C7C7C;
+    color: white;
+    border: 1px solid black !important;
+}
+.graph-table td {
+    border: 1px solid black !important;
+    text-align: center;
+}
+
+.graph-table .google-visualization-table-table tr:last-child {
+
+    background-image: none !important;
+    background-color: #7C7C7C;
+    color: white;
+    border: 1px solid black !important;
 }
