@@ -1,18 +1,18 @@
 angular.module('app.services', [])
 
-.factory('BlankFactory', [function(){
+  .factory('BlankFactory', [function () {
 
-}])
+  }])
 /**
  * Service that has the basic config info
  */
-  .service('ConfigService', function() {
+  .service('ConfigService', function () {
     var zona = '1';
     var api_key = 'DFKGMKLJOIRJNG';
-    this.getZona = function(){
+    this.getZona = function () {
       return zona;
     };
-    this.getApiKey = function(){
+    this.getApiKey = function () {
       return api_key;
     };
 
@@ -20,20 +20,20 @@ angular.module('app.services', [])
 /**
  * User Service, used to save user info
  */
-.service('UserService', function(HttpService,$q){
+  .service('UserService', function (HttpService, $q) {
     var user = null;
     /**
      *  Login, will send the login request, and save the user data in the Service, will return 'OK' or 'ERROR' to the controller
      * @param user
      * @param password
      */
-    this.login = function (username,password) {
+    this.login = function (username, password) {
       var defer = $q.defer();
-      HttpService.login(username,password).then(function(data) {
+      HttpService.login(username, password).then(function (data) {
         //the answer from the HTTP was ok, not error and if user/password is ok
-        if (data !== null && data != "error" && (data!==false)) {
-            user = data;
-            defer.resolve("OK");
+        if (data !== null && data != "error" && (data !== false)) {
+          user = data;
+          defer.resolve("OK");
         } else {
           user = null;
           defer.resolve("ERROR");
@@ -42,15 +42,15 @@ angular.module('app.services', [])
       return defer.promise;
     };
 
-    this.getUser = function() {
+    this.getUser = function () {
       return user;
     };
-})
+  })
 
 /**
  * Category Service, used to save user info
  */
-.service('CategoryService', function(HttpService,$q){
+  .service('CategoryService', function (HttpService, $q) {
     var categories = null;
     var categoriesUser = null;
     var currentCategory = null;
@@ -59,14 +59,14 @@ angular.module('app.services', [])
      *  getCategories, will get all user's categories
      * @param user
      */
-    
+
     this.getCategories = function (user) {
       var defer = $q.defer();
       if (categoriesUser === user) {
         defer.resolve(categories);
       } else {
-        HttpService.getCategories(user).then(function(data) {
-          if (data !== null && data != "error" && (data!==false)) {
+        HttpService.getCategories(user).then(function (data) {
+          if (data !== null && data != "error" && (data !== false)) {
             categoriesUser = user;
             categories = data;
             categories.unshift({"IDCATEGORIA": "0", "NOMBRE": "TODAS"});
@@ -82,30 +82,43 @@ angular.module('app.services', [])
       return defer.promise;
     };
 
-    this.setCurrentCategory = function(category) {
+    this.setCurrentCategory = function (category) {
       currentCategory = category;
     };
 
-    this.getCurrentCategory = function() {
+    this.getCurrentCategory = function () {
       return currentCategory;
     };
-})
+  })
+  .service('FilterService', function (HttpService, $q) {
+    var filters = {
+      startDate: {},
+      endDate: {},
+      support_zones: [],
+      new_zones: []
+    };
+    this.getFilters = function () {
+      return filters;
+    }
+
+
+  })
 
 /**
  * HTTP Service, this service will centralize all API calls
  */
-  .service('HttpService',function($http,$q,ConfigService) {
+  .service('HttpService', function ($http, $q, ConfigService) {
     /**
      *  Login API call
      * @param user - username
      * @param password - password
      * @returns {user} if the login was ok, the result will be a JSON user data, if not, will be 'error'
      */
-    this.login = function(user,password) {
+    this.login = function (user, password) {
       //MOCKED REQUEST
       //---DELETE THIS WHEN THE REQUEST IS WORKING
       var deferred = $q.defer();
-      if (user ==='demo.old' && password ==='demoMMI') {
+      if (user === 'demo.old' && password === 'demoMMI') {
         deferred.resolve({
           "IDUSUARIO": "41",
           "IDZONA": "1",
@@ -131,23 +144,23 @@ angular.module('app.services', [])
       /*
        REAL REQUEST
        $http.get('/getusuarios_login/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/0/'+user+'/'+password).success(function(data,status){
-        if (data instanceof Array && data.length >0) {
-          deferred.resolve(data[0]);
-        } else {
-          deferred.resolve(data);
-        }
+       if (data instanceof Array && data.length >0) {
+       deferred.resolve(data[0]);
+       } else {
+       deferred.resolve(data);
+       }
 
-      }).error(function(data,status){
-        deferred.resolve("error");
-      });*/
-    return deferred.promise;
+       }).error(function(data,status){
+       deferred.resolve("error");
+       });*/
+      return deferred.promise;
     };
 
-    this.getCategories = function(user) {
+    this.getCategories = function (user, filters) {
       //MOCKED REQUEST
       //---DELETE THIS WHEN THE REQUEST IS WORKING
       var deferred = $q.defer();
-      if (user.LOGIN ==='demo.old') {
+      if (user.LOGIN === 'demo.old') {
         deferred.resolve([
           {"IDCATEGORIA": "2", "NOMBRE": "AYUNTAMIENTO TELDE. PARTIDOS POLITICOS"},
           {"IDCATEGORIA": "3", "NOMBRE": "PUBLICIDAD CONSEJERIA DE TURISMO"},
@@ -161,16 +174,48 @@ angular.module('app.services', [])
       /*
        REAL REQUEST
        $http.get('/getcategorias/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()).success(function(data,status){
-        if (data instanceof Array && data.length >0) {
-          deferred.resolve(data);
-        } else {
-          deferred.resolve([]);
-        }
+       if (data instanceof Array && data.length >0) {
+       deferred.resolve(data);
+       } else {
+       deferred.resolve([]);
+       }
 
-      }).error(function(data,status){
-        deferred.resolve("error");
-      });*/
-    return deferred.promise;
+       }).error(function(data,status){
+       deferred.resolve("error");
+       });*/
+      return deferred.promise;
+    };
+
+
+    this.getNews = function (user) {
+      //MOCKED REQUEST
+      //---DELETE THIS WHEN THE REQUEST IS WORKING
+      var deferred = $q.defer();
+      if (user.LOGIN === 'demo.old') {
+        deferred.resolve([
+          {"title": "Noticia1", "media": "Prensa", "id": 1},
+          {"title": "Noticia2", "media": "TV", "id": 2},
+          {"title": "Noticia3", "media": "Internet", "id": 3},
+        ]);
+      } else {
+        deferred.resolve([]);
+      }
+      // END MOCKED REQUEST
+      /*
+       REAL REQUEST
+       var filters = FilterService.getFilters();
+       //PARSE FILTERS TO QUERY
+       $http.get('/getNoticias/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()).success(function(data,status){
+       if (data instanceof Array && data.length >0) {
+       deferred.resolve(data);
+       } else {
+       deferred.resolve([]);
+       }
+
+       }).error(function(data,status){
+       deferred.resolve("error");
+       });*/
+      return deferred.promise;
     };
 
   })

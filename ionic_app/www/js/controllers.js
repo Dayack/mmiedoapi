@@ -25,7 +25,7 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('categoriasCtrl', function($scope,UserService,CategoryService) {
+.controller('categoriasCtrl', function($scope,UserService,CategoryService,$state,UserService) {
     $scope.user = UserService.getUser();
     //$scope.categories = [{"IDCATEGORIA": "2", "NOMBRE": "Categoria 1"},{"IDCATEGORIA": "3", "NOMBRE": "Categoria 2"}];
     //$scope.categories = CategoryService.getCategories($scope.user);
@@ -33,13 +33,44 @@ angular.module('app.controllers', [])
       $scope.categories = data;
     });
 
+    $scope.selectCategory= function(category){
+      CategoryService.setCurrentCategory(category);
+     // $state.go('menu.noticias');
+      $state.go('menu.noticias');
+    };
+
 })
 
-.controller('noticiasCtrl', function($scope) {
+.controller('noticiasCtrl', function($scope,$ionicNavBarDelegate,FilterService,UserService,HttpService,$state) {
+    $ionicNavBarDelegate.showBackButton(false);//disable the back button
+    $scope.news = [];
+    $scope.currentPage = 0;
+    $scope.user = UserService.getUser();
+    //the currentPage must be reset to 0 when a new filter is applied, TODO
+    $scope.filters = FilterService.getFilters();
+    HttpService.getNews($scope.user,$scope.filters).then(function(data) {
+      $scope.news = data;
+    });
+    $scope.goToNew =function(detailNew){
 
+      $state.go('detalle');
+    };
 })
 
-.controller('detalleDeLaNoticiaCtrl', function($scope) {
+.controller('detalleCtrl', function($scope,UserService,CategoryService,$state,UserService,$ionicNavBarDelegate) {
+    $ionicNavBarDelegate.showBackButton(true);//disable the back button
 
+    $scope.user = UserService.getUser();
+    //$scope.categories = [{"IDCATEGORIA": "2", "NOMBRE": "Categoria 1"},{"IDCATEGORIA": "3", "NOMBRE": "Categoria 2"}];
+    //$scope.categories = CategoryService.getCategories($scope.user);
+    $scope.categories = CategoryService.getCategories($scope.user).then(function(data) {
+      $scope.categories = data;
+    });
+
+    $scope.selectCategory= function(category){
+      CategoryService.setCurrentCategory(category);
+     // $state.go('menu.noticias');
+      $state.go('menu.detalle');
+    };
 })
 ;
