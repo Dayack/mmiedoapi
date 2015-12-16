@@ -1,16 +1,20 @@
 <ion-view style="" title="Seleccionar fecha">
     <ion-content class="has-header" overflow-scroll="true" padding="'true'">
-        <ionic-datepicker input-obj="datepickerObject">
-            <button class="button button-block button-positive"> {{datepickerObject.inputDate | date:'dd - MMMM - yyyy'}}</button>
+        Desde:
+        <ionic-datepicker input-obj="fromDatepickerObject">
+            <button class="button button-block button-positive"> {{fromDatepickerObject.inputDate | date:'dd - MMMM - yyyy'}}</button>
         </ionic-datepicker>
-        {{datepickerObject | json }}
-        <div style="" class="list card">
-            <div class="item item-divider">Título de la noticia</div>
-            <div class="item item-body">
-                <div style="">
-                    <p>Bla bla bla bla bla bla...</p>
-                </div>
-            </div>
-        </div>
+        Hasta:
+        <ionic-datepicker input-obj="toDatepickerObject">
+            <button class="button button-block button-positive"> {{toDatepickerObject.inputDate | date:'dd - MMMM - yyyy'}}</button>
+        </ionic-datepicker>
     </ion-content>
+  <!--outside content-->
+  <div class="fixed-outside">
+    <div class="row">
+      <div class="col">
+        <button ng-click="goToNews();" class="button button-circle button-purple icon ion-checkmark-round"></button>
+      </div>
+    </div>
+  </div>
 </ion-view>
