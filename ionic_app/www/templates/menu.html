@@ -14,20 +14,20 @@
         </ion-header-bar>
         <ion-content padding="true" class="side-menu-left has-header" <="" ion-content="">
             <ion-list style="">
-                <ion-item style="" menu-close="" href="#/side-menu/categories">Elegir categoría</ion-item>
-                <ion-item style="" ng-click="toggleMediaFilter()" class="item-icon-right">
+                <ion-item style="" menu-close="" class="item-stable" href="#/side-menu/categories">Elegir categoría</ion-item>
+                <ion-item style="" ng-click="toggleMediaFilter()" class="item-icon-right item-stable">
                     Elegir medio
                     <i class="icon ion-arrow-down-b" ng-show="!mediaFilterCollapsed"></i>
                     <i class="icon ion-arrow-up-b" ng-show="mediaFilterCollapsed"></i>
                 </ion-item>
-                	<ion-item style="padding-left: 20px;" menu-close="" href="#/side-menu/news" ng-show="mediaFilterCollapsed">Todos los medios</ion-item>
-                	<ion-item style="padding-left: 20px;" menu-close="" href="#/side-menu/news" ng-show="mediaFilterCollapsed">Prensa</ion-item>
-                	<ion-item style="padding-left: 20px;" menu-close="" href="#/side-menu/news" ng-show="mediaFilterCollapsed">Radio</ion-item>
-	                <ion-item style="padding-left: 20px;" menu-close="" href="#/side-menu/news" ng-show="mediaFilterCollapsed">TV</ion-item>
-	                <ion-item style="padding-left: 20px;" menu-close="" href="#/side-menu/news" ng-show="mediaFilterCollapsed">Internet</ion-item>
-	                <ion-item style="padding-left: 20px;" menu-close="" href="#/side-menu/news" ng-show="mediaFilterCollapsed">Tweeter</ion-item>
-	                <ion-item style="padding-left: 20px;" menu-close="" href="#/side-menu/news" ng-show="mediaFilterCollapsed">Socia media</ion-item>
-                <ion-item style="" menu-close="" href="#/side-menu/news">Fechas</ion-item>
+                	<ion-item style="padding-left: 30px;" class="item-accordion" menu-close="" ng-show="mediaFilterCollapsed" ng-click="selectMedia('ALL')">Todos los medios</ion-item>
+                	<ion-item style="padding-left: 30px;" class="item-accordion" menu-close="" ng-show="mediaFilterCollapsed" ng-click="selectMedia('PRESS')">Prensa</ion-item>
+                	<ion-item style="padding-left: 30px;" class="item-accordion" menu-close="" ng-show="mediaFilterCollapsed" ng-click="selectMedia('RADIO')">Radio</ion-item>
+	                <ion-item style="padding-left: 30px;" class="item-accordion" menu-close="" ng-show="mediaFilterCollapsed" ng-click="selectMedia('TV')">TV</ion-item>
+	                <ion-item style="padding-left: 30px;" class="item-accordion" menu-close="" ng-show="mediaFilterCollapsed" ng-click="selectMedia('INTERNET')">Internet</ion-item>
+	                <ion-item style="padding-left: 30px;" class="item-accordion" menu-close="" ng-show="mediaFilterCollapsed" ng-click="selectMedia('TWEETER')">Tweeter</ion-item>
+	                <ion-item style="padding-left: 30px;" class="item-accordion" menu-close="" ng-show="mediaFilterCollapsed" ng-click="selectMedia('SOCIAL_MEDIA')">Socia media</ion-item>
+                <ion-item style="" menu-close="" href="#/date_filter">Fechas</ion-item>
                 <ion-item style="" menu-close="" href="#/side-menu/news">Ubicación geográfica</ion-item>
                 <ion-item style="" menu-close="" ng-click="logout()">Cerrar sesión</ion-item>
             </ion-list>

@@ -73,6 +73,12 @@ angular.module('app.routes', [])
         controller: 'detalleCtrl'
     })
 
+    .state('date_filter', {
+      url: '/date_filter',      
+        templateUrl: 'templates/selectDate.html',
+        controller: 'selectDateCtrl'
+    })
+
 
     ;
 

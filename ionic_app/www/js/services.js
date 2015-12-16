@@ -51,6 +51,18 @@ angular.module('app.services', [])
     };
   })
 
+  .service('FilterService', function (HttpService, $q) {
+    var filters = { media: 'ALL' };
+
+    this.getFilters = function() {
+      return filters;   
+    };
+
+    this.setMedia = function(media) {
+      filters.media = media;   
+    };
+  })
+
 /**
  * Category Service, used to save user info
  */
