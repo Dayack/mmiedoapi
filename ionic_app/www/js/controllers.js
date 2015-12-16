@@ -71,14 +71,13 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('selectDateCtrl', function($scope,FilterService) {
+.controller('selectDateCtrl', function($scope,$state,FilterService) {
     $scope.fromDatepickerObject = {
       dateFormat: 'dd-MM-yyyy',
       monthList: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
       callback: function(val) 	{
         $scope.fromDatepickerObject.inputDate = val;
       }
-
     };
 
     $scope.toDatepickerObject = {
@@ -87,9 +86,11 @@ angular.module('app.controllers', [])
       callback: function(val) 	{
         $scope.toDatepickerObject.inputDate = val;
       }
-
     };
 
+    $scope.goToNews= function() {
+      $state.go('menu.noticias');
+    };
 })
 
 .controller('noticiasCtrl', function($scope,$ionicNavBarDelegate,FilterService,UserService,HttpService,$state) {
