@@ -44,7 +44,7 @@ angular.module('app.services', [])
 
     this.logout = function() {
       user = null;
-    }
+    };
 
     this.getUser = function () {
       return user;
@@ -115,7 +115,7 @@ angular.module('app.services', [])
     };
     this.getFilters = function () {
       return filters;
-    }
+    };
 
 
   })

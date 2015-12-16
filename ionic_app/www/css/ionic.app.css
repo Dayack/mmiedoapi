@@ -9095,3 +9095,18 @@ a.button {
 
 .center-text {
   text-align: center; }
+
+/* ionic datepicker workarounds */
+.month_select {
+  padding-left: 0px !important;
+  padding-right: 20px !important;
+  max-width: 100% !important;
+  text-align: left !important; }
+
+.year_select {
+  padding-left: 0px !important;
+  padding-right: 20px !important;
+  max-width: 100% !important;
+  text-align: left !important; }
+
+/* ---------------------------- */
