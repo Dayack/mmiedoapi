@@ -42,8 +42,24 @@ angular.module('app.services', [])
       return defer.promise;
     };
 
+    this.logout = function() {
+      user = null;
+    }
+
     this.getUser = function () {
       return user;
+    };
+  })
+
+  .service('FilterService', function (HttpService, $q) {
+    var filters = { media: 'ALL' };
+
+    this.getFilters = function() {
+      return filters;   
+    };
+
+    this.setMedia = function(media) {
+      filters.media = media;   
     };
   })
 
