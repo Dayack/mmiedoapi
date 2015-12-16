@@ -61,8 +61,11 @@ angular.module('app.controllers', [])
     });
 
     $scope.selectCategory= function(category){
-      CategoryService.setCurrentCategory(category);
+      CategoryService.addCurrentCategories(category);
      // $state.go('menu.noticias');
+
+    };
+    $scope.goToNews= function() {
       $state.go('menu.noticias');
     };
 

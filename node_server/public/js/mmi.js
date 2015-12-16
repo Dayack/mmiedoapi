@@ -7,14 +7,17 @@ window.onload = createChart()
 var cities = ['Bogotá','Barranquilla','Santa Marta','Cali','Armenia','Pereira','Medellín'];
 //arrays of series
 //graph1, the MEDIA must be in the same order: press, radio, tv, internet
-var news_graph1 = [17,12,8,21];
+//var news_graph1 = [17,12,8,21];
 var valor_graph1 = [198009548,243861317,37836670,22051715];
+var links_graph1 = ['test.com','test.com','test.com','test.com','test.com'];
 //second graph, nacional vs regional
 var news_graph2 = [ 17,20];
 var valor_graph2 = [243861317,198009548];
+var links_graph2 = ['test.com','test.com'];
 //third graph news by cities //same order that the city array
 var news_graph3 = [1,2,3,4,5,6,7];
 var valor_graph3 = [243861317,198009548,243861317,243861317,243861317,243861317,243861317];
+var links_graph3 = ['test.com','test.com','test.com','test.com','test.com','test.com','test.com'];
 
 
 /***************************************/
@@ -65,13 +68,21 @@ function createChart() {
 // instantiates the pie chart, passes in the data and
 // draws it.
 function drawChart_1() {
-	var graph_data= [ ['Media', 'noticias', 'valor']];
+
+    var colors= ['#ed7d31','#7f6000','#548235','#00b0f0'];
+	var graph_data= [ ['Media', 'noticias','valor',{role:'style'}]];
+    var graph_data_table= [ ['Media', 'noticias','valor']];
 	var medias = ['Prensa','Radio','Televisión','Internet'];
 	var j = 0; //pos in the input array of data
 	for (var i=0; i< medias.length;i++) {
 		graph_data[i+1] = [medias[i]];
 		graph_data[i+1].push(news_graph1[j]);
 		graph_data[i+1].push(valor_graph1[j]);
+        graph_data[i+1].push(colors[i % colors.length]);
+        //table
+        graph_data_table[i+1] = [medias[i]];
+        graph_data_table[i+1].push(news_graph1[j]);
+        graph_data_table[i+1].push(valor_graph1[j]);
 		j++;
 	}
     // Create the data table.
@@ -105,7 +116,7 @@ function drawChart_1() {
     for (i = 0; i < axisItems.length; i++) {
         //add the specific link
         jQuery(axisItems[i]).click(function () {
-            window.open('http://www.siglodata.co/s/observatorio/PrensaBaxtereneroadic2014.PDF', '_blank');
+            window.open(links_graph1[i], '_blank');
         });
         jQuery(axisItems[i]).css("cursor", "pointer");
     }
@@ -119,7 +130,7 @@ function drawChart_1() {
         ['INTERNET', '21', '33%', '$22.051.715', '4%'],
         ['TOTAL', '63', '100%', '$501.759.250', '100%']];*/
 
-    dataTable = generateTableData(graph_data,['','','$x']);
+    dataTable = generateTableData(graph_data_table,['','','$x']);
     drawTable('table_div',['MEDIO','Nº Noticias','%','VALOR','%'],dataTable);
 }
 
@@ -128,7 +139,8 @@ function drawChart_1() {
 // draws it.
 function drawChart_2() {
 
-    var graph_data = [['Media', 'noticias', 'valor']];
+    var graph_data = [['Media', 'noticias', 'valor',{role:'style'}]];
+    var graph_data_table = [['Media', 'noticias', 'valor']];
     var divisions = ['Nacional','Regional'];
     // Create the data table.
     var j = 0;
@@ -136,6 +148,12 @@ function drawChart_2() {
         graph_data[i+1] = [divisions[i]];
         graph_data[i+1].push(news_graph2[j]);
         graph_data[i+1].push(valor_graph2[j]);
+        graph_data[i+1].push('#ed7d31');
+        //table
+
+        graph_data_table[i+1] = [divisions[i]];
+        graph_data_table[i+1].push(news_graph2[j]);
+        graph_data_table[i+1].push(valor_graph2[j]);
         j++;
     }
     // Create the data table.
@@ -171,7 +189,7 @@ function drawChart_2() {
         //add the specific link
         //jQuery(axisItems[i]).wrap(" <a xlink:href='http://www.w3schools.com/svg/' target='_blank'>");
         jQuery(axisItems[i]).click(function () {
-            window.open('http://www.siglodata.co/s/observatorio/PrensaBaxtereneroadic2014.PDF', '_blank');
+            window.open(links_graph2[i], '_blank');
         });
         jQuery(axisItems[i]).css("cursor", "pointer");
     }
@@ -184,7 +202,7 @@ function drawChart_2() {
         ['Regional', '18', '29%', '$281.861.317', '56%'],
         ['TOTAL', '63', '100%', '$501.759.250', '100%']];*/
 
-    dataTable = generateTableData(graph_data,['','','$x']);
+    dataTable = generateTableData(graph_data_table,['','','$x']);
     drawTable('table2_div', ['CUBRIMIENTO', 'Nº Noticias', '%', 'VALOR', '%'], dataTable);
 }
 
@@ -192,7 +210,7 @@ function drawChart_2() {
 function drawChart_3() {
 
 
-    var colors = ['red','blue','yellow','green','brown','purple','orange'];
+    var colors = ['#8fa2d4','#FFD184','#BFBFBF','#F1A78A','#97B9E0','#62993E','#3B64AD','#E2AA00','#929292','#D26E2A','#4D89BD'];
     //the array generator must select the cities that are selected by the user, and the rest in one bar
     //at the end of the graph
 
@@ -254,7 +272,6 @@ function drawChart_3() {
         height: 600,
         vAxis: {},
         hAxis: {minValue: 0}
-
     };
 
 
@@ -266,8 +283,9 @@ function drawChart_3() {
     for (i = 0; i < axisItems.length; i++) {
         //add the specific link
         //jQuery(axisItems[i]).wrap(" <a xlink:href='http://www.w3schools.com/svg/' target='_blank'>");
-        jQuery(axisItems[i]).click(function () {
-            window.open('http://www.siglodata.co/s/observatorio/PrensaBaxtereneroadic2014.PDF', '_blank');
+        jQuery(axisItems[i]).click(function (item) {
+            console.log(this);
+            window.open(links_graph3[i], '_blank');
         });
         jQuery(axisItems[i]).css("cursor", "pointer");
     }

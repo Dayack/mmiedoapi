@@ -15,6 +15,12 @@
             <div id="table_div" class="graph-table" style="float: left;"></div>
         </div>
         <div style="clear: both;">
+            <select multiple id="categoriesSelector" class="chosen-select" style="width: 350px; ">
+                <input id="categoriesInput">
+                <button id="categoriesButton">Crear</button>
+                <ul id="categoriesTable"></ul>
+
+            </select>
             <div id="chart2_div" style="float: left;"></div>
             <div id="table2_div" class="graph-table" style="float: left;"></div>
         </div>
@@ -29,12 +35,17 @@
         </div>
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript">
+
+            var cities = ['Bogotá','Barranquilla','Santa Marta','Cali','Armenia','Pereira','Medellín'];
+
+            var categories = ['Categoria1','Categoria2','Categoria3'];
+            var nombre_categoria = '{{ nombre_categoria }}';
 //graph1, the MEDIA must be in the same order: press, radio, tv, internet
 var news_graph1 = [{{ prensa_categoria_contador }},{{ radio_categoria_contador }},{{ tv_categoria_contador }},{{ internet_categoria_contador }}];
 var valor_graph1 = [{{ prensa_categoria_recaudacion }},{{ radio_categoria_recaudacion }},{{ tv_categoria_recaudacion }},{{ internet_categoria_recaudacion }}];
 //second graph, nacional vs regional
-var news_graph2 = [ 17,20];
-var valor_graph2 = [243861317,198009548];
+var news_graph2 = [ 17,20,21];
+var valor_graph2 = [243861317,198009548,198009548];
 //third graph news by cities //same order that the city array
 var news_graph3 = [1,2,3,4,5,6,7];
 var valor_graph3 = [243861317,198009548,243861317,243861317,243861317,243861317,243861317];
