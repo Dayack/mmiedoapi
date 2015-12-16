@@ -1,4 +1,31 @@
 angular.module('app.controllers', [])
+
+
+/**
+ * Side menu Controller
+ */
+.controller('menuCtrl', function($scope,$rootScope,UserService,FilterService,$state,$ionicHistory) {
+
+    $scope.mediaFilterCollapsed = false;
+
+    $scope.toggleMediaFilter = function() {
+      $scope.mediaFilterCollapsed = !$scope.mediaFilterCollapsed;
+    };
+
+    $scope.selectMedia = function(media) {
+      FilterService.setMedia(media);
+    };
+
+    //logout button in side menu
+    $scope.logout = function() {
+      UserService.logout()
+      $state.go('login');
+      $ionicHistory.clearHistory();
+    };
+
+})
+
+
 /**
  * Login View Controller
  */
@@ -37,6 +64,18 @@ angular.module('app.controllers', [])
       CategoryService.setCurrentCategory(category);
      // $state.go('menu.noticias');
       $state.go('menu.noticias');
+    };
+
+})
+
+.controller('selectDateCtrl', function($scope) {
+    $scope.datepickerObject = {
+      dateFormat: 'dd-MM-yyyy',
+      callback: function(val) 	{
+        //alert(JSON.stringify(val));
+        $scope.datepickerObject.inputDate = val;
+      }
+
     };
 
 })

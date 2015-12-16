@@ -12,7 +12,8 @@ angular.module('app.routes', [])
     .state('menu', {
       url: '/side-menu',
       abstract:true,
-      templateUrl: 'templates/menu.html'
+      templateUrl: 'templates/menu.html',
+      controller: 'menuCtrl'
     })
 
 
@@ -70,6 +71,12 @@ angular.module('app.routes', [])
       url: '/detail',      
         templateUrl: 'templates/detalleDeLaNoticia.html',
         controller: 'detalleCtrl'
+    })
+
+    .state('date_filter', {
+      url: '/date_filter',      
+        templateUrl: 'templates/selectDate.html',
+        controller: 'selectDateCtrl'
     })
 
 
