@@ -1,4 +1,27 @@
 angular.module('app.controllers', [])
+
+
+/**
+ * Side menu Controller
+ */
+.controller('menuCtrl', function($scope,UserService,$state,$ionicHistory) {
+
+    $scope.mediaFilterCollapsed = false;
+
+    $scope.toggleMediaFilter = function() {
+      $scope.mediaFilterCollapsed = !$scope.mediaFilterCollapsed;
+    };
+
+    //logout button in side menu
+    $scope.logout = function() {
+      UserService.logout()
+      $state.go('login');
+      $ionicHistory.clearHistory();
+    };
+
+})
+
+
 /**
  * Login View Controller
  */

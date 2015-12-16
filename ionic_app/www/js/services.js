@@ -42,6 +42,10 @@ angular.module('app.services', [])
       return defer.promise;
     };
 
+    this.logout = function() {
+      user = null;
+    }
+
     this.getUser = function () {
       return user;
     };
