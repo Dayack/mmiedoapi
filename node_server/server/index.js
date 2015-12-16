@@ -19,6 +19,10 @@ module.exports = function() {
 	app.get('/categories/:user',function(req,res) {
 		res.send(auth.getCategories(req.params.user));
 	});
+	app.post('/test',function(req,res) {
+		console.log(req.query);
+		res.send("ok");
+	})
 
 	//add public static directory
 	app.use(express.static('public'));

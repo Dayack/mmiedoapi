@@ -1,4 +1,6 @@
 $dark-red:#b50c0c;
+$purple: #95378C;
+$light-blue: #63BFB8;
 
 .red-text{
   color: $dark-red;
@@ -7,7 +9,6 @@ $dark-red:#b50c0c;
 .center-text{
   text-align: center;
 }
-
 
 /* ionic datepicker workarounds */
 
@@ -26,5 +27,29 @@ $dark-red:#b50c0c;
   text-align: left !important;
 }
 
-
 /* ---------------------------- */
+
+.fixed-outside{
+  position: absolute;
+  bottom: 0;
+  color:white;
+  width: 100%;
+  /*height:  120px;*/
+  text-align:center;
+}
+
+.has-bottom .scroll{
+  padding-bottom:120px !important;
+}
+
+.button-circle{
+  width: 50px !important;
+  height: 50px !important;
+  border-radius: 50% !important;
+}
+
+.button-purple{
+  background-color: $purple;
+  color: white;
+}
+

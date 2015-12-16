@@ -55,11 +55,11 @@ angular.module('app.services', [])
     var filters = { media: 'ALL' };
 
     this.getFilters = function() {
-      return filters;   
+      return filters;
     };
 
     this.setMedia = function(media) {
-      filters.media = media;   
+      filters.media = media;
     };
   })
 
@@ -69,7 +69,7 @@ angular.module('app.services', [])
   .service('CategoryService', function (HttpService, $q) {
     var categories = null;
     var categoriesUser = null;
-    var currentCategory = null;
+    var selectedCategories = null;
 
     /**
      *  getCategories, will get all user's categories
@@ -98,12 +98,26 @@ angular.module('app.services', [])
       return defer.promise;
     };
 
-    this.setCurrentCategory = function (category) {
-      currentCategory = category;
+    this.setCurrentCategories = function (category) {
+      selectedCategories = category;
     };
 
-    this.getCurrentCategory = function () {
-      return currentCategory;
+    this.getCurrentCategories = function () {
+      return selectedCategories;
+    };
+    this.addCurrentCategories = function (cat) {
+      selectedCategories.push(cat);
+    };
+    this.removeCurrentCategories = function (cat) {
+      var posCat = -1;
+      for (var i=0;i<selectedCategories.length;i++) {
+        if (selectedCategories[i].IDCATEGORIA === cat.IDCATEGORIA) {
+          posCat = i;
+          break;
+        }
+      }
+      selectedCategories = selectedCategories.splice(posCat,1);
+      return selectedCategories;
     };
   })
   .service('FilterService', function (HttpService, $q) {
@@ -178,6 +192,14 @@ angular.module('app.services', [])
       var deferred = $q.defer();
       if (user.LOGIN === 'demo.old') {
         deferred.resolve([
+          {"IDCATEGORIA": "2", "NOMBRE": "AYUNTAMIENTO TELDE. PARTIDOS POLITICOS"},
+          {"IDCATEGORIA": "3", "NOMBRE": "PUBLICIDAD CONSEJERIA DE TURISMO"},
+          {"IDCATEGORIA": "4", "NOMBRE": "PUBLICIDAD CONSEJERIA DE ECONOMIA Y HACIENDA"},
+          {"IDCATEGORIA": "33", "NOMBRE": "COALICION POR GRAN CANARIA"},
+          {"IDCATEGORIA": "2", "NOMBRE": "AYUNTAMIENTO TELDE. PARTIDOS POLITICOS"},
+          {"IDCATEGORIA": "3", "NOMBRE": "PUBLICIDAD CONSEJERIA DE TURISMO"},
+          {"IDCATEGORIA": "4", "NOMBRE": "PUBLICIDAD CONSEJERIA DE ECONOMIA Y HACIENDA"},
+          {"IDCATEGORIA": "33", "NOMBRE": "COALICION POR GRAN CANARIA"},
           {"IDCATEGORIA": "2", "NOMBRE": "AYUNTAMIENTO TELDE. PARTIDOS POLITICOS"},
           {"IDCATEGORIA": "3", "NOMBRE": "PUBLICIDAD CONSEJERIA DE TURISMO"},
           {"IDCATEGORIA": "4", "NOMBRE": "PUBLICIDAD CONSEJERIA DE ECONOMIA Y HACIENDA"},
