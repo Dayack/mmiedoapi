@@ -3,15 +3,17 @@
 
     <div>
 
-     <!-- <a style="" class="button button-stable button-block " ng-click="selectCategory(category)"
-         ng-repeat="category in categories">{{ category.NOMBRE }}</a>-->
-      <ion-checkbox ng-model="allSelected" ng-click="selectAll()" >TODOS</ion-checkbox>
-      <ion-checkbox ng-model="category.selected" ng-click="selectCategory(category)" ng-repeat="category in categories">{{category.NOMBRE}}</ion-checkbox>
-    </div>
-    <div class="bottom-floating-button">
-      <div class="ok-button">
-
-      </div>
+      <!-- <a style="" class="button button-stable button-block " ng-click="selectCategory(category)"
+          ng-repeat="category in categories">{{ category.NOMBRE }}</a>-->
+      <ion-checkbox ng-model="allSelected.value" ng-click="selectAll()">TODOS</ion-checkbox>
+      <ion-checkbox ng-model="category.selected" ng-click="selectCategory(category)" ng-repeat="category in categories">
+        {{category.NOMBRE}}
+      </ion-checkbox>
+      <!--space-->
+      <label class="item item-checkbox ng-valid" style="   border: none;
+    border-top: #ddd 1px solid;">
+        <div style="height: 50px;  "></div>
+      </label>
     </div>
 
 
