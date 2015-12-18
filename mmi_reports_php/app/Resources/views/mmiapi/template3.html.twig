@@ -3,8 +3,11 @@
     <head>
         <title></title>
 {% block stylesheets %}
-        <link href="{{ asset('css/chosen.css') }}" rel="stylesheet" />
-        <link href="{{ asset('css/mmi-graphs.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/chosen.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/mmi-graphs.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/bootstrap-theme.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/daterangepicker.css') }}" rel="stylesheet" />
 {% endblock %}
     </head>
     <body>
@@ -13,21 +16,22 @@
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript">
 {% autoescape 'html' %}
-var userId = {{ idusuario }};
-var zonaId = {{ idzona }};
-var tipo_informe= {{ tipo_informe }};
-var nombre_categoria="";//in case of graph type 1
+var id_usuario = 1344;// id_usuario ;
+var id_zona = 1;// id_zona }};
+var tipo_informe= "grafica1";// tipo_informe }};
+var nombre_categoria="CATEGORIA SELECCIONADA";//in case of graph type 1
 var nombres=['Categoria1','Categoria2','Categoria3'];//list of groups for X Axis
 var contador=[17,20,21];//list of news for Serie1
 var precio=[243861317,198009548,198009548];//list of valors, for Serie2
-var fecha_desde="";
-var fecha_hasta="";
+var fecha_desde="01122015";
+var fecha_hasta="18122015";
 {% endautoescape %}
         </script>
 {% block javascripts %}
-        <script src="{{ asset('js/jquery-1.11.3.min.js') }}"></script>
-        <script src="{{ asset('js/chosen.jquery.js') }}"></script>
-        <script src="{{ asset('js/mmi.js') }}"></script>
+    <script src="{{ asset('js/jquery-1.11.3.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('js/chosen.jquery.js') }}"></script>
+    <script src="{{ asset('js/mmi-graph.js') }}"></script>
 {% endblock %}
     </body>
 </html>
