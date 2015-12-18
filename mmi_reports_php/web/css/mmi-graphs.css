@@ -1,4 +1,113 @@
+.left-part-template1{
+    float: left;
+    width: 50%;
+    height: 100%;
+}
 
+.template1-block{
+    padding: 10px;
+    margin: 10px;
+}
+
+.selected-graph {
+    background: #4c87b9;
+    color: white;
+}
+.daterange-div {
+    background-color: #44b6ae;
+    color: white;
+    width: 250px;
+    font-size: 18px;
+    padding: 7px;
+    cursor: pointer;
+}
+.daterange-div input {
+    border: none;
+    background-color:transparent ;
+    width: 210px;
+    cursor: pointer;
+}
+
+.back-body {
+    background-color: #F1F3FA;
+}
+
+.category-selector {
+    display: inline-block;
+    font-size: 16px;
+    padding: 20px;
+    max-width: 400px;
+}
+.green-haze.btn {
+    color: #FFFFFF;
+    background-color: #44b6ae;
+}
+.portlet.box.blue-hoki {
+    border: 1px solid #869ab3;
+    border-top: 0;
+}
+.portlet > .portlet-body.blue-hoki, .portlet.blue-hoki {
+    background-color: #67809F;
+}
+.portlet.box {
+    padding: 0px !important;
+}
+.portlet {
+    margin-top: 0px;
+    margin-bottom: 25px;
+    padding: 0px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -ms-border-radius: 4px;
+    -o-border-radius: 4px;
+    border-radius: 4px;
+}
+.portlet-title {
+    background-color: #67809F;
+}
+.portlet.box > .portlet-title {
+    border-bottom: 0;
+    padding: 10px;
+    margin-bottom: 0;
+    color: #fff;
+    font-size: 17px;
+}
+.portlet > .portlet-title {
+    border-bottom: 1px solid #eee;
+    padding: 0;
+    margin-bottom: 10px;
+    min-height: 41px;
+    -webkit-border-radius: 4px 4px 0 0;
+    -moz-border-radius: 4px 4px 0 0;
+    -ms-border-radius: 4px 4px 0 0;
+    -o-border-radius: 4px 4px 0 0;
+    border-radius: 4px 4px 0 0;
+}
+.portlet.box > .portlet-body {
+    background-color: #fff;
+    padding: 10px;
+    min-height: 500px;
+}
+.portlet > .portlet-body {
+    clear: both;
+    -webkit-border-radius: 0 0 4px 4px;
+    -moz-border-radius: 0 0 4px 4px;
+    -ms-border-radius: 0 0 4px 4px;
+    -o-border-radius: 0 0 4px 4px;
+    border-radius: 0 0 4px 4px;
+}
+.view-selector-box {
+    margin: 20px;
+}
+.view-selector li {
+    list-style: none;
+    cursor: pointer;
+}
+.view-selector div {
+    padding: 10px;
+}
+
+/******/
 /*scale of the tables, the google tables are too larges*/
 .graph-table tr {
     height: 30px !important;
@@ -38,9 +147,4 @@
     background-color: #7C7C7C;
     color: white;
     border: 1px solid black !important;
-}
-
-.selected-graph {
-    background: black;
-    color: white;
 }
