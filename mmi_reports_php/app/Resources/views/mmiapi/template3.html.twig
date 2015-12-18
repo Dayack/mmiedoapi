@@ -13,10 +13,15 @@
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript">
 {% autoescape 'html' %}
-var idusuario = {{ idusuario }};
-var idzona = {{ idzona }};
-var categorias_usuario = [{{ categorias_usuario|raw }}];
-var views = [{{ views|raw }}];
+var userId = {{ idusuario }};
+var zonaId = {{ idzona }};
+var tipo_informe= {{ tipo_informe }}
+var nombre_categoria="";//in case of graph type 1
+var nombres=['Categoria1','Categoria2','Categoria3'];//list of groups for X Axis
+var contador=[17,20,21];//list of news for Serie1
+var precio=[243861317,198009548,198009548];//list of valors, for Serie2
+var fecha_desde="";
+var fecha_hasta="";
 {% endautoescape %}
         </script>
 {% block javascripts %}

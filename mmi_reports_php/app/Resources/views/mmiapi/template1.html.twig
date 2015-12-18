@@ -13,10 +13,12 @@
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript">
 {% autoescape 'html' %}
-var idusuario = {{ idusuario }};
-var idzona = {{ idzona }};
-var categorias_usuario = [{{ categorias_usuario|raw }}];
+var userId = {{ idusuario }};
+var zonaId = {{ idzona }};
+var nombre_categorias = [{{ categorias_usuario|raw }}];
+var id_categorias = [{{ categorias_usuario|raw }}];
 var views = [{{ views|raw }}];
+var defaultView = [{{ vista|raw }}]
 {% endautoescape %}
         </script>
 {% block javascripts %}
