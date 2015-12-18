@@ -1,7 +1,7 @@
 var days=[ "Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado" ];
 var dayNamesShort= [ "Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab" ];
 var categories=[];
-
+var baseUrl="http://localhost:8000";
 //generate the datepickers
 function createDateSelectors(){
 
@@ -84,16 +84,16 @@ function selectView(id) {
     var graphType=null;
     for (var i=0;i<views.length;i++) {
         jQuery("#view_id_"+views[i].id_informe).removeClass("selected-graph");
-        if (views[i].id_informe.toString() === id) {
+        if (views[i].id_informe.toString() === id.toString()) {
             graphType = views[i].tipo_informe;
         }
     }
     jQuery("#view_id_"+id).addClass("selected-graph");
     //disable category selector if graph is type 1
     if (graphType ==="grafica1") {
-        jQuery("#categorySelect").show();
+        jQuery("#categorySelectorBlock").show();
     } else {
-        jQuery("#categorySelect").hide();
+        jQuery("#categorySelectorBlock").hide();
     }
 
 }
@@ -106,20 +106,19 @@ function goToGraph(){
     viewId = viewId.substr(8);
     var categoryId = null;//category is necessary if the graph is type1
     jQuery.each(views,function(){
-        if (this.id_informe.toString() === viewId) {
+        if (this.id_informe.toString() === viewId.toString()) {
             if (this.tipo_informe === "grafica1") {
                 categoryId = jQuery("#categorySelect").val();
             }
         }
     });
     //extract dates
+var range = jQuery("#daterange").val();
+    var startDate = start = range.substr(0,10).split("/").join("");
+    var endDate = range.substr(13,10).split("/").join("");
 
-    var startDate = jQuery("#startDate").datepicker( "getDate" );
-    var endDate = jQuery("#endDate").datepicker( "getDate" );
-    startDate = (startDate.getDay()<10 ? "0": "")+startDate.getDay()+(startDate.getMonth()+1)+startDate.getFullYear();
-    endDate = (endDate.getDay()<10 ? "0": "")+endDate.getDay()+(endDate.getMonth()+1)+endDate.getFullYear();
-    window.open(baseUrl+'?informe_id='+viewId+(categoryId ===null ? "": "&categoria_id="+categoryId)+
-        "&from="+startDate+"&to="+endDate+"usuario_id="+userId,'_blank');
+    window.open(baseUrl+'graph_page?id_informe='+viewId+(categoryId ===null ? "": "&id_categoria="+categoryId)+
+        "&desde="+startDate+"&hasta="+endDate+"id_usuario="+userId+"&id_zona="+zonaId,'_blank');
 }
 
 
@@ -134,7 +133,7 @@ jQuery(document).ready(function(){
     }
 
     //by default hide the category selector
-    jQuery("#categorySelect").hide();
+    jQuery("#categorySelectorBlock").hide();
     createDateSelectors();
     createCategorySelector();
     createViewList();

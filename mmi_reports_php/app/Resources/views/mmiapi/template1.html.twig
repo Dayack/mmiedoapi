@@ -10,19 +10,39 @@
     <link href="{{ asset('css/daterangepicker.css') }}" rel="stylesheet" />
 {% endblock %}
     </head>
-    <body>
-        <div >
-            <div>
-                <ul id="viewList"></ul>
-            </div>
-            <div>
-                <input type="text" name="daterange" id="daterange" value="" />
-            </div>
-            <div>
-                <select id="categorySelect"></select>
+    <body class="back-body">
+    <div>
+        <div class="left-part-template1">
+            <div class="portlet blue-hoki box view-selector-box">
+                <div class="portlet-title">
+                    INFORMES
+                </div>
+                <div class="portlet-body">
+                    <ul style="padding-left: 0px;" id="viewList" class="view-selector"></ul>
+                </div>
             </div>
 
         </div>
+        <div class="left-part-template1">
+            <div class="template1-block">
+            <div>RANGO DE FECHAS:</div>
+            <div class="daterange-div" onclick="jQuery('#daterange').click();">
+                <span class="glyphicon glyphicon-calendar"></span>
+                <input type="text" name="daterange" id="daterange" value=""/>
+            </div>
+            </div>
+            <div class="template1-block" id="categorySelectorBlock">
+                <div>
+                    CATEGORIA:
+                </div>
+                <select class="btn btn-fit-height btn-sm green-haze category-selector" id="categorySelect"></select>
+            </div>
+            <div class="template1-block">
+                <button class="btn navbar-btn green-haze" onclick="goToGraph();">ABRIR INFORME</button>
+            </div>
+        </div>
+
+    </div>
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript">
 {% autoescape 'html' %}
