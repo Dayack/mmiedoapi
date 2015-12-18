@@ -46,12 +46,12 @@
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript">
 {% autoescape 'html' %}
-var userId = {{ idusuario }};
-var zonaId = {{ idzona }};
+var userId = {{ id_usuario }};
+var zonaId = {{ id_zona }};
 var nombre_categorias = [{{ nombre_categorias|raw }}];
 var id_categorias = [{{ id_categorias|raw }}];
-var views = [{{ views|raw }}];
-var defaultView = {{ idvista|raw }};
+var views = [{{ informes|raw }}];
+var defaultView = {{ id_informe|raw }};
 {% endautoescape %}
         </script>
 {% block javascripts %}
