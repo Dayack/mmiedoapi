@@ -71,11 +71,6 @@ class MmiApiController extends Controller
                         $usuario_categorias_nombre[] = $response_decode[0]->{'NOMBREWEB'};
                     }
     // fin conseguir nombre categorias
-                    
-//[{name:"Categoria1",id:1},{name:"categoria2",id:2},{name:"categoria3",id:3}];
-                    foreach ($usuario_categorias_id as $categoria_id) {
-                        # TODO convertir los dos arrays en el texto con ese formato
-                    }
                 }
     // inicio conseguir datos vistas
                 $views = '';
@@ -89,15 +84,14 @@ class MmiApiController extends Controller
                 
             }
         }
-/*
-*/
-        
+
         return $this->render('mmiapi/template1.html.twig', array(
             'idusuario' => $idusuario,
             'idzona' => $idzona,
+            'idvista' => $idvista,
 
-            'nombres_categorias' => implode('","', $usuario_categorias_nombre),
-            'ids_categorias' => implode(",", $usuario_categorias_id),
+            'nombre_categorias' => '"'.implode('","', $usuario_categorias_nombre).'"',
+            'id_categorias' => implode(",", $usuario_categorias_id),
             'views' => $views,
             
         ));
@@ -109,9 +103,22 @@ class MmiApiController extends Controller
      */
     public function manage_page(Request $request)
     {
+        //http://localhost:8000/manage_page?idzona=1&idusuario=1344&idvista=1
+        $request_data = array('idusuario','idzona','idvista');
+        foreach ($request_data as $request_value) {
+            if (strlen($request->query->get($request_value)) > 0) {
+                $$request_value = $request->query->get($request_value);
+            }
+            else {
+                $$request_value = 0;
+            }
+        }
+
+        $base_url = 'http://api.mmi-e.com/mmiapi.php/';
+        $apikey = 'DFKGMKLJOIRJNG';
         return $this->render('mmiapi/template2.html.twig', array(
-            'idusuario' => 0,
-            'idzona' => 0,
+            'idusuario' => $idusuario,
+            'idzona' => $idzona,
             'view' => 0,
             'nombre_categorias' => 0,
             'id_categorias' => 0,
