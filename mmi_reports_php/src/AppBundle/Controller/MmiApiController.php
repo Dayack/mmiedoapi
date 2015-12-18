@@ -18,6 +18,7 @@ class MmiApiController extends Controller
      */
     public function info_page(Request $request)
     {
+        //http://localhost:8000/info_page?idzona=1&idusuario=1344&idvista=1
         $request_data = array('idusuario','idzona','idvista');
         foreach ($request_data as $request_value) {
             if (strlen($request->query->get($request_value)) > 0) {
@@ -77,6 +78,7 @@ class MmiApiController extends Controller
                     }
                 }
     // inicio conseguir datos vistas
+                $views = '';
 /*
                 $response = $restClient->get($getvistanombres);
                 $response_decode = json_decode($response->getContent());
@@ -93,14 +95,62 @@ class MmiApiController extends Controller
         return $this->render('mmiapi/template1.html.twig', array(
             'idusuario' => $idusuario,
             'idzona' => $idzona,
-            
-            'categorias_usuario' => $categorias_usuario,
+
+            'nombres_categorias' => implode('","', $usuario_categorias_nombre),
+            'ids_categorias' => implode(",", $usuario_categorias_id),
             'views' => $views,
             
         ));
         //return new Response(json_encode($categorias_usuario));
     }
-    
+
+    /**
+     * @Route("/manage_page")
+     */
+    public function manage_page(Request $request)
+    {
+        return $this->render('mmiapi/template2.html.twig', array(
+            'idusuario' => 0,
+            'idzona' => 0,
+            'view' => 0,
+            'nombre_categorias' => 0,
+            'id_categorias' => 0,
+        ));
+        /*
+                    'idusuario' => $idusuario,
+                    'idzona' => $idzona,
+
+                    'nombres_categorias' => implode('","', $usuario_categorias_nombre),
+                    'ids_categorias' => implode(",", $usuario_categorias_id),
+                    'views' => $views,
+
+        */
+
+    }
+
+    /**
+     * @Route("/graph_page")
+     */
+    public function graph_page(Request $request)
+    {
+        return $this->render('mmiapi/template3.html.twig', array(
+            'idusuario' => 0,
+            'idzona' => 0,
+            'view' => 0,
+            'tipo_informe' => 0,
+        ));
+        /*
+                    'idusuario' => $idusuario,
+                    'idzona' => $idzona,
+
+                    'nombres_categorias' => implode('","', $usuario_categorias_nombre),
+                    'ids_categorias' => implode(",", $usuario_categorias_id),
+                    'views' => $views,
+
+        */
+
+    }
+
     //http://localhost:8000/graph_media?idzona=1&idcategoria=24&fechainicial=01092015&fechafinal=01102015
     //http://localhost:8000/graph_groups1?idzona=1&fechainicial=01092015&fechafinal=01102015&idusuario=1344
     //http://localhost:8000/graph_groups2?idzona=1&fechainicial=01092015&fechafinal=01102015&idusuario=1344
