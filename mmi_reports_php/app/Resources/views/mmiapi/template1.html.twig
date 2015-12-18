@@ -11,7 +11,17 @@
 {% endblock %}
     </head>
     <body>
-        <div id="">
+        <div >
+            <div>
+                <ul id="viewList"></ul>
+            </div>
+            <div>
+                <input type="text" name="daterange" id="daterange" value="" />
+            </div>
+            <div>
+                <select id="categorySelect"></select>
+            </div>
+
         </div>
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript">
@@ -21,7 +31,7 @@ var zonaId = {{ idzona }};
 var nombre_categorias = [{{ nombre_categorias|raw }}];
 var id_categorias = [{{ id_categorias|raw }}];
 var views = [{{ views|raw }}];
-var defaultView = [{{ idvista|raw }}];
+var defaultView = {{ idvista|raw }};
 {% endautoescape %}
         </script>
 {% block javascripts %}

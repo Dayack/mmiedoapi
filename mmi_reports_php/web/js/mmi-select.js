@@ -1,6 +1,6 @@
 var days=[ "Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado" ];
 var dayNamesShort= [ "Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab" ];
-
+var categories=[];
 
 //generate the datepickers
 function createDateSelectors(){
@@ -84,7 +84,7 @@ function selectView(id) {
     var graphType=null;
     for (var i=0;i<views.length;i++) {
         jQuery("#view_id_"+views[i].id_informe).removeClass("selected-graph");
-        if (views[i].id_informe === id) {
+        if (views[i].id_informe.toString() === id) {
             graphType = views[i].tipo_informe;
         }
     }
@@ -125,6 +125,14 @@ function goToGraph(){
 
 //READY PART
 jQuery(document).ready(function(){
+    //generate categories array
+    for (var i=0;i<nombre_categorias.length;i++) {
+        categories.push({
+            id: id_categorias[i],
+            name: nombre_categorias[i]
+        })
+    }
+
     //by default hide the category selector
     jQuery("#categorySelect").hide();
     createDateSelectors();
