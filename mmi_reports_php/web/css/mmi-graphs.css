@@ -39,3 +39,8 @@
     color: white;
     border: 1px solid black !important;
 }
+
+.selected-graph {
+    background: black;
+    color: white;
+}
