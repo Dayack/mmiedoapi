@@ -78,7 +78,45 @@ var dayNamesShort= [ "Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab" ];
 
 //generate the datepickers
 function createDateSelectors(){
-    jQuery( "#startDate" ).datepicker({
+
+    $('#daterange').daterangepicker({
+        "locale": {
+            "format": "DD/MM/YYYY",
+            "separator": " - ",
+            "applyLabel": "Aplicar",
+            "cancelLabel": "Cancelar",
+            "fromLabel": "Desde",
+            "toLabel": "Hasta",
+            "customRangeLabel": "Personalizado",
+            "daysOfWeek": [
+                "Do",
+                "Lu",
+                "Ma",
+                "Mi",
+                "Ju",
+                "Vi",
+                "Sa"
+            ],
+            "monthNames": [
+                "Enero",
+                "Febrero",
+                "Marzo",
+                "Abril",
+                "Mayo",
+                "Junio",
+                "Julio",
+                "Agosto",
+                "Septiembre",
+                "Octubre",
+                "Noviembre",
+                "Diciembre"
+            ],
+            "firstDay": 1
+        },
+        "linkedCalendars": false
+    });
+
+    /*jQuery( "#startDate" ).datepicker({
         showButtonPanel: true,
         dateFormat: "dd-mm-yy",
         dayNames:days,
@@ -92,7 +130,7 @@ function createDateSelectors(){
         dayNames:days,
         dayNamesShort:dayNamesShort,
         defaultDate: new Date()
-    });
+    });*/
 }
 
 
@@ -218,7 +256,7 @@ function drawCharts() {
             break;
         case "grafica3":
             drawChart_3('chart_div','table_div');
-            createCitiesSelector();
+            //createCitiesSelector();
             break;
         default:
             jQuery("#chart_div").append("NO SE HA ENCONTRADO TIPO DE GRAFICA");
@@ -684,4 +722,4 @@ function deleteCategorieFromGroup(groupname,id_elem) {
 
 
 
-createCitiesSelector(); //generate the citie's selector for the 3rd graph
+//createCitiesSelector(); //generate the citie's selector for the 3rd graph
