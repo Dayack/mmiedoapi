@@ -1,0 +1,60 @@
+<html>
+
+    <head>
+        <title>{% block title %}{{ web_title }}{% endblock %}</title>
+{#
+var news_graph1 = [{{ prensa_categoria_contador }},{{ radio_categoria_contador }},{{ tv_categoria_contador }},{{ internet_categoria_contador }}];
+var valor_graph1 = [{{ prensa_categoria_recaudacion }},{{ radio_categoria_recaudacion }},{{ tv_categoria_recaudacion }},{{ internet_categoria_recaudacion }}];
+//second graph, nacional vs regional
+var news_graph2 = [{{ nacional_categoria_contador }},{{ regional_categoria_contador }}];
+var valor_graph2 = [{{ nacional_categoria_recaudacion }},{{ regional_categoria_recaudacion }}];
+//third graph news by cities //same order that the city array
+var news_graph3 = [1,2,3,4,5,6,7];
+var valor_graph3 = [243861317,198009548,243861317,243861317,243861317,243861317,243861317];
+#}
+{% block stylesheets %}
+        <link href="{{ asset('css/chosen.css') }}" rel="stylesheet" />
+        <link href="{{ asset('css/mmi-graphs.css') }}" rel="stylesheet" />
+{% endblock %}
+    </head>
+    <body>
+        <div>
+            <div id="chart_div" style="float: left;"></div>
+            <div id="table_div" class="graph-table" style="float: left;"></div>
+        </div>
+        <div style="clear: both;">
+            <div id="chart2_div" style="float: left;"></div>
+            <div id="table2_div" class="graph-table" style="float: left;"></div>
+        </div>
+        <div id="citiesSelector" style="clear: both;">
+            <select multiple id="citySelector" class="chosen-select" style="width: 350px; ">
+        
+            </select>
+        </div>
+        <div style="clear: both;">
+            <div id="chart3_div" style="float: left;"></div>
+            <div id="table3_div" class="graph-table" style="float: left;"></div>
+        </div>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript">
+//graph1, the MEDIA must be in the same order: press, radio, tv, internet
+var news_graph1 = [{{ g1_categoria_contador }}];
+var valor_graph1 = [{{ g1_categoria_precio }}];
+//second graph, nacional vs regional
+var news_graph2 = [{{ g2_categorias_contador }}];
+var valor_graph2 = [{{ g2_categorias_precio }}];
+//third graph news by cities //same order that the city array
+var news_graph3 = [{{ g3_categorias_contador }}];
+var valor_graph3 = [{{ g3_categorias_precio }}];
+
+var nombre_categoria = '{{ nombre_categoria }}';
+        </script>
+{% block javascripts %}
+        <script src="{{ asset('js/jquery-1.11.3.min.js') }}"></script>
+        <script src="{{ asset('js/chosen.jquery.js') }}"></script>
+        <script src="{{ asset('js/mmi.js') }}"></script>
+{% endblock %}
+    </body>
+</html>
+
+
