@@ -173,8 +173,8 @@ class MmiApiController extends Controller
 */
                     $informe = '{"tipo_informe": "Grafica_barras1",
 "nombre_informe": "TOTAL DE NOTICIAS POR CUBRIMIENTO",
-"grupo_de_categorias": [{ "nombre_grupo_de_categorias": "Regional", "categorias": [2,3,4]},
-{ "nombre_grupo_de_categorias": "Nacional", "categorias": [5,6,7]}]}';
+"grupo_de_categorias": [{ "nombre_grupo_de_categorias": "Regional", "categorias": [2185,2186,2188]},
+{ "nombre_grupo_de_categorias": "Nacional", "categorias": [2225,3243,3245]}]}';
     // fin conseguir datos vista
                 }
             }
@@ -263,6 +263,7 @@ class MmiApiController extends Controller
             'id_zona' => $id_zona,
             'fecha_desde' => $desde,
             'fecha_hasta' => $hasta,
+            'id_informe' => $id_categoria,
 
             'nombre_categoria' => $nombre_categoria,
             'nombre_informe' => $nombre_informe,

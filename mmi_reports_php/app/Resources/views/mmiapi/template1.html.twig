@@ -11,6 +11,9 @@
 {% endblock %}
     </head>
     <body class="back-body">
+    <div class="page-title">
+        <h1>Seleccionar Informe</h1>
+    </div>
     <div>
         <div class="left-part-template1">
             <div class="portlet blue-hoki box view-selector-box">
@@ -23,8 +26,8 @@
             </div>
 
         </div>
-        <div class="left-part-template1">
-            <h3>
+        <div class="left-part-template1 ">
+            <h3 class="title-part">
                 Crear informe
             </h3>
             <div style="height: 30%" class="template1-block">
@@ -32,7 +35,7 @@
                 <button class="btn navbar-btn green-haze" onclick="goToCreate();">CREAR</button>
             </div>
             <div>
-                <h3>Abrir informe</h3>
+                <h3 class="title-part">Abrir informe</h3>
                 <div class="template1-block">
                     <div>RANGO DE FECHAS:</div>
                     <div class="daterange-div" onclick="jQuery('#daterange').click();">
@@ -65,6 +68,7 @@ var id_informe = {{ id_informe|raw }};
 {% endautoescape %}
         </script>
 {% block javascripts %}
+    <script src="{{ asset('js/mmi-config.js') }}"></script>
     <script src="{{ asset('js/jquery-1.11.3.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('js/moment.min.js') }}"></script>

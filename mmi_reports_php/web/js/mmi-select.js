@@ -1,7 +1,6 @@
 var days=[ "Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado" ];
 var dayNamesShort= [ "Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab" ];
 var categories=[];
-var baseUrl="http://localhost:8000";
 //generate the datepickers
 function createDateSelectors(){
 
@@ -117,13 +116,13 @@ var range = jQuery("#daterange").val();
     var startDate = start = range.substr(0,10).split("/").join("");
     var endDate = range.substr(13,10).split("/").join("");
 
-    window.open(baseUrl+'/graph_page?id_informe='+viewId+(categoryId ===null ? "": "&id_categoria="+categoryId)+
+    window.open(mmiconfig.baseUrl+'/graph_page?id_informe='+viewId+(categoryId ===null ? "": "&id_categoria="+categoryId)+
         "&desde="+startDate+"&hasta="+endDate+"id_usuario="+userId+"&id_zona="+zonaId,'_blank');
 }
 
 //got to create web
-function goToCreate() {
-    window.location.href = baseUrl+'/manage_page?id_usuario='+userId+'&id_zona='+zonaId;
+function goToCreate(data) {
+    window.location.href = mmiconfig.baseUrl+'/manage_page?id_usuario='+userId+'&id_zona='+zonaId;
 }
 
 //READY PART
