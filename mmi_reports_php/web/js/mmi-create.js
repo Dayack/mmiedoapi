@@ -25,7 +25,7 @@ function checkGroupEditor() {
 function load_categories(){
 
     if (informe !==null) {
-        editing=true;
+
         createPreDefinedGroups();
     }
     //the categories selector is created with the free_categories only
@@ -53,10 +53,15 @@ function load_graph_selector(){
  * create the groups of the actual view
  */
 function createPreDefinedGroups(){
-    if (typeof informe !== "undefined" && informe !==null) {
+    if (typeof informe !== "undefined" && informe !==null  && informe !=="") {
+
         if (informe.length >0) {
             informe= informe[0];
         }
+        if (informe instanceof  Array && informe.length == 0) {
+            return;
+        }
+        editing=true;
         jQuery.each(informe.grupo_de_categorias, function (i, grupo) {
             var new_group = {
                 name: grupo.nombre_grupo_de_categorias,

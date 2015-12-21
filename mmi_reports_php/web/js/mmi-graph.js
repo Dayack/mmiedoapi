@@ -16,8 +16,18 @@ var monthNames= [
     "Diciembre"
 ];
 var graf_types=["grafica1","grafica2","grafica3"];
-var colors= ["#94368d","#4a87b9","#3daca6","#8877a9","#d25455","#BB98bc","#9cb4d5","#9fceca","#b7accc","#e49d94",
-"#e2d1e8","#c5d1e7","#cae2e0","#d3cce1","#efc6be"];
+/*var colors= ["#94368d","#4a87b9","#3daca6","#8877a9","#d25455","#BB98bc","#9cb4d5","#9fceca","#b7accc","#e49d94",
+"#e2d1e8","#c5d1e7","#cae2e0","#d3cce1","#efc6be"];*/
+
+//purples
+/*var colors= ["#733372","#94368d","#461943","#8c5689","#BB98bc","#62375b","#a57ea5","#e2d1e8","#815f7c","#c1a8c3",
+    "#ede3f2","#d0c4d0"];*/
+
+//various colors
+var colors= ["#947ab6","#e83b68","#ef906f","#3daca6","#a894c6","#ed6d84","#3a88a","#9fceca","#a894c6","#f297a3",
+ "#f6bfa7","#cae2e0"];
+
+
 // generic function to create chart
 function createChart() {
     // Load the Visualization API and the piechart package.
@@ -145,7 +155,9 @@ function drawChart_2(id_chart,id_table) {
         graph_data[i + 1] = [divisions[i]];
         graph_data[i + 1].push(contador[j]);
         graph_data[i + 1].push(precio[j]);
-        graph_data[i + 1].push('#ed7d31');
+        //graph_data[i + 1].push('#ed7d31');
+
+        graph_data[i + 1].push(colors[i % colors.length]);
         //table
 
         graph_data_table[i + 1] = [divisions[i]];
