@@ -21,6 +21,7 @@ module.exports = function() {
 	});
 	app.post('/test',function(req,res) {
 		console.log(req.query);
+		console.log("POST RECEIVED AT "+ new Date());
 		res.send("ok");
 	})
 

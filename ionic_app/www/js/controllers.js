@@ -60,12 +60,23 @@ angular.module('app.controllers', [])
     $scope.categories = CategoryService.getCategories($scope.user).then(function(data) {
       $scope.categories = data;
     });
+    $scope.allSelected={value:false};//all options selected?
 
     $scope.selectCategory= function(category){
+      $scope.allSelected.value=false;
       CategoryService.addCurrentCategories(category);
      // $state.go('menu.noticias');
 
     };
+
+    $scope.selectAll=function(){
+      $scope.allSelected.value=true;
+      //disable all options
+      for (var i = 0; i<$scope.categories.length;i++) {
+        $scope.categories[i].selected=false;
+        CategoryService.addCurrentCategories($scope.categories[i]);
+      }
+    }
     $scope.goToNews= function() {
       $state.go('menu.noticias');
     };

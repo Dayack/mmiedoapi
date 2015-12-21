@@ -124,9 +124,9 @@ angular.module('app.services', [])
  * Category Service, used to save user info
  */
   .service('CategoryService', function (HttpService, $q) {
-    var categories = null;
-    var categoriesUser = null;
-    var selectedCategories = null;
+    var categories = [];
+    var categoriesUser = [];
+    var selectedCategories = [];
 
     /**
      *  getCategories, will get all user's categories
@@ -142,7 +142,7 @@ angular.module('app.services', [])
           if (data !== null && data != "error" && (data !== false)) {
             categoriesUser = user;
             categories = data;
-            categories.unshift({"IDCATEGORIA": "0", "NOMBRE": "TODAS"});
+            //categories.unshift({"IDCATEGORIA": "0", "NOMBRE": "TODAS"});
             defer.resolve(categories);
           } else {
             categories = null;
@@ -193,7 +193,7 @@ angular.module('app.services', [])
       //MOCKED REQUEST
       //---DELETE THIS WHEN THE REQUEST IS WORKING
       var deferred = $q.defer();
-      if (user === 'demo.old' && password === 'demoMMI') {
+      /*if (user === 'demo.old' && password === 'demoMMI') {
         deferred.resolve({
           "IDUSUARIO": "41",
           "IDZONA": "1",
@@ -214,10 +214,10 @@ angular.module('app.services', [])
         });
       } else {
         deferred.resolve(false);
-      }
+      }*/
       // END MOCKED REQUEST
-      /*
-       REAL REQUEST
+
+       //REAL REQUEST
        $http.get('/getusuarios_login/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/0/'+user+'/'+password).success(function(data,status){
        if (data instanceof Array && data.length >0) {
        deferred.resolve(data[0]);
@@ -227,7 +227,7 @@ angular.module('app.services', [])
 
        }).error(function(data,status){
        deferred.resolve("error");
-       });*/
+       });
       return deferred.promise;
     };
 

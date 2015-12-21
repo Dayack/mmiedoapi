@@ -1,0 +1,65 @@
+<html>
+
+    <head>
+        <title></title>
+{% block stylesheets %}
+    <link href="{{ asset('css/chosen.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/mmi-graphs.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/bootstrap-theme.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/daterangepicker.css') }}" rel="stylesheet" />
+{% endblock %}
+    </head>
+    <body class="back-body">
+        <div>
+            <div style="margin:20px;" class="page-title">
+                <h1>Informe</h1>
+            </div>
+            <div>
+                <div class="div-title">
+                    <h3 id="graph-title"></h3>
+
+                </div>
+                <div class="graph-info">
+                    <div class="cat-data" id="inform-name"></div>
+                    <div class="cat-data">
+                        DESDE <span id="from"></span> HASTA <span id="to"></span>
+                    </div>
+                </div>
+                <div id="chart_div" style="float: left;"></div>
+                <div style="float: left;">
+                <div   class="glyphicon glyphicon-cog edit-graph" onclick="edit_inform()"></div>
+                <div id="table_div" class="graph-table" style="clear: both">
+                </div>
+
+
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript">
+{% autoescape 'html' %}
+var id_informe = {{ id_informe }};
+var nombre_informe= {{ nombre_informe }};
+var id_usuario = {{ id_usuario }};
+var id_zona = {{ id_zona }};
+var tipo_informe = "{{ tipo_informe }}";
+var nombre_categoria = "{{ nombre_categoria }}";
+var nombres = [{{ nombres|raw }}];
+var contador = [{{ contador }}];
+var precio = [{{ precio }}];
+var fecha_desde = "{{ fecha_desde }}";
+var fecha_hasta = "{{ fecha_hasta }}";
+{% endautoescape %}
+        </script>
+{% block javascripts %}
+    <script src="{{ asset('js/mmi-config.js') }}"></script>
+    <script src="{{ asset('js/jquery-1.11.3.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('js/chosen.jquery.js') }}"></script>
+    <script src="{{ asset('js/mmi-graph.js') }}"></script>
+{% endblock %}
+    </body>
+</html>
+
+

@@ -1,0 +1,107 @@
+<html>
+
+    <head>
+        <title></title>
+{% block stylesheets %}
+    <link href="{{ asset('css/chosen.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/mmi-graphs.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/bootstrap-theme.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/daterangepicker.css') }}" rel="stylesheet" />
+{% endblock %}
+    </head>
+    <body class="back-body">
+    <div style="margin:20px;">
+        <div class="page-title">
+            <h1>
+                Crear Informe
+            </h1>
+        </div>
+        <div class="view-selector-box" style="height: 30px">
+            <div class="label-input">Nombre informe:</div>
+            <input class="input-green" id="nombre_informe">
+        </div>
+
+        <div class="view-selector-box" style="clear: both;">
+            <h3 class="title-part">Tipo de gráfica</h3>
+            <select class="btn btn-fit-height btn-sm green-haze category-selector" onchange="checkGroupEditor()" id="graph_selector"></select>
+        </div>
+        <div class="view-selector-box" style="clear: both;" id="group_editor">
+            <h3 class="title-part">Agrupaciones</h3>
+
+            <div style="float: left;">
+                <div class="view-selector-box">
+                    <div class="label-input">Categorías:</div>
+                    <select id="cat_selector" data-placeholder="Selecciona una categoría..." multiple></select>
+                </div>
+                <div class="view-selector-box">
+                    <div class="label-input">Nombre agrupación:</div>
+                    <input class="input-green" id="nombre_grupo">
+                </div>
+                <div class="view-selector-box" style="clear: both;">
+                    <button class="btn navbar-btn green-haze" id="create_button" onclick="create_group();">Crear grupo
+                    </button>
+                </div>
+                <div class="view-selector-box">
+                    <div id="category_creator_alert" class="alert alert-danger" role="alert">
+                        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                        <span class="sr-only">Error:</span>
+                        Ha de seleccionar al menos una categoría
+                    </div>
+                    <div id="group_name_alert" class="alert alert-danger" role="alert">
+                        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                        <span class="sr-only">Error:</span>
+                        Nombre de grupo ha de ser obligatorio, y no puede repetirse
+                    </div>
+                    <div id="group-error" class="alert alert-danger" role="alert">
+                        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                        <span class="sr-only">Error:</span>
+                        Debe crear agrupaciones de categorías
+                    </div>
+                </div>
+            </div>
+            <div class="view-selector-box" style="float:left;">
+                <div class="portlet blue-hoki box view-selector-box">
+                    <div class="portlet-title">Agrupaciones</div>
+                    <div class="portlet-body ">
+                        <ul class="group-box" id="grupo_list">
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="view-selector-box" style="clear: both;">
+            <div id="inform-error" class="alert alert-danger" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Error:</span>
+                Nombre de informe inválido
+            </div>
+
+        </div>
+        <div class="view-selector-box" style="clear: both;">
+            <button class="btn navbar-btn green-haze" onclick="createInform()">Crear informe</button>
+        </div>
+    </div>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript">
+{% autoescape 'html' %}
+var id_usuario = {{ id_usuario }};
+var id_zona = {{ id_zona }};
+var informe = [{{ informe|raw }}];
+var nombre_categorias = [{{ nombre_categorias|raw }}];
+var id_categorias = [{{ id_categorias|raw }}];
+var id_informe = "2";
+{% endautoescape %}
+        </script>
+{% block javascripts %}
+    <script src="{{ asset('js/mmi-config.js') }}"></script>
+        <script src="{{ asset('js/jquery-1.11.3.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+        <script src="{{ asset('js/chosen.jquery.js') }}"></script>
+        <script src="{{ asset('js/mmi-create.js') }}"></script>
+{% endblock %}
+    </body>
+</html>
+
+
