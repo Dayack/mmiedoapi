@@ -20,8 +20,14 @@
                     <i class="icon ion-arrow-down-b" ng-show="!mediaFilterCollapsed"></i>
                     <i class="icon ion-arrow-up-b" ng-show="mediaFilterCollapsed"></i>
                 </ion-item>
-                	<ion-item style="padding-left: 30px;" class="item-accordion" menu-close="" ng-show="mediaFilterCollapsed" ng-click="selectMedia('ALL')">Todos los medios</ion-item>
-                	<ion-item style="padding-left: 30px;" class="item-accordion" menu-close="" ng-show="mediaFilterCollapsed" ng-click="selectMedia('PRESS')">Prensa</ion-item>
+                	<ion-item style="padding-left: 30px;" class="item-accordion item-icon-left" menu-close="" ng-show="mediaFilterCollapsed" ng-click="selectMedia('ALL')">
+                             <i class="icon ion-arrow-down-b"></i>
+                             Todos los medios
+                        </ion-item>
+                	<ion-item style="padding-left: 30px;" class="item-accordion item-icon-left" menu-close="" ng-show="mediaFilterCollapsed" ng-click="selectMedia('PRESS')">
+                             Prensa
+                             <i class="icon icon-mmi-press"></i>
+                        </ion-item>
                 	<ion-item style="padding-left: 30px;" class="item-accordion" menu-close="" ng-show="mediaFilterCollapsed" ng-click="selectMedia('RADIO')">Radio</ion-item>
 	                <ion-item style="padding-left: 30px;" class="item-accordion" menu-close="" ng-show="mediaFilterCollapsed" ng-click="selectMedia('TV')">TV</ion-item>
 	                <ion-item style="padding-left: 30px;" class="item-accordion" menu-close="" ng-show="mediaFilterCollapsed" ng-click="selectMedia('INTERNET')">Internet</ion-item>
