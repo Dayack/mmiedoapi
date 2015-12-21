@@ -1,3 +1,31 @@
+.page-title{
+    padding: 0px;
+    font-size: 26px;
+    letter-spacing: -1px;
+    line-height: 26px;
+    display: block;
+    color: #666;
+    margin: 0px 0px 20px 0px;
+    font-weight: 300;
+    font-family: "Open Sans", sans-serif;
+}
+.label-input{
+    background-color: #44b6ae;
+    color: white;
+    padding: 4px 2px 4px 10px;
+    margin: 0px;
+    float: left;
+}
+.input-green{
+    border: 3px solid #44b6ae;
+    margin: 0px;
+    float: left;
+    min-width: 350px;
+}
+.title-part {
+    color: #666;
+    font-family: "Open Sans", sans-serif;
+}
 .left-part-template1{
     float: left;
     width: 50%;
@@ -83,10 +111,19 @@
     -o-border-radius: 4px 4px 0 0;
     border-radius: 4px 4px 0 0;
 }
+
+.edit-graph{
+    clear: both;
+    float: right;
+    margin: 21px 9px 11px 0px;
+    font-size: 26px;
+    cursor: pointer;
+}
 .portlet.box > .portlet-body {
     background-color: #fff;
     padding: 10px;
-    min-height: 500px;
+    max-height: 500px;
+    min-width: 500px;
 }
 .portlet > .portlet-body {
     clear: both;
@@ -105,6 +142,19 @@
 }
 .view-selector div {
     padding: 10px;
+}
+.close-group{
+    color: red;
+    float: left;
+    margin: 2px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+.group-box {
+list-style: none;
+}
+.group-item{
+    font-weight: bold;
 }
 /*******/
 

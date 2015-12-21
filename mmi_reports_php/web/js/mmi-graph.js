@@ -16,7 +16,6 @@ var monthNames= [
     "Diciembre"
 ];
 var graf_types=["grafica1","grafica2","grafica3"];
-var baseUrl = "http://localhost:8000/";
 var colors= ["#94368d","#4a87b9","#3daca6","#8877a9","#d25455","#BB98bc","#9cb4d5","#9fceca","#b7accc","#e49d94",
 "#e2d1e8","#c5d1e7","#cae2e0","#d3cce1","#efc6be"];
 // generic function to create chart
@@ -48,11 +47,11 @@ function drawCharts() {
     }
     //create title
     jQuery("#graph-title").html(nombre_informe);
-    if (nombre_categoria !== null && nombre_categoria !=="") {
+    /*if (nombre_categoria !== null && nombre_categoria !=="") {
         jQuery("#inform-name").html(nombre_categoria);
-    }
-    var from_date = fecha_desde.substr(0,2) + "/" +fecha_desde.substr(2,2) +fecha_desde.substr(4,4);
-    var to_date = fecha_hasta.substr(0,2) + "/" +fecha_hasta.substr(2,2) +fecha_hasta.substr(4,4);
+    }*/
+    var from_date = fecha_desde.substr(0,2) + "/" +fecha_desde.substr(2,2)+"/" +fecha_desde.substr(4,4);
+    var to_date = fecha_hasta.substr(0,2) + "/" +fecha_hasta.substr(2,2)+"/" +fecha_hasta.substr(4,4);
     jQuery("#from").html(from_date); jQuery("#to").html(to_date);
 }
 
@@ -395,4 +394,10 @@ function selectHandler(e) {
 //format numbers to xx,xxx.xx
 function formatNumber(num) {
     return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")
+}
+
+function edit_inform(){
+
+    window.location.href = '/manage_page?id_usuario='+id_usuario+'&id_zona='+id_zona+'&id_informe='+id_informe;
+
 }
