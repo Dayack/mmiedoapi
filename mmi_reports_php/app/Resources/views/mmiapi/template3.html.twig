@@ -29,7 +29,9 @@
                 <div id="chart_div" style="float: left;"></div>
                 <div style="float: left;">
                 <div   class="glyphicon glyphicon-cog edit-graph" onclick="edit_inform()"></div>
-                <div id="table_div" class="graph-table" style="clear: both">
+                <div id="table_div" class="graph-table" style="clear: both;
+    width: 520px;
+    height: 800px;">
                 </div>
 
 
@@ -40,7 +42,7 @@
         <script type="text/javascript">
 {% autoescape 'html' %}
 var id_informe = {{ id_informe }};
-var nombre_informe= {{ nombre_informe }};
+var nombre_informe= "{{ nombre_informe }}";
 var id_usuario = {{ id_usuario }};
 var id_zona = {{ id_zona }};
 var tipo_informe = "{{ tipo_informe }}";
