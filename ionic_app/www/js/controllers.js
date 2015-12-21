@@ -14,11 +14,12 @@ angular.module('app.controllers', [])
 
     $scope.selectMedia = function(media) {
       FilterService.setMedia(media);
+      $rootScope.$broadcast('filtersChanged');
     };
 
     //logout button in side menu
     $scope.logout = function() {
-      UserService.logout()
+      UserService.logout();
       $state.go('login');
       $ionicHistory.clearHistory();
     };
@@ -52,7 +53,7 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('categoriasCtrl', function($scope,UserService,CategoryService,$state,UserService) {
+.controller('categoriasCtrl', function($scope,UserService,CategoryService,$state) {
     $scope.user = UserService.getUser();
     //$scope.categories = [{"IDCATEGORIA": "2", "NOMBRE": "Categoria 1"},{"IDCATEGORIA": "3", "NOMBRE": "Categoria 2"}];
     //$scope.categories = CategoryService.getCategories($scope.user);
@@ -104,23 +105,37 @@ angular.module('app.controllers', [])
     };
 })
 
-.controller('noticiasCtrl', function($scope,$ionicNavBarDelegate,FilterService,UserService,HttpService,$state) {
+.controller('noticiasCtrl', function($scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state) {
     $ionicNavBarDelegate.showBackButton(false);//disable the back button
     $scope.news = [];
-    $scope.currentPage = 0;
     $scope.user = UserService.getUser();
-    //the currentPage must be reset to 0 when a new filter is applied, TODO
     $scope.filters = FilterService.getFilters();
-    HttpService.getNews($scope.user,$scope.filters).then(function(data) {
+
+    NewsService.getNews($scope.user,$scope.filters).then(function(data) {
       $scope.news = data;
     });
-    $scope.goToNew =function(detailNew){
 
+    $scope.loadMore = function() {
+      var options = {infiniteScroll: true};
+      NewsService.getNews($scope.user,$scope.filters, options).then(function(data) {
+        $scope.news = data;
+        $scope.$broadcast('scroll.infiniteScrollComplete');
+      });
+    };
+
+    $scope.$on('filtersChanged', function() {
+      $scope.filters = FilterService.getFilters();
+      NewsService.getNews($scope.user,$scope.filters).then(function(data) {
+        $scope.news = data;
+      });
+    });
+
+    $scope.goToNew =function(detailNew){
       $state.go('detalle');
     };
 })
 
-.controller('detalleCtrl', function($scope,UserService,CategoryService,$state,UserService,$ionicNavBarDelegate) {
+.controller('detalleCtrl', function($scope,UserService,CategoryService,$state,$ionicNavBarDelegate) {
     $ionicNavBarDelegate.showBackButton(true);//disable the back button
 
     $scope.user = UserService.getUser();
