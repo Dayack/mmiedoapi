@@ -10,6 +10,14 @@ $light-blue: #63BFB8;
   text-align: center;
 }
 
+.news_source{
+  color: $purple !important;
+}
+
+.news_abstract{
+  white-space: normal !important;
+}
+
 /* ionic datepicker workarounds */
 
 .month_select{
