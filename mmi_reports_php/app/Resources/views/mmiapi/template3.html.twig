@@ -40,14 +40,14 @@
         <script type="text/javascript">
 {% autoescape 'html' %}
 var id_informe = {{ id_informe }};
-var nombre_informe= "informe 1";//{{ nombre_informe }};
+var nombre_informe= {{ nombre_informe }};
 var id_usuario = {{ id_usuario }};
 var id_zona = {{ id_zona }};
 var tipo_informe = "{{ tipo_informe }}";
 var nombre_categoria = "{{ nombre_categoria }}";
-var nombres = ["cat1","cat2","cat3","cat4"];//[{{ nombres|raw }}];
-var contador = [1,2,3,4];//[{{ contador }}];
-var precio = [10,20,30,40];//[{{ precio }}];
+var nombres = [{{ nombres|raw }}];
+var contador = [{{ contador }}];
+var precio = [{{ precio }}];
 var fecha_desde = "{{ fecha_desde }}";
 var fecha_hasta = "{{ fecha_hasta }}";
 {% endautoescape %}
