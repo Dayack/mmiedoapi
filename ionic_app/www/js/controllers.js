@@ -14,6 +14,7 @@ angular.module('app.controllers', [])
 
     $scope.selectMedia = function(media) {
       FilterService.setMedia(media);
+      $rootScope.$broadcast('filtersChanged');
     };
 
     //logout button in side menu
@@ -96,10 +97,9 @@ angular.module('app.controllers', [])
 .controller('noticiasCtrl', function($scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state) {
     $ionicNavBarDelegate.showBackButton(false);//disable the back button
     $scope.news = [];
-    $scope.currentPage = 0;
     $scope.user = UserService.getUser();
-    //the currentPage must be reset to 0 when a new filter is applied, TODO
     $scope.filters = FilterService.getFilters();
+
     NewsService.getNews($scope.user,$scope.filters).then(function(data) {
       $scope.news = data;
     });
@@ -111,6 +111,13 @@ angular.module('app.controllers', [])
         $scope.$broadcast('scroll.infiniteScrollComplete');
       });
     };
+
+    $scope.$on('filtersChanged', function() {
+      $scope.filters = FilterService.getFilters();
+      NewsService.getNews($scope.user,$scope.filters).then(function(data) {
+        $scope.news = data;
+      });
+    });
 
     $scope.goToNew =function(detailNew){
       $state.go('detalle');

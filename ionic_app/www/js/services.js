@@ -52,7 +52,13 @@ angular.module('app.services', [])
   })
 
   .service('FilterService', function (HttpService, $q) {
-    var filters = { media: 'ALL' };
+    var filters = {
+      media: 'ALL',
+      startDate: {},
+      endDate: {},
+      support_zones: [],
+      new_zones: []
+    };
 
     this.getFilters = function() {
       return filters;
@@ -68,13 +74,14 @@ angular.module('app.services', [])
     var limit = 10;
     var news = [];
     var offset = 0;
-    var lastFilters = null;
+    var lastSearchHash = null;
 
     this.getNews = function(user, filters, options) {
       options = options || {};
-      var filtersInJson = JSON.stringify(filters);
+      var searchHash = JSON.stringify(user) + JSON.stringify(filters);
       var defer = $q.defer();
-      if (filtersInJson === lastFilters) {
+       
+      if (lastSearchHash === searchHash) {
         if (options.infiniteScroll) {
           offset += limit;
           HttpService.getNews(user, filters, offset).then(function (data) {
@@ -93,7 +100,7 @@ angular.module('app.services', [])
         }
       } else {
         offset = 0;
-        lastFilters = filtersInJson;
+        lastSearchHash = searchHash;
         HttpService.getNews(user, filters, offset).then(function (data) {
           //the answer from the HTTP was ok, not error and if user/password is ok
           if (data !== null && data != "error" && (data !== false)) {
@@ -171,20 +178,6 @@ angular.module('app.services', [])
     };
   })
 
-
-  .service('FilterService', function (HttpService, $q) {
-    var filters = {
-      startDate: {},
-      endDate: {},
-      support_zones: [],
-      new_zones: []
-    };
-    this.getFilters = function () {
-      return filters;
-    };
-
-
-  })
 
 /**
  * HTTP Service, this service will centralize all API calls
@@ -281,7 +274,7 @@ angular.module('app.services', [])
       //MOCKED REQUEST
       //---DELETE THIS WHEN THE REQUEST IS WORKING
       var deferred = $q.defer();
-      if (user.LOGIN === 'demo.old') {
+      if (user.LOGIN === 'demo.old' && filters.media === 'ALL') {
         if (offset === 0) {
 	  deferred.resolve([
             {"title": "Noticia1", "media": "Prensa", "id": 1},
@@ -313,6 +306,41 @@ angular.module('app.services', [])
             {"title": "Noticia21", "media": "Prensa", "id": 21},
             {"title": "Noticia22", "media": "TV", "id": 22},
             {"title": "Noticia23", "media": "Prensa", "id": 23},
+          ]);
+        } else {
+	  deferred.resolve([]);
+        }
+      } else if (user.LOGIN === 'demo.old' && filters.media === 'PRESS') {
+        if (offset === 0) {
+	  deferred.resolve([
+            {"title": "Noticia1", "media": "Prensa", "id": 1},
+            {"title": "Noticia3", "media": "Prensa", "id": 3},
+            {"title": "Noticia11", "media": "Prensa", "id": 11},
+            {"title": "Noticia13", "media": "Prensa", "id": 13},
+            {"title": "Noticia21", "media": "Prensa", "id": 21},
+            {"title": "Noticia23", "media": "Prensa", "id": 23},
+          ]);
+        } else {
+	  deferred.resolve([]);
+        }
+      } else if (user.LOGIN === 'demo.old' && filters.media === 'INTERNET') {
+        if (offset === 0) {
+	  deferred.resolve([
+            {"title": "Noticia4", "media": "Internet", "id": 4},
+            {"title": "Noticia6", "media": "Internet", "id": 6},
+            {"title": "Noticia7", "media": "Internet", "id": 7},
+            {"title": "Noticia8", "media": "Internet", "id": 8},
+            {"title": "Noticia9", "media": "Internet", "id": 9},
+            {"title": "Noticia10", "media": "Internet", "id": 10},
+            {"title": "Noticia14", "media": "Internet", "id": 14},
+            {"title": "Noticia16", "media": "Internet", "id": 16},
+            {"title": "Noticia17", "media": "Internet", "id": 17},
+            {"title": "Noticia18", "media": "Internet", "id": 18},
+          ]);
+        } else if (offset === 10) {
+	  deferred.resolve([
+            {"title": "Noticia19", "media": "Internet", "id": 19},
+            {"title": "Noticia20", "media": "Internet", "id": 20},
           ]);
         } else {
 	  deferred.resolve([]);
