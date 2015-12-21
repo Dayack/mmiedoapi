@@ -214,21 +214,21 @@ class MmiApiController extends Controller
         $getinforme_grupos = $base_url.'getinforme_grupos/'.$apikey.'/'.$id_zona.'/'.$id_informe;
         $getcontadornoticias_categorias = $base_url.'getcontadornoticias_categorias/'.$apikey.'/'.$id_zona;
         $getcontadorvalor_categorias = $base_url.'getcontadorvalor_categorias/'.$apikey.'/'.$id_zona;
-        $getnoticiasprensa_categoria_contador = $base_url.'getnoticiasprensa_categoria_contador/'.$apikey.'/'.$idzona.'/#idcategoria#/'.$desde.'/'.$hasta;
+        $getnoticiasprensa_categoria_contador = $base_url.'getnoticiasprensa_categoria_contador/'.$apikey.'/'.$id_zona.'/#idcategoria#/'.$desde.'/'.$hasta;
             //$response_decode[0]->{'NUM'}
-        $getnoticiasradio_categoria_contador = $base_url.'getnoticiasradio_categoria_contador/'.$apikey.'/'.$idzona.'/#idcategoria#/'.$desde.'/'.$hasta;
+        $getnoticiasradio_categoria_contador = $base_url.'getnoticiasradio_categoria_contador/'.$apikey.'/'.$id_zona.'/#idcategoria#/'.$desde.'/'.$hasta;
             //$response_decode[0]->{'NUM'}
-        $getnoticiastv_categoria_contador = $base_url.'getnoticiastv_categoria_contador/'.$apikey.'/'.$idzona.'/#idcategoria#/'.$desde.'/'.$hasta;
+        $getnoticiastv_categoria_contador = $base_url.'getnoticiastv_categoria_contador/'.$apikey.'/'.$id_zona.'/#idcategoria#/'.$desde.'/'.$hasta;
             //$response_decode[0]->{'NUM'}
-        $getnoticiasinternet_categoria_contador = $base_url.'getnoticiasinternet_categoria_contador/'.$apikey.'/'.$idzona.'/#idcategoria#/'.$desde.'/'.$hasta;
+        $getnoticiasinternet_categoria_contador = $base_url.'getnoticiasinternet_categoria_contador/'.$apikey.'/'.$id_zona.'/#idcategoria#/'.$desde.'/'.$hasta;
             //$response_decode[0]->{'NUM'}
-        $getnoticiasprensa_categoria_precio = $base_url.'getnoticiasprensa_categoria_precio/'.$apikey.'/'.$idzona.'/#idcategoria#/'.$desde.'/'.$hasta;
+        $getnoticiasprensa_categoria_precio = $base_url.'getnoticiasprensa_categoria_precio/'.$apikey.'/'.$id_zona.'/#idcategoria#/'.$desde.'/'.$hasta;
             //$response_decode[0]->{'PRECIO'}
-        $getnoticiasradio_categoria_precio = $base_url.'getnoticiasradio_categoria_precio/'.$apikey.'/'.$idzona.'/#idcategoria#/'.$desde.'/'.$hasta;
+        $getnoticiasradio_categoria_precio = $base_url.'getnoticiasradio_categoria_precio/'.$apikey.'/'.$id_zona.'/#idcategoria#/'.$desde.'/'.$hasta;
             //$response_decode[0]->{'PRECIO'}
-        $getnoticiastv_categoria_precio = $base_url.'getnoticiastv_categoria_precio/'.$apikey.'/'.$idzona.'/#idcategoria#/'.$desde.'/'.$hasta;
+        $getnoticiastv_categoria_precio = $base_url.'getnoticiastv_categoria_precio/'.$apikey.'/'.$id_zona.'/#idcategoria#/'.$desde.'/'.$hasta;
             //$response_decode[0]->{'PRECIO'}
-        $getnoticiasinternet_categoria_precio = $base_url.'getnoticiasinternet_categoria_precio/'.$apikey.'/'.$idzona.'/#idcategoria#/'.$desde.'/'.$hasta;
+        $getnoticiasinternet_categoria_precio = $base_url.'getnoticiasinternet_categoria_precio/'.$apikey.'/'.$id_zona.'/#idcategoria#/'.$desde.'/'.$hasta;
             //$response_decode[0]->{'PRECIO'}
 
         $restClient = new RestClient(new Curl(new CurlOptionsHandler(array())));
@@ -341,7 +341,7 @@ class MmiApiController extends Controller
         $grupos_nombre = ["nombre1","nombre2","nombre3","nombre4"];
         $grupos_contador = [17,17,8,21];
         $grupos_precio = [1000000,2000000,2500000,1500000];
-        if (strlen($request->query->get($request_value)) > 0) {
+        if (strlen($request->query->get("otro")) > 0) {
             $nombre_informe = 'nombre grafica2';
             $tipo_informe = 'grafica2';
             $grupos_nombre = ["nombre1","nombre2","nombre3","nombre4","nombre5"];
