@@ -1,8 +1,24 @@
 window.onload = createChart()
 //all cities loaded
 ////GLOBAL VARS TO ALL FILES
+var monthNames= [
+    "Enero",
+    "Febrero",
+    "Marzo",
+    "Abril",
+    "Mayo",
+    "Junio",
+    "Julio",
+    "Agosto",
+    "Septiembre",
+    "Octubre",
+    "Noviembre",
+    "Diciembre"
+];
 var graf_types=["grafica1","grafica2","grafica3"];
-var baseUrl = "http://localhost:8000/"
+var baseUrl = "http://localhost:8000/";
+var colors= ["#94368d","#4a87b9","#3daca6","#8877a9","#d25455","#BB98bc","#9cb4d5","#9fceca","#b7accc","#e49d94",
+"#e2d1e8","#c5d1e7","#cae2e0","#d3cce1","#efc6be"];
 // generic function to create chart
 function createChart() {
     // Load the Visualization API and the piechart package.
@@ -20,7 +36,7 @@ function drawCharts() {
             drawChart_1('chart_div','table_div');
             break;
         case "grafica2":
-            createCategoriesSelector("categoriesSelector", "categoriesInput", "categoriesButton","categoriesTable");
+            //createCategoriesSelector("categoriesSelector", "categoriesInput", "categoriesButton","categoriesTable");
             drawChart_2('chart_div','table_div');
             break;
         case "grafica3":
@@ -31,7 +47,13 @@ function drawCharts() {
             jQuery("#chart_div").append("NO SE HA ENCONTRADO TIPO DE GRAFICA");
     }
     //create title
-    jQuery("#graph-title").text(nombre_informe);
+    jQuery("#graph-title").html(nombre_informe);
+    if (nombre_categoria !== null && nombre_categoria !=="") {
+        jQuery("#inform-name").html(nombre_categoria);
+    }
+    var from_date = fecha_desde.substr(0,2) + "/" +fecha_desde.substr(2,2) +fecha_desde.substr(4,4);
+    var to_date = fecha_hasta.substr(0,2) + "/" +fecha_hasta.substr(2,2) +fecha_hasta.substr(4,4);
+    jQuery("#from").html(from_date); jQuery("#to").html(to_date);
 }
 
 
@@ -43,7 +65,6 @@ function drawCharts() {
 // draws it.
 function drawChart_1(id_chart,id_table) {
 
-    var colors = ['#ed7d31', '#7f6000', '#548235', '#00b0f0'];
     var graph_data = [['Media', 'noticias', 'valor', {role: 'style'}]];
     var graph_data_table = [['Media', 'noticias', 'valor']];
     var medias = nombres;
@@ -64,6 +85,7 @@ function drawChart_1(id_chart,id_table) {
 
     // Set chart options
     var options = {
+        backgroundColor: { fill:'transparent' },
         title: 'CATEGORIA: ' + nombre_categoria,
         width: 800,
         height: 600,
@@ -138,6 +160,7 @@ function drawChart_2(id_chart,id_table) {
     // Set chart options
     var options = {
         //title: 'CATEGORIA: ' + nombre_categoria,
+        backgroundColor: { fill:'transparent' },
         width: 800,
         height: 600,
         seriesType: 'column',
@@ -175,7 +198,6 @@ function drawChart_2(id_chart,id_table) {
 function drawChart_3(id_chart,id_table) {
 
 
-    var colors = ['#8fa2d4', '#FFD184', '#BFBFBF', '#F1A78A', '#97B9E0', '#62993E', '#3B64AD', '#E2AA00', '#929292', '#D26E2A', '#4D89BD'];
     //the array generator must select the cities that are selected by the user, and the rest in one bar
     //at the end of the graph
 
@@ -243,6 +265,7 @@ function drawChart_3(id_chart,id_table) {
     // Set chart options
     var options = {
         // title: 'CATEGORIA: ' + nombre_categoria,
+        backgroundColor: { fill:'transparent' },
         width: 800,
         height: 600,
         vAxis: {},

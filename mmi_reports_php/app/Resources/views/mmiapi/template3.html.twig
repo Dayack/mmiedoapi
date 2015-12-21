@@ -10,15 +10,30 @@
     <link href="{{ asset('css/daterangepicker.css') }}" rel="stylesheet" />
 {% endblock %}
     </head>
-    <body>
-        <div id="">
+    <body class="back-body">
+        <div>
+            <div>
+                <div class="div-title">
+                    <h3 id="graph-title"></h3>
+                </div>
+                <div class="graph-info">
+                    <div class="cat-data" id="inform-name"></div>
+                    <div class="cat-data">
+                        DESDE <span id="from"></span> HASTA <span id="to"></span>
+                    </div>
+                </div>
+                <div id="chart_div" style="float: left;"></div>
+
+                <div id="table_div" class="graph-table" style="float: left;"></div>
+            </div>
         </div>
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript">
 {% autoescape 'html' %}
 var id_usuario = 1344;// id_usuario ;
 var id_zona = 1;// id_zona }};
-var tipo_informe= "grafica1";// tipo_informe }};
+var tipo_informe= "grafica3";// tipo_informe }};
+var nombre_informe = "NOMBRE DEL INFORME";
 var nombre_categoria="CATEGORIA SELECCIONADA";//in case of graph type 1
 var nombres=['Categoria1','Categoria2','Categoria3'];//list of groups for X Axis
 var contador=[17,20,21];//list of news for Serie1
