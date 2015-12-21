@@ -30,16 +30,15 @@
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript">
 {% autoescape 'html' %}
-var id_usuario = 1344;// id_usuario ;
-var id_zona = 1;// id_zona }};
-var tipo_informe= "grafica3";// tipo_informe }};
-var nombre_informe = "NOMBRE DEL INFORME";
-var nombre_categoria="CATEGORIA SELECCIONADA";//in case of graph type 1
-var nombres=['Categoria1','Categoria2','Categoria3'];//list of groups for X Axis
-var contador=[17,20,21];//list of news for Serie1
-var precio=[243861317,198009548,198009548];//list of valors, for Serie2
-var fecha_desde="01122015";
-var fecha_hasta="18122015";
+var id_usuario = {{ id_usuario }};
+var id_zona = {{ id_zona }};
+var tipo_informe = "{{ tipo_informe }}";
+var nombre_categoria = "{{ nombre_categoria }}";
+var nombres = [{{ nombres|raw }}];
+var contador = [{{ contador }}];
+var precio = [{{ precio }}];
+var fecha_desde = "{{ fecha_desde }}";
+var fecha_hasta = "{{ fecha_hasta }}";
 {% endautoescape %}
         </script>
 {% block javascripts %}

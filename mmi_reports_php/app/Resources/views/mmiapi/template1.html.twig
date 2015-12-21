@@ -56,12 +56,12 @@
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript">
 {% autoescape 'html' %}
-var userId = {{ idusuario }};
-var zonaId = {{ idzona }};
+var userId = {{ id_usuario }};
+var zonaId = {{ id_zona }};
 var nombre_categorias = [{{ nombre_categorias|raw }}];
 var id_categorias = [{{ id_categorias|raw }}];
-var informes = [{{ views|raw }}];
-var id_informe = {{ idvista|raw }};
+var informes = [{{ informes|raw }}];
+var id_informe = {{ id_informe|raw }};
 {% endautoescape %}
         </script>
 {% block javascripts %}
