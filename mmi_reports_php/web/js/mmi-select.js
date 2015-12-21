@@ -70,7 +70,7 @@ function createCategorySelector(){
 
 function createViewList(){
     var viewList = jQuery("#viewList");
-    jQuery.each(views,function(){
+    jQuery.each(informes,function(){
         viewList.append('<li><div id="view_id_'+this.id_informe+'" onclick="selectView(\''+this.id_informe+'\')">'+this.nombre_informe+'</div></li>');
     });
 }
@@ -82,10 +82,10 @@ function createViewList(){
 function selectView(id) {
     jQuery("#viewList li").removeClass("selected-graph");//may not work
     var graphType=null;
-    for (var i=0;i<views.length;i++) {
-        jQuery("#view_id_"+views[i].id_informe).removeClass("selected-graph");
-        if (views[i].id_informe.toString() === id.toString()) {
-            graphType = views[i].tipo_informe;
+    for (var i=0;i<informes.length;i++) {
+        jQuery("#view_id_"+informes[i].id_informe).removeClass("selected-graph");
+        if (informes[i].id_informe.toString() === id.toString()) {
+            graphType = informes[i].tipo_informe;
         }
     }
     jQuery("#view_id_"+id).addClass("selected-graph");
@@ -105,7 +105,7 @@ function goToGraph(){
     //the id is 'view_id_XX' where XX is the ID view
     viewId = viewId.substr(8);
     var categoryId = null;//category is necessary if the graph is type1
-    jQuery.each(views,function(){
+    jQuery.each(informes,function(){
         if (this.id_informe.toString() === viewId.toString()) {
             if (this.tipo_informe === "grafica1") {
                 categoryId = jQuery("#categorySelect").val();
@@ -117,10 +117,14 @@ var range = jQuery("#daterange").val();
     var startDate = start = range.substr(0,10).split("/").join("");
     var endDate = range.substr(13,10).split("/").join("");
 
-    window.open(baseUrl+'graph_page?id_informe='+viewId+(categoryId ===null ? "": "&id_categoria="+categoryId)+
+    window.open(baseUrl+'/graph_page?id_informe='+viewId+(categoryId ===null ? "": "&id_categoria="+categoryId)+
         "&desde="+startDate+"&hasta="+endDate+"id_usuario="+userId+"&id_zona="+zonaId,'_blank');
 }
 
+//got to create web
+function goToCreate() {
+    window.location.href = baseUrl+'/manage_page?id_usuario='+userId+'&id_zona='+zonaId;
+}
 
 //READY PART
 jQuery(document).ready(function(){
@@ -138,7 +142,7 @@ jQuery(document).ready(function(){
     createCategorySelector();
     createViewList();
     //if a default view is selected, trigger selection
-    if (defaultView != null && defaultView>0) {
-        selectView(defaultView);
+    if (id_informe != null && id_informe>0) {
+        selectView(id_informe);
     }
 });

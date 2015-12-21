@@ -24,21 +24,31 @@
 
         </div>
         <div class="left-part-template1">
-            <div class="template1-block">
-            <div>RANGO DE FECHAS:</div>
-            <div class="daterange-div" onclick="jQuery('#daterange').click();">
-                <span class="glyphicon glyphicon-calendar"></span>
-                <input type="text" name="daterange" id="daterange" value=""/>
+            <h3>
+                Crear informe
+            </h3>
+            <div style="height: 30%" class="template1-block">
+
+                <button class="btn navbar-btn green-haze" onclick="goToCreate();">CREAR</button>
             </div>
-            </div>
-            <div class="template1-block" id="categorySelectorBlock">
-                <div>
-                    CATEGORIA:
+            <div>
+                <h3>Abrir informe</h3>
+                <div class="template1-block">
+                    <div>RANGO DE FECHAS:</div>
+                    <div class="daterange-div" onclick="jQuery('#daterange').click();">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                        <input type="text" name="daterange" id="daterange" value=""/>
+                    </div>
                 </div>
-                <select class="btn btn-fit-height btn-sm green-haze category-selector" id="categorySelect"></select>
-            </div>
-            <div class="template1-block">
-                <button class="btn navbar-btn green-haze" onclick="goToGraph();">ABRIR INFORME</button>
+                <div class="template1-block" id="categorySelectorBlock">
+                    <div>
+                        CATEGORIA:
+                    </div>
+                    <select class="btn btn-fit-height btn-sm green-haze category-selector" id="categorySelect"></select>
+                </div>
+                <div class="template1-block">
+                    <button class="btn navbar-btn green-haze" onclick="goToGraph();">ABRIR INFORME</button>
+                </div>
             </div>
         </div>
 
@@ -50,8 +60,8 @@ var userId = {{ id_usuario }};
 var zonaId = {{ id_zona }};
 var nombre_categorias = [{{ nombre_categorias|raw }}];
 var id_categorias = [{{ id_categorias|raw }}];
-var views = [{{ informes|raw }}];
-var defaultView = {{ id_informe|raw }};
+var informes = [{{ informes|raw }}];
+var id_informe = {{ id_informe|raw }};
 {% endautoescape %}
         </script>
 {% block javascripts %}

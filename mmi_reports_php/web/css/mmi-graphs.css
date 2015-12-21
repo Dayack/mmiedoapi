@@ -106,7 +106,23 @@
 .view-selector div {
     padding: 10px;
 }
+/*******/
 
+.div-title {
+    padding: 30px;
+    clear: both;
+}
+.graph-info {
+    font-size: 16px;
+    font-weight: bold;
+    padding-left: 30px;
+    max-width: 800px;
+}
+
+.cat-data {
+    display: inline;
+    margin-right: 175px;
+}
 /******/
 /*scale of the tables, the google tables are too larges*/
 .graph-table tr {
