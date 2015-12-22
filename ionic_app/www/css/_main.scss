@@ -6,8 +6,21 @@ $light-blue: #63BFB8;
   color: $dark-red;
   padding: 5px;
 }
+
+.purple-text{
+  color: $purple !important;
+}
+
 .center-text{
   text-align: center;
+}
+
+.news_source{
+  color: $purple !important;
+}
+
+.news_abstract{
+  white-space: normal !important;
 }
 
 /* ionic datepicker workarounds */
@@ -52,4 +65,5 @@ $light-blue: #63BFB8;
   background-color: $purple;
   color: white;
 }
+
 

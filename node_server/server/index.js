@@ -1,9 +1,12 @@
 var express = require('express');
 var auth = require('../authentication');
 
+var bodyParser = require('body-parser');
 module.exports = function() {
 
 	var app = express();
+
+	app.use(bodyParser.urlencoded({ extended: false }));
 	//routes
 	app.get('/', function(req,res) {
 		res.send("hello world");
@@ -21,8 +24,10 @@ module.exports = function() {
 	});
 	app.post('/test',function(req,res) {
 		console.log(req.query);
+		console.log(req.body);
 		console.log("POST RECEIVED AT "+ new Date());
-		res.send("ok");
+		res.json(req.body);
+		res.send(req.body);
 	})
 
 	//add public static directory

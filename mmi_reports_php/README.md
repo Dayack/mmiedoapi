@@ -20,5 +20,5 @@ MMI REPORTS
 
 3- Ejecutar mediante "php app/console server:run" desde la raiz
 
-
+4- El enlace a la url debe ser : /info_page?id_zona=X&id_usuario=ZZZZ especificando en X la id de zona (1) y en ZZZZ el id de usuario
 
