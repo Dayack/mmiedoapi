@@ -122,7 +122,7 @@ var range = jQuery("#daterange").val();
 
 //got to create web
 function goToCreate(data) {
-    window.location.href = mmiconfig.baseUrl+'/manage_page?id_usuario='+userId+'&id_zona='+zonaId;
+    window.location.href = '/manage_page?id_usuario='+userId+'&id_zona='+zonaId;
 }
 
 //READY PART
