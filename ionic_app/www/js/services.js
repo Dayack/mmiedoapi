@@ -167,10 +167,8 @@ angular.module('app.services', [])
 
     this.setSelectedCategory = function (category) {
       allSelected = false;
-      if (selectedCategory.IDCATEGORIA !== category.IDCATEGORIA) {
-        selectedCategory = category;
-        subCategories = selectedCategory.SUBCATEGORIAS;
-      }
+      selectedCategory = category;
+      subCategories = selectedCategory.SUBCATEGORIAS;
       if (selectedCategories.hasOwnProperty(category.IDCATEGORIA) && 
           selectedCategories[category.IDCATEGORIA].length !== 0) {
         category.selected = true;
@@ -299,7 +297,7 @@ angular.module('app.services', [])
       //MOCKED REQUEST
       //---DELETE THIS WHEN THE REQUEST IS WORKING
       var deferred = $q.defer();
-      /*if (user === 'demo.old' && password === 'demoMMI') {
+      if (user === 'demo.old' && password === 'demoMMI') {
         deferred.resolve({
           "IDUSUARIO": "41",
           "IDZONA": "1",
@@ -320,11 +318,11 @@ angular.module('app.services', [])
         });
       } else {
         deferred.resolve(false);
-      }*/
+      }
       // END MOCKED REQUEST
 
        //REAL REQUEST
-       $http.get('/getusuarios_login/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/0/'+user+'/'+password).success(function(data,status){
+      /* $http.get('/getusuarios_login/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/0/'+user+'/'+password).success(function(data,status){
        if (data instanceof Array && data.length >0) {
        deferred.resolve(data[0]);
        } else {
@@ -333,7 +331,7 @@ angular.module('app.services', [])
 
        }).error(function(data,status){
        deferred.resolve("error");
-       });
+       });*/
       return deferred.promise;
     };
 
