@@ -24,7 +24,7 @@ MMI REPORTS
 7- Configurar la ruta url en el cliente en el fichero: /web/js/mmi-config.js sustituyendo "http:localhost:8000" por la ruta correcta externa, es decir la ruta del servidor donde estará la aplicación, de manera que la vista pueda hacer peticiones
 
 
-8- Ejecutar mediante "php app/console server:run" desde la raiz
+8- Ejecutar mediante "php app/console server:run 0.0.0.0:8000" desde la raiz
 
 
 9- El enlace a la url debe ser : /info_page?id_zona=X&id_usuario=ZZZZ especificando en X la id de zona (1) y en ZZZZ el id de usuario

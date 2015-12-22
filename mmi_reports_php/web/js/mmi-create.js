@@ -281,15 +281,15 @@ function createInform(){
         url: "/save_page?id_zona="+id_zona,
         data: JSON.stringify(data),
         dataType:"json",
-        success: redirectToGraph()
+
+    }).done(function(){
+        window.location.href = '/info_page?id_usuario='+id_usuario+'&id_zona='+id_zona;
+    }
+).fail(function(){
+        window.location.href = '/info_page?id_usuario='+id_usuario+'&id_zona='+id_zona;
     });
 }
 
-function redirectToGraph(data) {
-
-    window.location.href = '/info_page?id_usuario='+id_usuario+'&id_zona='+id_zona;
-
-}
 
 jQuery(document).ready(function() {
         jQuery("#inform-error").hide();
