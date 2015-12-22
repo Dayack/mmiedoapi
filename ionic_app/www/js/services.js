@@ -124,10 +124,20 @@ angular.module('app.services', [])
  * Category Service, used to save user info
  */
   .service('CategoryService', function (HttpService, $q) {
+    //List of all user categories
     var categories = [];
-    var categoriesUser = [];
-    var selectedCategories = [];
+    //List of sub categories about selected category.
+    var subCategories = [];
+    //Category selected from Category menu to show sub categories
+    var selectedCategory = [];
 
+    // Current user's categories
+    var categoriesUser = [];
+    // Current selection (Checkbox enables)
+    var selectedCategories = {};
+	// Variable to known if all categories are selected
+    var allSelected = false;
+ 
     /**
      *  getCategories, will get all user's categories
      * @param user
@@ -155,6 +165,49 @@ angular.module('app.services', [])
       return defer.promise;
     };
 
+    this.setSelectedCategory = function (category) {
+      allSelected = false;
+      selectedCategory = category;
+      subCategories = selectedCategory.SUBCATEGORIAS;
+      if (selectedCategories.hasOwnProperty(category.IDCATEGORIA) && 
+          selectedCategories[category.IDCATEGORIA].length !== 0) {
+        category.selected = true;
+      } else {
+        category.selected = false;
+      }
+    };
+    
+    this.getSelectedCategoryNombre = function () {
+      return selectedCategory.NOMBRE;
+    };
+
+    this.getSubCategories = function () {
+      return subCategories;
+    };
+
+    this.selectSubCategory = function (subCategory) {
+      categoryId = selectedCategory.IDCATEGORIA;
+      subCategoryId = subCategory.IDCATEGORIA;
+ 
+      if (!selectedCategories.hasOwnProperty(categoryId)) {
+		subCategory.selected = true;
+        selectedCategory.selected = true;
+        selectedCategories[categoryId] = [subCategoryId, ];
+      } else if (selectedCategories[categoryId].indexOf(subCategoryId) == -1) {
+        selectedCategories[categoryId].push(subCategoryId);
+        selectedCategory.selected = true;
+        subCategory.selected = true;
+      } else {
+        subCategory.selected = false;
+        selectedCategories[categoryId].splice(selectedCategories[categoryId].indexOf(subCategoryId), 1);
+        if (selectedCategories[categoryId].length === 0) {
+          selectedCategory.selected = false;
+        } else {
+          selectedCategory.selected = true;
+        }
+      }
+    };
+
     this.setCurrentCategories = function (category) {
       selectedCategories = category;
     };
@@ -162,20 +215,71 @@ angular.module('app.services', [])
     this.getCurrentCategories = function () {
       return selectedCategories;
     };
-    this.addCurrentCategories = function (cat) {
-      selectedCategories.push(cat);
-    };
-    this.removeCurrentCategories = function (cat) {
-      var posCat = -1;
-      for (var i=0;i<selectedCategories.length;i++) {
-        if (selectedCategories[i].IDCATEGORIA === cat.IDCATEGORIA) {
-          posCat = i;
-          break;
+    
+    this.deselectAllCategories = function () {
+      allSelected = true;
+      for (var categoryIndex=0;categoryIndex<categories.length;categoryIndex++) {
+        _category = categories[categoryIndex];
+
+        if (selectedCategories.hasOwnProperty(_category.IDCATEGORIA)) {
+          _category.selected = false;
+
+          for (var subCategoryIndex=0;subCategoryIndex<_category.SUBCATEGORIAS.length;subCategoryIndex++) {
+		    _category.SUBCATEGORIAS[subCategoryIndex].selected=false;
+          }
         }
       }
-      selectedCategories = selectedCategories.splice(posCat,1);
-      return selectedCategories;
+      selectedCategories = {}; 
     };
+  })
+
+  .service('PlacesService', function (HttpService, $q) {
+  
+    var allPlaces = false;
+    var places = [];
+    var placesUser = null;   
+    var selectedPlaces = [];  
+ 
+    this.getPlaces = function (user) {
+      var defer = $q.defer();
+      if (placesUser === user) {
+        defer.resolve(places);
+      } else {
+        HttpService.getPlaces(user).then(function (data) {
+          if (data !== null && data != "error" && (data !== false)) {
+            placesUser = user;
+            places = data;
+            defer.resolve(places);
+          } else {
+            places = null;
+            placesUser = null;
+            defer.resolve(null);
+          }
+        });
+      }
+
+      return defer.promise;
+    };
+
+	this.selectPlace = function (place) {
+      allPlaces = false;
+      if (selectedPlaces.indexOf(place.IDPLACE) > -1) {
+        selectedPlaces.splice(selectedPlaces.indexOf(place.IDPLACE), 1);
+        place.selected = false; 
+      } else {
+        selectedPlaces.push(place.IDPLACE);
+        place.selected = true;
+      }
+    };
+
+    this.selectAll = function() {
+      allPlaces = true;
+      for (var placeIndex = 0; placeIndex < places.length; placeIndex++) {
+        places[placeIndex].selected = false;
+      }
+      selectedPlaces = [];
+    };
+
   })
 
 
@@ -193,7 +297,7 @@ angular.module('app.services', [])
       //MOCKED REQUEST
       //---DELETE THIS WHEN THE REQUEST IS WORKING
       var deferred = $q.defer();
-      /*if (user === 'demo.old' && password === 'demoMMI') {
+      if (user === 'demo.old' && password === 'demoMMI') {
         deferred.resolve({
           "IDUSUARIO": "41",
           "IDZONA": "1",
@@ -214,11 +318,11 @@ angular.module('app.services', [])
         });
       } else {
         deferred.resolve(false);
-      }*/
+      }
       // END MOCKED REQUEST
 
        //REAL REQUEST
-       $http.get('/getusuarios_login/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/0/'+user+'/'+password).success(function(data,status){
+      /* $http.get('/getusuarios_login/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/0/'+user+'/'+password).success(function(data,status){
        if (data instanceof Array && data.length >0) {
        deferred.resolve(data[0]);
        } else {
@@ -227,7 +331,7 @@ angular.module('app.services', [])
 
        }).error(function(data,status){
        deferred.resolve("error");
-       });
+       });*/
       return deferred.promise;
     };
 
@@ -237,18 +341,22 @@ angular.module('app.services', [])
       var deferred = $q.defer();
       if (user.LOGIN === 'demo.old') {
         deferred.resolve([
-          {"IDCATEGORIA": "2", "NOMBRE": "AYUNTAMIENTO TELDE. PARTIDOS POLITICOS"},
-          {"IDCATEGORIA": "3", "NOMBRE": "PUBLICIDAD CONSEJERIA DE TURISMO"},
-          {"IDCATEGORIA": "4", "NOMBRE": "PUBLICIDAD CONSEJERIA DE ECONOMIA Y HACIENDA"},
-          {"IDCATEGORIA": "33", "NOMBRE": "COALICION POR GRAN CANARIA"},
-          {"IDCATEGORIA": "2", "NOMBRE": "AYUNTAMIENTO TELDE. PARTIDOS POLITICOS"},
-          {"IDCATEGORIA": "3", "NOMBRE": "PUBLICIDAD CONSEJERIA DE TURISMO"},
-          {"IDCATEGORIA": "4", "NOMBRE": "PUBLICIDAD CONSEJERIA DE ECONOMIA Y HACIENDA"},
-          {"IDCATEGORIA": "33", "NOMBRE": "COALICION POR GRAN CANARIA"},
-          {"IDCATEGORIA": "2", "NOMBRE": "AYUNTAMIENTO TELDE. PARTIDOS POLITICOS"},
-          {"IDCATEGORIA": "3", "NOMBRE": "PUBLICIDAD CONSEJERIA DE TURISMO"},
-          {"IDCATEGORIA": "4", "NOMBRE": "PUBLICIDAD CONSEJERIA DE ECONOMIA Y HACIENDA"},
-          {"IDCATEGORIA": "33", "NOMBRE": "COALICION POR GRAN CANARIA"}
+          {"IDCATEGORIA": "1287", "NOMBRE": "Municipio de la Orotava", 
+              "SUBCATEGORIAS": [{"IDCATEGORIA": "737", "NOMBRE": "APYMEVO"}, 
+                                {"IDCATEGORIA": "8508", "NOMBRE": "Elecciones Ayuntamiento de La Orotava 2015"}, 
+                                {"IDCATEGORIA": "6117", "NOMBRE": "Universidad Europea de Canarias"}]},
+          {"IDCATEGORIA": "1286", "NOMBRE": "Municipio de Telde", 
+              "SUBCATEGORIAS": [{"IDCATEGORIA": "736", "NOMBRE": "San Juan"}, 
+                                {"IDCATEGORIA": "8507", "NOMBRE": "Elecciones Ayuntamiento de Telde 2015"}, 
+                                {"IDCATEGORIA": "6116", "NOMBRE": "Instituto de Telde"}]},
+          {"IDCATEGORIA": "1285", "NOMBRE": "Binter", 
+              "SUBCATEGORIAS": [{"IDCATEGORIA": "735", "NOMBRE": "Aeropuerto de Santa Cruz Norte"}, 
+                                {"IDCATEGORIA": "8506", "NOMBRE": "Aeropuerto de Santa Cruz Sur"}, 
+                                {"IDCATEGORIA": "6115", "NOMBRE": "Aeropuerto de Telde"}]},
+          {"IDCATEGORIA": "1284", "NOMBRE": "Municipio de Las Palmas", 
+              "SUBCATEGORIAS": [{"IDCATEGORIA": "734", "NOMBRE": "Elecciones Ayuntamiento de Las Palmas 2015"}, 
+                                {"IDCATEGORIA": "8505", "NOMBRE": "Puerto de la Cruz"}, 
+                                {"IDCATEGORIA": "6114", "NOMBRE": "Universidad de Las Palmas de GC"}]},
         ]);
       } else {
         deferred.resolve([]);
@@ -270,7 +378,31 @@ angular.module('app.services', [])
     };
 
 
+    this.getPlaces = function (user, filters) {
+      var deferred = $q.defer();
+      if (user.LOGIN === 'demo.old') {
+        deferred.resolve([
+          {"IDPLACE": "1", "NOMBRE": "Tenerife"},
+          {"IDPLACE": "2", "NOMBRE": "Fuerteventura"},
+          {"IDPLACE": "3", "NOMBRE": "La Palma"},
+          {"IDPLACE": "4", "NOMBRE": "El Hierro"},
+          {"IDPLACE": "5", "NOMBRE": "Lanzarote"},
+          {"IDPLACE": "6", "NOMBRE": "La Gomera"},
+          {"IDPLACE": "7", "NOMBRE": "Gran Canaria"},
+        ]);
+
+      } else {
+        deferred.resolved([]);
+      }
+      return deferred.promise;
+    };
+
+
     this.getNews = function (user,filters,offset) {
+       //window.setTimeout(function() {
+	  
+       //}, 3000);    
+
       //MOCKED REQUEST
       //---DELETE THIS WHEN THE REQUEST IS WORKING
       var deferred = $q.defer();

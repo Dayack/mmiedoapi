@@ -49,14 +49,18 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('mediosCtrl', function($scope) {
+.controller('mediosCtrl', function($scope,FilterService,$state,$rootScope) {
+    $scope.selectMedia = function(media) {
+      FilterService.setMedia(media);
+      $rootScope.$broadcast('filtersChanged');
+      $state.go('menu.noticias');
+    };
 
 })
 
-.controller('categoriasCtrl', function($scope,UserService,CategoryService,$state) {
+.controller('categoriasCtrl', function($scope,UserService,CategoryService,$state,$ionicLoading) {
+
     $scope.user = UserService.getUser();
-    //$scope.categories = [{"IDCATEGORIA": "2", "NOMBRE": "Categoria 1"},{"IDCATEGORIA": "3", "NOMBRE": "Categoria 2"}];
-    //$scope.categories = CategoryService.getCategories($scope.user);
     $scope.categories = CategoryService.getCategories($scope.user).then(function(data) {
       $scope.categories = data;
     });
@@ -64,18 +68,48 @@ angular.module('app.controllers', [])
 
     $scope.selectCategory= function(category){
       $scope.allSelected.value=false;
-      CategoryService.addCurrentCategories(category);
-     // $state.go('menu.noticias');
-
+      CategoryService.setSelectedCategory(category);
+      $state.go('menu.subCategorias');
     };
 
     $scope.selectAll=function(){
       $scope.allSelected.value=true;
-      //disable all options
-      for (var i = 0; i<$scope.categories.length;i++) {
-        $scope.categories[i].selected=false;
-        CategoryService.addCurrentCategories($scope.categories[i]);
-      }
+      CategoryService.deselectAllCategories();
+    };
+    $scope.goToNews= function() {
+      $state.go('menu.noticias');
+    };
+
+})
+
+.controller('subCategoriasCtrl', function($scope, UserService,CategoryService,$state) {
+    $scope.user = UserService.getUser();
+    $scope.subCategories = function() {
+      return CategoryService.getSubCategories();
+    }
+    $scope.selectedCategoryTitle = CategoryService.getSelectedCategoryNombre();
+    $scope.selectedSubCategories = function(subCategory){
+      CategoryService.selectSubCategory(subCategory);
+    };
+    $scope.goToNews= function() {
+      $state.go('menu.categorias');
+    };
+})
+
+.controller('eventPlaceCtrl', function($scope, UserService, PlacesService, $state) {
+	$scope.allSelected={value:false};
+    $scope.user = UserService.getUser();
+    $scope.places = PlacesService.getPlaces($scope.user).then(function(data) {
+      $scope.places = data;
+    });
+    $scope.selectAll=function() {
+      $scope.allSelected={value:true};
+      PlacesService.selectAll();
+    };
+    $scope.selectPlace=function(place) {
+      $scope.allSelected={value:false};
+      PlacesService.selectPlace(place);
+      
     };
     $scope.goToNews= function() {
       $state.go('menu.noticias');
@@ -176,7 +210,18 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('noticiasCtrl', function($scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state) {
+.controller('noticiasCtrl', function($scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading,$rootScope) {
+    
+    $rootScope.activeFilters = {value: true};
+
+    $ionicLoading.show({
+      template: '<div class="icon ion-loading-c loading-color">'
+    });
+
+    window.setTimeout(function() {
+	  $ionicLoading.hide();
+    }, 3000);    
+
     $ionicNavBarDelegate.showBackButton(false);//disable the back button
     $scope.news = [];
     $scope.user = UserService.getUser();
@@ -184,25 +229,40 @@ angular.module('app.controllers', [])
 
     NewsService.getNews($scope.user,$scope.filters).then(function(data) {
       $scope.news = data;
+      $ionicLoading.hide();
     });
 
     $scope.loadMore = function() {
+      //$ionicLoading.show({
+      //  template: '<div class="icon ion-loading-c loading-color">'
+      //});
       var options = {infiniteScroll: true};
       NewsService.getNews($scope.user,$scope.filters, options).then(function(data) {
         $scope.news = data;
+        //window.setTimeout(function() {
+	//  $ionicLoading.hide();
+        //}, 1000);    
+	//$ionicLoading.hide();
         $scope.$broadcast('scroll.infiniteScrollComplete');
       });
     };
 
     $scope.$on('filtersChanged', function() {
       $scope.filters = FilterService.getFilters();
+      $ionicLoading.show({
+        template: '<div class="icon ion-loading-c loading-color">'
+      });
       NewsService.getNews($scope.user,$scope.filters).then(function(data) {
         $scope.news = data;
+        window.setTimeout(function() {
+	  $ionicLoading.hide();
+        }, 3000);    
+	//$ionicLoading.hide();
       });
     });
 
     $scope.goToNew =function(detailNew){
-      $state.go('detalle');
+      //$state.go('detalle');
     };
 })
 

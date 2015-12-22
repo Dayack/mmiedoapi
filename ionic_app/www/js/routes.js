@@ -52,6 +52,34 @@ angular.module('app.routes', [])
 
 
 
+    .state('menu.subCategorias', {
+      url: '/sub-categories',
+      views: {
+        'side-menu21': {
+          templateUrl: 'templates/sub-categorias.html',
+          controller: 'subCategoriasCtrl'
+        }
+      }
+    })
+
+
+
+
+
+    .state('menu.eventPlace', {
+      url: '/eventPlace',
+      views: {
+        'side-menu21': {
+          templateUrl: 'templates/eventPlace.html',
+          controller: 'eventPlaceCtrl'
+        }
+      }
+    })
+
+
+
+
+
 
     .state('menu.noticias', {
       url: '/news',
