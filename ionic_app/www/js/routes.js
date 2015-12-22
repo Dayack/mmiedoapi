@@ -65,6 +65,22 @@ angular.module('app.routes', [])
 
 
 
+
+    .state('menu.eventPlace', {
+      url: '/eventPlace',
+      views: {
+        'side-menu21': {
+          templateUrl: 'templates/eventPlace.html',
+          controller: 'eventPlaceCtrl'
+        }
+      }
+    })
+
+
+
+
+
+
     .state('menu.noticias', {
       url: '/news',
       views: {
