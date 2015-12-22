@@ -18,7 +18,7 @@ angular.module('app.controllers', [])
 
     //logout button in side menu
     $scope.logout = function() {
-      UserService.logout()
+      UserService.logout();
       $state.go('login');
       $ionicHistory.clearHistory();
     };
@@ -75,14 +75,15 @@ angular.module('app.controllers', [])
         $scope.categories[i].selected=false;
         CategoryService.addCurrentCategories($scope.categories[i]);
       }
-    }
+    };
     $scope.goToNews= function() {
       $state.go('menu.noticias');
     };
 
 })
 
-.controller('selectDateCtrl', function($scope,$state,FilterService) {
+.controller('selectDateCtrl', function($scope,$state,FilterService,$rootScope,$ionicHistory) {
+    $rootScope.showBack=true;
     $scope.fromDatepickerObject = {
       dateFormat: 'dd-MM-yyyy',
       monthList: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
@@ -120,7 +121,7 @@ angular.module('app.controllers', [])
     };
 })
 
-.controller('detalleCtrl', function($scope,UserService,CategoryService,$state,UserService,$ionicNavBarDelegate) {
+.controller('detalleCtrl', function($scope,UserService,CategoryService,$state,$ionicNavBarDelegate) {
     $ionicNavBarDelegate.showBackButton(true);//disable the back button
 
     $scope.user = UserService.getUser();
