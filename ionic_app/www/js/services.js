@@ -172,7 +172,7 @@ angular.module('app.services', [])
         subCategories = selectedCategory.SUBCATEGORIAS;
       }
       if (selectedCategories.hasOwnProperty(category.IDCATEGORIA) && 
-          selectedCategories[category.IDCATEGORIA].length != 0) {
+          selectedCategories[category.IDCATEGORIA].length !== 0) {
         category.selected = true;
       } else {
         category.selected = false;
@@ -181,7 +181,7 @@ angular.module('app.services', [])
     
     this.getSelectedCategoryNombre = function () {
       return selectedCategory.NOMBRE;
-    }
+    };
 
     this.getSubCategories = function () {
       return subCategories;
@@ -401,6 +401,10 @@ angular.module('app.services', [])
 
 
     this.getNews = function (user,filters,offset) {
+       //window.setTimeout(function() {
+	  
+       //}, 3000);    
+
       //MOCKED REQUEST
       //---DELETE THIS WHEN THE REQUEST IS WORKING
       var deferred = $q.defer();
