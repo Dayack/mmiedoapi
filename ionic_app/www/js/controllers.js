@@ -49,7 +49,11 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('mediosCtrl', function($scope) {
+.controller('mediosCtrl', function($scope,FilterService,$state) {
+    $scope.selectMedia = function(media) {
+      FilterService.setMedia(media);
+      $state.go('menu.noticias');
+    };
 
 })
 

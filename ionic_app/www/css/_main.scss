@@ -34,6 +34,35 @@ $text-grey: #686868;
   background-size: cover;
 }
 
+table.media{
+  width: 10%;
+  top: 20%;
+  /*right: 15px;*/
+  /*position: absolute;*/
+  margin: auto;
+}
+
+table.media td{
+  padding: 15px;
+}
+
+.media.button{
+  font-size: 15px;
+  line-height: 15px; // Ad
+  /* width: 100px; */
+}
+
+.allmedia.button{
+  width: 60px; 
+}
+
+.media.button-icon .icon{
+  display: block; /*** icons on the texts ***/
+  font-size: 36px; /*** increase size of icons ***/
+  margin-bottom: 3px !important;
+  border: 2px solid;
+}
+
 /* ionic datepicker workarounds */
 
 .month_select{

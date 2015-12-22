@@ -1,40 +1,20 @@
 <ion-view style="" title="Medios">
     <ion-content class="has-header" scroll="false" overflow-scroll="true" padding="'true'">
-        <ion-checkbox ng-click="selectMedia('ALL')">
-            <i class="icon icon-mmi-all"></i>
-            Todos
-        </ion-checkbox>
-        <ion-checkbox ng-click="selectMedia('PRESS')">
-            <i class="icon icon-mmi-press"></i>
-            Prensa
-        </ion-checkbox>
-        <ion-checkbox ng-click="selectMedia('RADIO')">
-            <i class="icon icon-mmi-radio"></i>
-            Radio
-        </ion-checkbox>
-        <ion-checkbox ng-click="selectMedia('TV')">
-            <i class="icon icon-mmi-tv"></i>
-            Televisión
-        </ion-checkbox>
-        <ion-checkbox ng-click="selectMedia('INTERNET')">
-            <i class="icon icon-mmi-arroba"></i>
-            Internet
-        </ion-checkbox>
-        <ion-checkbox ng-click="selectMedia('SOCIAL_MEDIA')">
-            <i class="icon icon-mmi-social"></i>
-            Redes sociales
-        </ion-checkbox>
-        <ion-checkbox ng-click="selectMedia('TWITTER')">
-            <i class="icon icon-mmi-twitter"></i>
-            Twitter
-        </ion-checkbox>
-    </ion-content>
-  <!--outside content-->
-  <div class="fixed-outside">
-    <div class="row">
-      <div class="col">
-        <button ng-click="goToNews();" class="button button-circle button-purple icon ion-checkmark-round"></button>
-      </div>
-    </div>
-  </div>
+       <table class="media">
+         <tr>
+           <td colspan="2" align="center"><button ng-click="selectMedia('ALL')" class="button button-icon icon icon-mmi-all media allmedia">Todo</button></td>
+         </tr>
+         <tr>
+            <td><button ng-click="selectMedia('PRESS')" class="button button-icon icon icon-mmi-press media">Prensa</button></td>
+            <td><button ng-click="selectMedia('RADIO')" class="button button-icon icon icon-mmi-radio media">Radio</button></td>
+         </tr>
+         <tr>
+            <td><button ng-click="selectMedia('TV')" class="button button-icon icon icon-mmi-tv media">Televisión</button></td>
+            <td><button ng-click="selectMedia('INTERNET')" class="button button-icon icon icon-mmi-arroba media">Internet</button></td>
+         </tr>
+         <tr>
+            <td><button ng-click="selectMedia('TWITTER')" class="button button-icon icon icon-mmi-twitter media">Twitter</button></td>
+            <td><button ng-click="selectMedia('SOCIAL_MEDIA')" class="button button-icon icon icon-mmi-social media">Redes Sociales</button></td>
+         </tr>
+       </table>
 </ion-view>
