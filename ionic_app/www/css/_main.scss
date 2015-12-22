@@ -66,4 +66,37 @@ $light-blue: #63BFB8;
   color: white;
 }
 
+.checkbox{
+  position: relative;
+  display: inline-block;
+  padding: 7px 7px;
+  cursor: pointer; }
+  .checkbox input:before,
+  .checkbox .checkbox-icon:before {
+    border-color: #ddd; }
+  .checkbox input:checked:before,
+  .checkbox input:checked + .checkbox-icon:before {
+    background: $light-blue;
+    border-color: $light-blue; }
+
+.platform-android .checkbox-platform input:before, 
+.platform-android .checkbox-platform .checkbox-icon:before, 
+.checkbox-square input:before, 
+.checkbox-square .checkbox-icon:before{
+  border-radius: 28px;
+  width: 28px;
+  height: 28px;
+  margin-top: 0%;
+  margin-left: 0%;
+  border-width: 2px; }
+
+.platform-android .checkbox-platform input:after, 
+.platform-android .checkbox-platform .checkbox-icon:after, 
+.checkbox-square input:after, 
+.checkbox-square .checkbox-icon:after{
+  border-width: 1px;
+  top: 33%;
+  left: 25%; 
+  width: 14px;
+  height: 6px; }
 
