@@ -88,10 +88,10 @@
 {% autoescape 'html' %}
 var id_usuario = {{ id_usuario }};
 var id_zona = {{ id_zona }};
-var informe = [{{ informe|raw }}];
+var informe = {{ informe|raw }};
 var nombre_categorias = [{{ nombre_categorias|raw }}];
 var id_categorias = [{{ id_categorias|raw }}];
-var id_informe = "2";
+var id_informe = {{ id_informe }};
 {% endautoescape %}
         </script>
 {% block javascripts %}
