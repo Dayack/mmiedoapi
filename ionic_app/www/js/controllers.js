@@ -49,9 +49,10 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('mediosCtrl', function($scope,FilterService,$state) {
+.controller('mediosCtrl', function($scope,FilterService,$state,$rootScope) {
     $scope.selectMedia = function(media) {
       FilterService.setMedia(media);
+      $rootScope.$broadcast('filtersChanged');
       $state.go('menu.noticias');
     };
 
@@ -137,10 +138,13 @@ angular.module('app.controllers', [])
     };
 })
 
-.controller('noticiasCtrl', function($scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading) {
+.controller('noticiasCtrl', function($scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading,$rootScope) {
+    
+    $rootScope.activeFilters = true;
+
     $ionicLoading.show({
       template: '<div class="icon ion-loading-c loading-color">'
-    })
+    });
 
     window.setTimeout(function() {
 	  $ionicLoading.hide();
@@ -153,25 +157,40 @@ angular.module('app.controllers', [])
 
     NewsService.getNews($scope.user,$scope.filters).then(function(data) {
       $scope.news = data;
+      $ionicLoading.hide();
     });
 
     $scope.loadMore = function() {
+      //$ionicLoading.show({
+      //  template: '<div class="icon ion-loading-c loading-color">'
+      //});
       var options = {infiniteScroll: true};
       NewsService.getNews($scope.user,$scope.filters, options).then(function(data) {
         $scope.news = data;
+        //window.setTimeout(function() {
+	//  $ionicLoading.hide();
+        //}, 1000);    
+	//$ionicLoading.hide();
         $scope.$broadcast('scroll.infiniteScrollComplete');
       });
     };
 
     $scope.$on('filtersChanged', function() {
       $scope.filters = FilterService.getFilters();
+      $ionicLoading.show({
+        template: '<div class="icon ion-loading-c loading-color">'
+      });
       NewsService.getNews($scope.user,$scope.filters).then(function(data) {
         $scope.news = data;
+        window.setTimeout(function() {
+	  $ionicLoading.hide();
+        }, 3000);    
+	//$ionicLoading.hide();
       });
     });
 
     $scope.goToNew =function(detailNew){
-      $state.go('detalle');
+      //$state.go('detalle');
     };
 })
 

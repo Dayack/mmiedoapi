@@ -9139,6 +9139,18 @@ table.media td {
   margin-bottom: 3px !important;
   border: 2px solid; }
 
+.active_filters {
+  background-color: #63BFB8;
+  color: white;
+  border-radius: 50%;
+  font-size: 10px;
+  height: 36px;
+  width: 36px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 10px;
+  padding-top: 10px; }
+
 /* ionic datepicker workarounds */
 .month_select {
   padding-left: 0px !important;
