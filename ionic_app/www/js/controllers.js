@@ -142,7 +142,7 @@ angular.module('app.controllers', [])
 
 .controller('noticiasCtrl', function($scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading,$rootScope) {
     
-    $rootScope.activeFilters = true;
+    $rootScope.activeFilters = {value: true};
 
     $ionicLoading.show({
       template: '<div class="icon ion-loading-c loading-color">'
