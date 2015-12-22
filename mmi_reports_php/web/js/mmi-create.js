@@ -83,7 +83,8 @@ function createPreDefinedGroups(){
             groups.push(new_group);
             fillList(new_group,jQuery("#grupo_list"));
         });
-        jQuery("#graph-selector").val(informe.tipo_informe);
+
+        jQuery('#graph_selector option[value="'+informe.tipo_informe+'"]').attr("selected", "selected");
         jQuery("#nombre_informe").val(informe.nombre_informe);
         checkGroupEditor();
     }
@@ -281,24 +282,24 @@ function createInform(){
         url: "/save_page?id_zona="+id_zona,
         data: JSON.stringify(data),
         dataType:"json",
-        success: redirectToGraph()
+
+    }).done(function(){
+        window.location.href = '/info_page?id_usuario='+id_usuario+'&id_zona='+id_zona;
+    }
+).fail(function(){
+        window.location.href = '/info_page?id_usuario='+id_usuario+'&id_zona='+id_zona;
     });
 }
 
-function redirectToGraph(data) {
-
-    window.location.href = '/info_page?id_usuario='+id_usuario+'&id_zona='+id_zona;
-
-}
 
 jQuery(document).ready(function() {
+        load_graph_selector();
         jQuery("#inform-error").hide();
         jQuery("#group-error").hide();
         jQuery("#group_editor").hide();
         jQuery("#group_name_alert").hide();
         jQuery("#category_creator_alert").hide();
         load_categories();
-        load_graph_selector();
 
 
     }
