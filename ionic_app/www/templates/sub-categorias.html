@@ -2,14 +2,10 @@
   <ion-content class="has-header" overflow-scroll="true" padding="'true'">
 
     <div>
-
-      <!-- <a style="" class="button button-stable button-block " ng-click="selectCategory(category)"
-          ng-repeat="category in categories">{{ category.NOMBRE }}</a>-->
-      <ion-checkbox ng-model="allSelected.value" ng-click="selectAll()">TODOS</ion-checkbox>
-      <ion-checkbox ng-model="category.selected" ng-click="selectCategory(category)" ng-repeat="category in categories">
-        <label ng-class="{selectedText: category.selected}">{{category.NOMBRE}}</label>
+      <label class="subCategoryTitle">{{selectedCategoryTitle}}</label>
+      <ion-checkbox ng-model="subCategory.selected" ng-click="selectedSubCategories(subCategory)" ng-repeat="subCategory in subCategories">
+        <label ng-class="{selectedText: subCategory.selected}">{{subCategory.NOMBRE}}</label>
       </ion-checkbox>
-      <!--space-->
       <label class="item item-checkbox ng-valid" style="   border: none;
     border-top: #ddd 1px solid;">
         <div style="height: 50px;  "></div>

@@ -55,8 +55,6 @@ angular.module('app.controllers', [])
 
 .controller('categoriasCtrl', function($scope,UserService,CategoryService,$state) {
     $scope.user = UserService.getUser();
-    //$scope.categories = [{"IDCATEGORIA": "2", "NOMBRE": "Categoria 1"},{"IDCATEGORIA": "3", "NOMBRE": "Categoria 2"}];
-    //$scope.categories = CategoryService.getCategories($scope.user);
     $scope.categories = CategoryService.getCategories($scope.user).then(function(data) {
       $scope.categories = data;
     });
@@ -64,23 +62,27 @@ angular.module('app.controllers', [])
 
     $scope.selectCategory= function(category){
       $scope.allSelected.value=false;
-      CategoryService.addCurrentCategories(category);
-     // $state.go('menu.noticias');
-
+      CategoryService.setSelectedCategory(category);
+      $state.go('menu.subCategorias');
     };
 
     $scope.selectAll=function(){
       $scope.allSelected.value=true;
-      //disable all options
-      for (var i = 0; i<$scope.categories.length;i++) {
-        $scope.categories[i].selected=false;
-        CategoryService.addCurrentCategories($scope.categories[i]);
-      }
-    };
+      CategoryService.deselectAllCategories();
+    }
     $scope.goToNews= function() {
       $state.go('menu.noticias');
     };
 
+})
+
+.controller('subCategoriasCtrl', function($scope, UserService,CategoryService,$state) {
+    $scope.user = UserService.getUser();
+    $scope.subCategories = CategoryService.getSubCategories();
+    $scope.selectedCategoryTitle = CategoryService.getSelectedCategoryNombre();
+    $scope.selectedSubCategories = function(subCategory){
+      CategoryService.selectSubCategory(subCategory);
+    }
 })
 
 .controller('selectDateCtrl', function($scope,$state,FilterService,$rootScope,$ionicHistory) {
