@@ -85,7 +85,8 @@ angular.module('app.controllers', [])
     }
 })
 
-.controller('selectDateCtrl', function($scope,$state,FilterService) {
+.controller('selectDateCtrl', function($scope,$state,FilterService,$rootScope,$ionicHistory) {
+    $rootScope.showBack=true;
     $scope.fromDatepickerObject = {
       dateFormat: 'dd-MM-yyyy',
       monthList: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],

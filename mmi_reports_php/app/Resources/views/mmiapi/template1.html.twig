@@ -20,7 +20,7 @@
                 <div class="portlet-title">
                     INFORMES
                 </div>
-                <div class="portlet-body">
+                <div class="portlet-body" style="overflow: auto;">
                     <ul style="padding-left: 0px;" id="viewList" class="view-selector"></ul>
                 </div>
             </div>
@@ -63,7 +63,7 @@ var userId = {{ id_usuario }};
 var zonaId = {{ id_zona }};
 var nombre_categorias = [{{ nombre_categorias|raw }}];
 var id_categorias = [{{ id_categorias|raw }}];
-var informes = [{{ informes|raw }}];
+var informes = {{ informes|raw }};
 var id_informe = {{ id_informe|raw }};
 {% endautoescape %}
         </script>
