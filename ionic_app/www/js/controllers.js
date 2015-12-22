@@ -83,7 +83,9 @@ angular.module('app.controllers', [])
 
 .controller('subCategoriasCtrl', function($scope, UserService,CategoryService,$state) {
     $scope.user = UserService.getUser();
-    $scope.subCategories = CategoryService.getSubCategories();
+    $scope.subCategories = function() {
+      return CategoryService.getSubCategories();
+    }
     $scope.selectedCategoryTitle = CategoryService.getSelectedCategoryNombre();
     $scope.selectedSubCategories = function(subCategory){
       CategoryService.selectSubCategory(subCategory);
@@ -140,7 +142,7 @@ angular.module('app.controllers', [])
 .controller('noticiasCtrl', function($scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading) {
     $ionicLoading.show({
       template: '<div class="icon ion-loading-c loading-color">'
-    })
+    });
 
     window.setTimeout(function() {
 	  $ionicLoading.hide();
