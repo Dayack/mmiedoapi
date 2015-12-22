@@ -278,7 +278,7 @@ function createInform(){
 
     jQuery.ajax({
         type: "POST",
-        url: mmiconfig.baseUrl+"/save_page",
+        url: mmiconfig.baseUrl+"/save_page?id_zona="+id_zona,
         data: data,
         success: redirectToGraph
     });

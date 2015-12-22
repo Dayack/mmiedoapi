@@ -116,8 +116,8 @@ var range = jQuery("#daterange").val();
     var startDate = start = range.substr(0,10).split("/").join("");
     var endDate = range.substr(13,10).split("/").join("");
 
-    window.open(mmiconfig.baseUrl+'/graph_page?id_informe='+viewId+(categoryId ===null ? "": "&id_categoria="+categoryId)+
-        "&desde="+startDate+"&hasta="+endDate+"id_usuario="+userId+"&id_zona="+zonaId,'_blank');
+    window.open('/graph_page?id_informe='+viewId+(categoryId ===null ? "": "&id_categoria="+categoryId)+
+        "&desde="+startDate+"&hasta="+endDate+"&id_usuario="+userId+"&id_zona="+zonaId,'_blank');
 }
 
 //got to create web
