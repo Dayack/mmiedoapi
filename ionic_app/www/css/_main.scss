@@ -7,6 +7,11 @@ $light-blue: #63BFB8;
   padding: 5px;
 }
 
+.white-text{
+  color: white;
+  padding: 5px;
+}
+
 .purple-text{
   color: $purple !important;
 }
@@ -21,6 +26,11 @@ $light-blue: #63BFB8;
 
 .news_abstract{
   white-space: normal !important;
+}
+
+.login-view{
+  background: url('../img/login_background_image.png') no-repeat center;
+  background-size: contain;
 }
 
 /* ionic datepicker workarounds */
