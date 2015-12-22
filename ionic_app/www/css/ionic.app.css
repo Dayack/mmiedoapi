@@ -9105,6 +9105,10 @@ a.button {
 .news_abstract {
   white-space: normal !important; }
 
+.login-view {
+  background: url("../img/login_background_image.png") no-repeat center;
+  background-size: contain; }
+
 /* ionic datepicker workarounds */
 .month_select {
   padding-left: 0px !important;
