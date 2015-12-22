@@ -84,7 +84,7 @@ angular.module('app.controllers', [])
       CategoryService.selectSubCategory(subCategory);
     };
     $scope.goToNews= function() {
-      $state.go('menu.noticias');
+      $state.go('menu.categorias');
     };
 })
 
