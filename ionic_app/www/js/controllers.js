@@ -69,7 +69,7 @@ angular.module('app.controllers', [])
     $scope.selectAll=function(){
       $scope.allSelected.value=true;
       CategoryService.deselectAllCategories();
-    }
+    };
     $scope.goToNews= function() {
       $state.go('menu.noticias');
     };
@@ -82,7 +82,31 @@ angular.module('app.controllers', [])
     $scope.selectedCategoryTitle = CategoryService.getSelectedCategoryNombre();
     $scope.selectedSubCategories = function(subCategory){
       CategoryService.selectSubCategory(subCategory);
-    }
+    };
+    $scope.goToNews= function() {
+      $state.go('menu.noticias');
+    };
+})
+
+.controller('eventPlaceCtrl', function($scope, UserService, PlacesService, $state) {
+	$scope.allSelected={value:false};
+    $scope.user = UserService.getUser();
+    $scope.places = PlacesService.getPlaces($scope.user).then(function(data) {
+      $scope.places = data;
+    });
+    $scope.selectAll=function() {
+      $scope.allSelected={value:true};
+      PlacesService.selectAll();
+    };
+    $scope.selectPlace=function(place) {
+      $scope.allSelected={value:false};
+      PlacesService.selectPlace(place);
+      
+    };
+    $scope.goToNews= function() {
+      $state.go('menu.noticias');
+    };
+
 })
 
 .controller('selectDateCtrl', function($scope,$state,FilterService,$rootScope,$ionicHistory) {

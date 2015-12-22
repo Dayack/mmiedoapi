@@ -235,6 +235,55 @@ angular.module('app.services', [])
     };
   })
 
+  .service('PlacesService', function (HttpService, $q) {
+  
+    var allPlaces = false;
+    var places = [];
+    var placesUser = null;   
+    var selectedPlaces = {};  
+ 
+    this.getPlaces = function (user) {
+      var defer = $q.defer();
+      if (placesUser === user) {
+        defer.resolve(places);
+      } else {
+        HttpService.getPlaces(user).then(function (data) {
+          if (data !== null && data != "error" && (data !== false)) {
+            placesUser = user;
+            places = data;
+            defer.resolve(places);
+          } else {
+            places = null;
+            placesUser = null;
+            defer.resolve(null);
+          }
+        });
+      }
+
+      return defer.promise;
+    };
+
+	this.selectPlace = function (place) {
+      allPlaces = false;
+      if (selectedPlaces.indexOf(place.IDPLACE) > -1) {
+        selectedPlaces.splice(selectedPlaces.indexOf(place.IDPLACE), 1);
+        place.selected = false; 
+      } else {
+        selectedPlaces.push(place.IDPLACE);
+        place.selected = true;
+      }
+    };
+
+    this.selectAll = function() {
+      allPlaces = true;
+      for (var placeIndex = 0; placeIndex < places.length; placeIndex++) {
+        places[placeIndex].selected = false;
+      }
+      selectedPlaces = [];
+    };
+
+  })
+
 
 /**
  * HTTP Service, this service will centralize all API calls
@@ -327,6 +376,26 @@ angular.module('app.services', [])
        }).error(function(data,status){
        deferred.resolve("error");
        });*/
+      return deferred.promise;
+    };
+
+
+    this.getPlaces = function (user, filters) {
+      var deferred = $q.defer();
+      if (user.LOGIN === 'demo.old') {
+        deferred.resolve([
+          {"IDPLACE": "1", "NOMBRE": "Tenerife"},
+          {"IDPLACE": "2", "NOMBRE": "Fuerteventura"},
+          {"IDPLACE": "3", "NOMBRE": "La Palma"},
+          {"IDPLACE": "4", "NOMBRE": "El Hierro"},
+          {"IDPLACE": "5", "NOMBRE": "Lanzarote"},
+          {"IDPLACE": "6", "NOMBRE": "La Gomera"},
+          {"IDPLACE": "7", "NOMBRE": "Gran Canaria"},
+        ]);
+
+      } else {
+        deferred.resolved([]);
+      }
       return deferred.promise;
     };
 

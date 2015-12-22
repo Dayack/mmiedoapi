@@ -14,8 +14,9 @@
         </ion-header-bar>
         <ion-content padding="true" class="side-menu-left has-header" <="" ion-content="">
             <ion-list style="">
-                <ion-item style="" menu-close="" class="item-stable" href="#/side-menu/categories">Categoría</ion-item>
-                <ion-item style="" menu-close="" class="item-stable" href="#/media">Medio</ion-item>
+                <ion-item style="" menu-close="" class="item-stable" href="#/side-menu/categories">Categorías</ion-item>
+				<ion-item style="" menu-close="" href="#/date_filter">Fechas</ion-item>
+                <ion-item style="" menu-close="" class="item-stable" href="#/media">Medios</ion-item>
                 <!--
                 <ion-item style="" ng-click="toggleMediaFilter()" class="item-icon-right item-stable">
                     Elegir medio
@@ -34,9 +35,8 @@
 	                <ion-item style="padding-left: 30px;" class="item-accordion" menu-close="" ng-show="mediaFilterCollapsed" ng-click="selectMedia('TWEETER')">Tweeter</ion-item>
 	                <ion-item style="padding-left: 30px;" class="item-accordion" menu-close="" ng-show="mediaFilterCollapsed" ng-click="selectMedia('SOCIAL_MEDIA')">Socia media</ion-item>
 -->
-                <ion-item style="" menu-close="" href="#/date_filter">Fechas</ion-item>
-                <ion-item style="" menu-close="" href="#/side-menu/news">Ubicación geográfica</ion-item>
-                <ion-item style="" menu-close="" ng-click="logout()">Cerrar sesión</ion-item>
+                <ion-item style="" menu-close="" href="#/side-menu/eventPlace">Lugar Evento</ion-item>
+                <ion-item style="" menu-close="" ng-click="logout()">Logout</ion-item>
             </ion-list>
         </ion-content>
     </ion-side-menu>
