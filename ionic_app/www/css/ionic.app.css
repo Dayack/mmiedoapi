@@ -9094,7 +9094,7 @@ a.button {
   padding: 5px; }
 
 .purple-text {
-  color: #95378C; }
+  color: #95378C !important; }
 
 .center-text {
   text-align: center; }

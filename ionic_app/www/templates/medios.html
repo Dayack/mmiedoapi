@@ -1,55 +1,40 @@
 <ion-view style="" title="Medios">
     <ion-content class="has-header" scroll="false" overflow-scroll="true" padding="'true'">
-        <a style="" class="button button-stable button-block " href="#/side-menu/news">Todos</a>
-        <div style="" class="button-bar">
-            <button style="" class="button  button-block ">Prensa</button>
-            <button style="" class="button button-stable button-block ">Radio</button>
-        </div>
-        <div style="" class="button-bar">
-            <a style="" class="button button-stable button-block " href="#/side-menu/news">TV</a>
-            <button style="" class="button button-stable button-block ">Internet</button>
-        </div>
-        <div style="" class="button-bar">
-            <a style="" class="button button-stable button-block " href="#/side-menu/news">Tweeter</a>
-            <button style="" class="button button-stable button-block ">Social media</button>
-        </div>
-        <div style="">
-            <div class="row">
-                <div class="col">
-                    <button class="button">
-                        Prensa
-                    </button>
-                </div>
-                <div class="col">
-                    <button class="button">
-                        Radio
-                    </button>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <button class="button">
-                        TV
-                    </button>
-                </div>
-                <div class="col">
-                    <button class="button">
-                        Internet
-                    </button>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <button class="button">
-                        Tweeter
-                    </button>
-                </div>
-                <div class="col">
-                    <button class="button">
-                        Social media
-                    </button>
-                </div>
-            </div>
-        </div>
+        <ion-checkbox ng-click="selectMedia('ALL')">
+            <i class="icon icon-mmi-all"></i>
+            Todos
+        </ion-checkbox>
+        <ion-checkbox ng-click="selectMedia('PRESS')">
+            <i class="icon icon-mmi-press"></i>
+            Prensa
+        </ion-checkbox>
+        <ion-checkbox ng-click="selectMedia('RADIO')">
+            <i class="icon icon-mmi-radio"></i>
+            Radio
+        </ion-checkbox>
+        <ion-checkbox ng-click="selectMedia('TV')">
+            <i class="icon icon-mmi-tv"></i>
+            Televisión
+        </ion-checkbox>
+        <ion-checkbox ng-click="selectMedia('INTERNET')">
+            <i class="icon icon-mmi-arroba"></i>
+            Internet
+        </ion-checkbox>
+        <ion-checkbox ng-click="selectMedia('SOCIAL_MEDIA')">
+            <i class="icon icon-mmi-social"></i>
+            Redes sociales
+        </ion-checkbox>
+        <ion-checkbox ng-click="selectMedia('TWITTER')">
+            <i class="icon icon-mmi-twitter"></i>
+            Twitter
+        </ion-checkbox>
     </ion-content>
+  <!--outside content-->
+  <div class="fixed-outside">
+    <div class="row">
+      <div class="col">
+        <button ng-click="goToNews();" class="button button-circle button-purple icon ion-checkmark-round"></button>
+      </div>
+    </div>
+  </div>
 </ion-view>
