@@ -150,3 +150,21 @@ $text-grey: #686868;
 .menu-left .item-content, .menu-left .item{
   color: white !important;
   background-color: $purple !important;}
+
+.loading {
+  background: transparent !important;
+  border: 0px;
+}
+
+.backdrop {
+  background-color: rgba(200, 200, 200, 0.4);}
+
+.loading-color{
+  color: $light-blue;
+  font-size: 50px;}
+
+.side-menu-left .padding{
+  padding: 0px !important;}
+
+.side-menu-left{
+  background-color: $purple;}

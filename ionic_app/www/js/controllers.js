@@ -53,7 +53,8 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('categoriasCtrl', function($scope,UserService,CategoryService,$state) {
+.controller('categoriasCtrl', function($scope,UserService,CategoryService,$state,$ionicLoading) {
+
     $scope.user = UserService.getUser();
     $scope.categories = CategoryService.getCategories($scope.user).then(function(data) {
       $scope.categories = data;
@@ -132,7 +133,15 @@ angular.module('app.controllers', [])
     };
 })
 
-.controller('noticiasCtrl', function($scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state) {
+.controller('noticiasCtrl', function($scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading) {
+    $ionicLoading.show({
+      template: '<div class="icon ion-loading-c loading-color">'
+    })
+
+    window.setTimeout(function() {
+	  $ionicLoading.hide();
+    }, 3000);    
+
     $ionicNavBarDelegate.showBackButton(false);//disable the back button
     $scope.news = [];
     $scope.user = UserService.getUser();
