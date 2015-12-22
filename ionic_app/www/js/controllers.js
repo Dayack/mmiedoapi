@@ -84,7 +84,9 @@ angular.module('app.controllers', [])
 
 .controller('subCategoriasCtrl', function($scope, UserService,CategoryService,$state) {
     $scope.user = UserService.getUser();
-    $scope.subCategories = CategoryService.getSubCategories();
+    $scope.subCategories = function() {
+      return CategoryService.getSubCategories();
+    }
     $scope.selectedCategoryTitle = CategoryService.getSelectedCategoryNombre();
     $scope.selectedSubCategories = function(subCategory){
       CategoryService.selectSubCategory(subCategory);
