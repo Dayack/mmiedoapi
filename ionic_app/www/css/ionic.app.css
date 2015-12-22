@@ -9094,7 +9094,7 @@ a.button {
   padding: 5px; }
 
 .purple-text {
-  color: #95378C; }
+  color: #95378C !important; }
 
 .center-text {
   text-align: center; }
@@ -9104,6 +9104,10 @@ a.button {
 
 .news_abstract {
   white-space: normal !important; }
+
+.login-view {
+  background: url("../img/login_background_image.png") no-repeat center;
+  background-size: contain; }
 
 /* ionic datepicker workarounds */
 .month_select {
