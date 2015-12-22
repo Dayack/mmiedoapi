@@ -240,7 +240,7 @@ angular.module('app.services', [])
     var allPlaces = false;
     var places = [];
     var placesUser = null;   
-    var selectedPlaces = {};  
+    var selectedPlaces = [];  
  
     this.getPlaces = function (user) {
       var defer = $q.defer();
