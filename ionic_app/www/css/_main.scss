@@ -90,9 +90,9 @@ $text-grey: #686868;
     background: $light-blue;
     border-color: $light-blue; }
 
-.platform-android .checkbox-platform input:before, 
-.platform-android .checkbox-platform .checkbox-icon:before, 
-.checkbox-square input:before, 
+.platform-android .checkbox-platform input:before,
+.platform-android .checkbox-platform .checkbox-icon:before,
+.checkbox-square input:before,
 .checkbox-square .checkbox-icon:before{
   border-radius: 28px;
   width: 28px;
@@ -101,13 +101,13 @@ $text-grey: #686868;
   margin-left: 0%;
   border-width: 2px; }
 
-.platform-android .checkbox-platform input:after, 
-.platform-android .checkbox-platform .checkbox-icon:after, 
-.checkbox-square input:after, 
+.platform-android .checkbox-platform input:after,
+.platform-android .checkbox-platform .checkbox-icon:after,
+.checkbox-square input:after,
 .checkbox-square .checkbox-icon:after{
   border-width: 1px;
   top: 33%;
-  left: 25%; 
+  left: 25%;
   width: 14px;
   height: 6px; }
 
@@ -137,3 +137,4 @@ $text-grey: #686868;
 
 .ionic_datepicker .date_selected{
   background-color: $light-blue !important;}
+
