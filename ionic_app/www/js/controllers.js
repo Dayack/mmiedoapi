@@ -118,6 +118,73 @@ angular.module('app.controllers', [])
 })
 
 .controller('selectDateCtrl', function($scope,$state,FilterService,$rootScope,$ionicHistory) {
+
+    //load from service
+    $scope.data = {
+      fromDate: new Date(),
+      toDate: new Date()
+    };
+    $scope.showFrom = {value:false};
+    $scope.showTo = {value:false};
+
+    $scope.selectTime = function(time) {
+      switch (time) {
+        case 'Today':
+          $scope.data.toDate = new Date();
+          $scope.data.fromDate = new Date();
+          $scope.data.fromDate= new Date($scope.data.fromDate.setHours(0));
+          $scope.data.fromDate= new Date($scope.data.fromDate.setMinutes(0));
+          $scope.data.fromDate= new Date($scope.data.fromDate.setSeconds(0));
+          $scope.data.fromDate= new Date($scope.data.fromDate.setMilliseconds(0));
+              break;
+        case 'yesterday':
+          $scope.data.toDate = new Date();
+          $scope.data.toDate = new Date($scope.data.toDate.setHours(0));
+          $scope.data.toDate = new Date($scope.data.toDate.setMinutes(0));
+          $scope.data.toDate = new Date($scope.data.toDate.setSeconds(0));
+          $scope.data.toDate = new Date($scope.data.toDate.setMilliseconds(0));
+          $scope.data.fromDate = new Date();
+          $scope.data.fromDate.setDate($scope.data.toDate.getDate() - 1);
+          break;
+        case '7d':
+          $scope.data.toDate = new Date();
+          $scope.data.toDate=new Date($scope.data.toDate.setHours(0));
+          $scope.data.toDate=new Date($scope.data.toDate.setMinutes(0));
+          $scope.data.toDate=new Date($scope.data.toDate.setSeconds(0));
+          $scope.data.toDate=new Date($scope.data.toDate.setMilliseconds(0));
+          $scope.data.fromDate = new Date();
+          $scope.data.fromDate.setDate($scope.data.toDate.getDate() - 7);
+          break;
+        case '30d':
+          $scope.data.toDate = new Date();
+          $scope.data.toDate=new Date($scope.data.toDate);
+          $scope.data.toDate=new Date($scope.data.toDate.setHours(0));
+          $scope.data.toDate=new Date($scope.data.toDate.setMinutes(0));
+          $scope.data.toDate=new Date($scope.data.toDate.setSeconds(0));
+          $scope.data.toDate=new Date($scope.data.toDate.setMilliseconds(0));
+          $scope.data.fromDate = new Date();
+          $scope.data.fromDate.setDate($scope.data.toDate.getDate() - 30);
+          break;
+
+      }
+    };
+
+    $scope.deployCalendar = function(datepicker) {
+      switch (datepicker) {
+        case 'from':
+          $scope.showFrom.value=true;
+          $scope.showTo.value=false;
+              break;
+        case 'to':
+
+          $scope.showTo.value=true;
+          $scope.showFrom.value=false;
+              break;
+      }
+
+    };
+
+    //---
     $rootScope.showBack=true;
     $scope.fromDatepickerObject = {
       dateFormat: 'dd-MM-yyyy',
@@ -138,6 +205,9 @@ angular.module('app.controllers', [])
     $scope.goToNews= function() {
       $state.go('menu.noticias');
     };
+
+
+
 })
 
 .controller('noticiasCtrl', function($scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading,$rootScope) {

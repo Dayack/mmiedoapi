@@ -1,5 +1,9 @@
 <ion-view style="" title="Seleccionar fecha">
     <ion-content class="has-header" overflow-scroll="true" padding="'true'">
+      <!--
+<div> DATE
+      <uib-datepicker ></uib-datepicker>
+</div>
         Desde:
         <ionic-datepicker input-obj="fromDatepickerObject">
             <button class="button button-block button-positive"> {{fromDatepickerObject.inputDate | date:'dd - MMMM - yyyy'}}</button>
@@ -7,7 +11,37 @@
         Hasta:
         <ionic-datepicker input-obj="toDatepickerObject">
             <button class="button button-block button-positive"> {{toDatepickerObject.inputDate | date:'dd - MMMM - yyyy'}}</button>
-        </ionic-datepicker>
+        </ionic-datepicker>-->
+      <div>
+        <!--selectors-->
+        <div ng-click="selectTime('Today')">
+          Hoy
+        </div>
+        <div ng-click="selectTime('yesterday')">
+          Ayer
+        </div>
+        <div ng-click="selectTime('7d')">
+          7d
+        </div>
+        <div ng-click="selectTime('30d')">
+          30d
+        </div>
+      </div>
+      <div ng-click="deployCalendar('from');">
+        Desde {{data.fromDate | date:'dd MMMM yyyy'}}
+      </div>
+      <div ng-show="showFrom.value" class="datepicker-container">
+        <datetimepicker language="es" data-ng-model="data.fromDate"
+                        data-datetimepicker-config="{ startView:'day', minView:'day' }"/>
+      </div>
+      <div ng-click="deployCalendar('to');">
+        Hasta {{data.toDate | date:'dd MMMM yyyy'}}
+      </div>
+      <div ng-show="showTo.value" class="datepicker-container">
+        <datetimepicker language="es" data-ng-model="data.toDategi"
+                        data-datetimepicker-config="{ startView:'day', minView:'day' }"/>
+      </div>
+
     </ion-content>
   <!--outside content-->
   <div class="fixed-outside">
