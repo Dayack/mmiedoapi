@@ -3,7 +3,7 @@ mmi_reports_php
 
 MMI REPORTS
 
-1- Instalar Symfony 2.8 (https://symfony.com/download)
+1- Instalar Symfony 2.8 (https://symfony.com/download) (tener php5-cli y php-curl instalados) con los comandos "sudo curl -LsS https://symfony.com/installer -o /usr/local/bin/symfony" y "sudo chmod a+x /usr/local/bin/symfony"
 
 
 2- copiar el proyecto a la carpeta deseada

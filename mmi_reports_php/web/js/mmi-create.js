@@ -278,30 +278,28 @@ function createInform(){
 
     jQuery.ajax({
         type: "POST",
-        url: mmiconfig.baseUrl+"/save_page?id_zona="+id_zona,
-        data: data,
-        success: redirectToGraph
+        url: "/save_page?id_zona="+id_zona,
+        data: JSON.stringify(data),
+        dataType:"json",
+        success: redirectToGraph()
     });
 }
 
 function redirectToGraph(data) {
-    if (data) {
-        inform = "&idvista="+data.id_informe
-    } else {
-        inform="";
-    }
-    window.location.href = '/info_page?id_usuario='+id_usuario+'&id_zona='+id_zona+inform;
+
+    window.location.href = '/info_page?id_usuario='+id_usuario+'&id_zona='+id_zona;
 
 }
 
 jQuery(document).ready(function() {
-        load_categories();
-        load_graph_selector();
         jQuery("#inform-error").hide();
         jQuery("#group-error").hide();
         jQuery("#group_editor").hide();
         jQuery("#group_name_alert").hide();
         jQuery("#category_creator_alert").hide();
+        load_categories();
+        load_graph_selector();
+
 
     }
 );
