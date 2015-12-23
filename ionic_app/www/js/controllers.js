@@ -259,31 +259,22 @@ angular.module('app.controllers', [])
       template: '<div class="icon ion-loading-c loading-color">'
     });
 
-    window.setTimeout(function() {
-	  $ionicLoading.hide();
-    }, 12000);    
-
     $ionicNavBarDelegate.showBackButton(false);//disable the back button
     $scope.news = [];
     $scope.user = UserService.getUser();
     $scope.filters = FilterService.getFilters();
 
     NewsService.getNews($scope.user,$scope.filters).then(function(data) {
-      $scope.news = data;
-      $ionicLoading.hide();
-    });
+      window.setTimeout(function() {
+         $ionicLoading.hide();
+         $scope.news = data;
+      }, 3000);  
+   });
 
     $scope.loadMore = function() {
-      //$ionicLoading.show({
-      //  template: '<div class="icon ion-loading-c loading-color">'
-      //});
       var options = {infiniteScroll: true};
       NewsService.getNews($scope.user,$scope.filters, options).then(function(data) {
         $scope.news = data;
-        //window.setTimeout(function() {
-	//  $ionicLoading.hide();
-        //}, 1000);    
-	//$ionicLoading.hide();
         $scope.$broadcast('scroll.infiniteScrollComplete');
       });
     };
