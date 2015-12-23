@@ -69,7 +69,7 @@ angular.module('app.controllers', [])
     $scope.selectCategory= function(category){
       $scope.allSelected.value=false;
       CategoryService.setSelectedCategory(category);
-      $state.go('menu.subCategorias');
+      $state.go('subCategorias');
     };
 
     $scope.selectAll=function(){
@@ -145,6 +145,7 @@ angular.module('app.controllers', [])
           $scope.data.toDate = new Date($scope.data.toDate.setMilliseconds(0));
           $scope.data.fromDate = new Date();
           $scope.data.fromDate.setDate($scope.data.toDate.getDate() - 1);
+          $scope.data.toDate.setDate($scope.data.fromDate.getDate());
           break;
         case '7d':
           $scope.data.toDate = new Date();
@@ -168,6 +169,14 @@ angular.module('app.controllers', [])
 
       }
     };
+
+    $scope.$watch('data.fromDate', function() {
+       $scope.showFrom.value=false;
+    });
+    
+    $scope.$watch('data.toDate', function() {
+       $scope.showTo.value=false;
+    });
 
     $scope.deployCalendar = function(datepicker) {
       switch (datepicker) {
@@ -220,7 +229,7 @@ angular.module('app.controllers', [])
 
     window.setTimeout(function() {
 	  $ionicLoading.hide();
-    }, 3000);    
+    }, 12000);    
 
     $ionicNavBarDelegate.showBackButton(false);//disable the back button
     $scope.news = [];

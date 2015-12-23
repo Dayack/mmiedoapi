@@ -16,6 +16,10 @@ if you add a new js file, just run
 gulp index
 
 
+```
+to be sure that css is loaded in develop works
+gulp sass
+
 ``` 
 to add it to index.html
 
