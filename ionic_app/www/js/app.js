@@ -5,8 +5,22 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.services', 'app.directives'])
+angular.module('app', ['ionic','ngLocale', 'app.controllers', 'app.routes', 'app.services', 'app.directives', 'ui.bootstrap.datetimepicker','ionic-datepicker'])
+  .config(function($httpProvider) {
 
+    $httpProvider.interceptors.push(function(){
+      return {
+        //TESTING FOR GIT
+        request: function(req) {
+          // transform all request that start with / to the defined url
+          if (req.url.charAt(0) ==='/') {
+            req.url = 'http://api.mmi-e.com/mmiapi.php' + req.url;
+          }
+          return req;
+        }
+      };
+    });
+  })
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -20,3 +34,4 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.services',
     }
   });
 })
+;

@@ -1,0 +1,24 @@
+<ion-view style="" title="Categorias">
+  <ion-content class="has-header" overflow-scroll="true" padding="'true'">
+
+    <div>
+      <label class="subCategoryTitle">{{selectedCategoryTitle}}</label>
+      <ion-checkbox ng-model="subCategory.selected" ng-click="selectedSubCategories(subCategory)" ng-repeat="subCategory in subCategories()">
+        <label ng-class="{selectedText: subCategory.selected}">{{subCategory.NOMBRE}}</label>
+      </ion-checkbox>
+      <label class="item item-checkbox ng-valid" style="border: none; border-top: #ddd 1px solid;">
+        <div style="height: 50px;  "></div>
+      </label>
+    </div>
+
+
+  </ion-content>
+  <!--outside content-->
+  <div class="fixed-outside">
+    <div class="row">
+      <div class="col">
+        <button ng-click="goToNews();" class="button button-circle button-purple icon ion-checkmark-round"></button>
+      </div>
+    </div>
+  </div>
+</ion-view>
