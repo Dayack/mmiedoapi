@@ -1,8 +1,29 @@
 <ion-view style="" title="Categorias">
-    <ion-content class="has-header" overflow-scroll="true" padding="'true'">
-        <a style="" class="button button-stable button-block " href="#/media">Todos</a>
-        <a style="" class="button button-stable button-block " href="#/media">Categoría 1</a>
-        <a style="" class="button button-stable button-block " href="#/media">Categoría 2</a>
-        <a style="" class="button button-stable button-block " href="#/media">Categoría 3</a>
-    </ion-content>
+  <ion-content class="has-header" overflow-scroll="true" padding="'true'">
+
+    <div>
+
+      <!-- <a style="" class="button button-stable button-block " ng-click="selectCategory(category)"
+          ng-repeat="category in categories">{{ category.NOMBRE }}</a>-->
+      <ion-checkbox ng-model="allSelected.value" ng-click="selectAll()">TODOS</ion-checkbox>
+      <ion-checkbox ng-model="category.selected" ng-click="selectCategory(category)" ng-repeat="category in categories">
+        <label ng-class="{selectedText: category.selected}">{{category.NOMBRE}}</label>
+      </ion-checkbox>
+      <!--space-->
+      <label class="item item-checkbox ng-valid" style="   border: none;
+    border-top: #ddd 1px solid;">
+        <div style="height: 50px;  "></div>
+      </label>
+    </div>
+
+
+  </ion-content>
+  <!--outside content-->
+  <div class="fixed-outside">
+    <div class="row">
+      <div class="col">
+        <button ng-click="goToNews();" class="button button-circle button-purple icon ion-checkmark-round"></button>
+      </div>
+    </div>
+  </div>
 </ion-view>

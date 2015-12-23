@@ -1,0 +1,231 @@
+.page-title{
+    padding: 0px;
+    font-size: 26px;
+    letter-spacing: -1px;
+    line-height: 26px;
+    display: block;
+    color: #666;
+    margin: 20px;
+    font-weight: 300;
+    font-family: "Open Sans", sans-serif;
+}
+.label-input{
+    background-color: #44b6ae;
+    color: white;
+    padding: 4px 2px 4px 10px;
+    margin: 0px;
+    float: left;
+}
+.input-green{
+    border: 3px solid #44b6ae;
+    margin: 0px;
+    float: left;
+    min-width: 350px;
+}
+.title-part {
+    color: #666;
+    font-family: "Open Sans", sans-serif;
+}
+.left-part-template1{
+    float: left;
+    width: 50%;
+    height: 100%;
+}
+
+.template1-block{
+    padding: 10px;
+    margin: 10px;
+}
+
+.selected-graph {
+    background: #4c87b9;
+    color: white;
+}
+.daterange-div {
+    background-color: #44b6ae;
+    color: white;
+    width: 250px;
+    font-size: 18px;
+    padding: 7px;
+    cursor: pointer;
+}
+.daterange-div input {
+    border: none;
+    background-color:transparent ;
+    width: 210px;
+    cursor: pointer;
+}
+
+.back-body {
+    background-color: #F1F3FA;
+}
+
+.category-selector {
+    display: inline-block;
+    font-size: 16px;
+    padding: 20px;
+    max-width: 400px;
+}
+.green-haze.btn {
+    color: #FFFFFF;
+    background-color: #44b6ae;
+}
+.portlet.box.blue-hoki {
+    border: 1px solid #869ab3;
+    border-top: 0;
+}
+.portlet > .portlet-body.blue-hoki, .portlet.blue-hoki {
+    background-color: #67809F;
+}
+.portlet.box {
+    padding: 0px !important;
+}
+.portlet {
+    margin-top: 0px;
+    margin-bottom: 25px;
+    padding: 0px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -ms-border-radius: 4px;
+    -o-border-radius: 4px;
+    border-radius: 4px;
+}
+.portlet-title {
+    background-color: #67809F;
+}
+.portlet.box > .portlet-title {
+    border-bottom: 0;
+    padding: 10px;
+    margin-bottom: 0;
+    color: #fff;
+    font-size: 17px;
+}
+.portlet > .portlet-title {
+    border-bottom: 1px solid #eee;
+    padding: 0;
+    margin-bottom: 10px;
+    min-height: 41px;
+    -webkit-border-radius: 4px 4px 0 0;
+    -moz-border-radius: 4px 4px 0 0;
+    -ms-border-radius: 4px 4px 0 0;
+    -o-border-radius: 4px 4px 0 0;
+    border-radius: 4px 4px 0 0;
+}
+
+.edit-graph{
+    clear: both;
+    float: right;
+    margin: 21px 9px 11px 0px;
+    font-size: 26px;
+    cursor: pointer;
+}
+.portlet.box > .portlet-body {
+    background-color: #fff;
+    padding: 10px;
+    max-height: 500px;
+    min-width: 500px;
+}
+.portlet > .portlet-body {
+    clear: both;
+    -webkit-border-radius: 0 0 4px 4px;
+    -moz-border-radius: 0 0 4px 4px;
+    -ms-border-radius: 0 0 4px 4px;
+    -o-border-radius: 0 0 4px 4px;
+    border-radius: 0 0 4px 4px;
+}
+.view-selector-box {
+    margin: 20px;
+}
+.view-selector li {
+    list-style: none;
+    cursor: pointer;
+}
+.view-selector div {
+    padding: 10px;
+}
+.close-group{
+    color: red;
+    float: left;
+    margin: 2px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+.group-box {
+list-style: none;
+}
+.group-item{
+    font-weight: bold;
+}
+/*******/
+
+.div-title {
+    padding: 30px;
+    clear: both;
+}
+.graph-info {
+    font-size: 16px;
+    font-weight: bold;
+    padding-left: 30px;
+    max-width: 800px;
+}
+
+.cat-data {
+    display: inline;
+    margin-right: 175px;
+}
+/******/
+/*scale of the tables, the google tables are too larges*/
+.graph-table tr {
+    height: 30px !important;
+}
+
+.graph-table td {
+    padding: 5px !important;
+}
+
+.graph-table .google-visualization-table {
+    height: auto !important;
+}
+
+.graph-table .google-visualization-table>div:first-child {
+    height: auto !important;
+}
+
+.graph-table .google-visualization-table-table {
+    height: auto !important;
+    border: 1px solid black !important;
+}
+
+.graph-table th {
+    background-image: none !important;
+    background-color: #67809F;
+    color: white;
+    border: 1px solid #67809F !important;
+    text-align: center;
+}
+.graph-table td {
+    border: 1px solid #dddddd !important;
+    text-align: center;
+}
+
+.graph-table .google-visualization-table-table tr:last-child {
+    background-image: none !important;
+    background-color: #DDDDDD;
+    color: #676767;
+    border: 1px solid black !important;
+}
+.chosen-drop {
+    width: 500px !important;
+}
+
+.chosen-container {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 13px;
+    zoom: 1;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    width: 500px !important;
+}

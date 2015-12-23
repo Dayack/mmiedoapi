@@ -1,0 +1,54 @@
+<ion-view style="" title="Seleccionar fecha">
+    <ion-content class="has-header" overflow-scroll="true" padding="'true'">
+      <!--
+<div> DATE
+      <uib-datepicker ></uib-datepicker>
+</div>
+        Desde:
+        <ionic-datepicker input-obj="fromDatepickerObject">
+            <button class="button button-block button-positive"> {{fromDatepickerObject.inputDate | date:'dd - MMMM - yyyy'}}</button>
+        </ionic-datepicker>
+        Hasta:
+        <ionic-datepicker input-obj="toDatepickerObject">
+            <button class="button button-block button-positive"> {{toDatepickerObject.inputDate | date:'dd - MMMM - yyyy'}}</button>
+        </ionic-datepicker>-->
+      <div class="timeSelectors">
+        <!--selectors-->
+        <div class="component" ng-click="selectTime('Today')">
+          Hoy
+        </div>
+        <div class="component" ng-click="selectTime('yesterday')">
+          Ayer
+        </div>
+        <div class="component" ng-click="selectTime('7d')">
+          7 Días
+        </div>
+        <div class="component" ng-click="selectTime('30d')">
+          30 Días
+        </div>
+      </div>
+      <div class="datepicker-summary" ng-click="deployCalendar('from');">
+        Desde {{data.fromDate | date:"dd 'de' MMMM yyyy"}}
+      </div>
+      <div ng-show="showFrom.value" class="datepicker-container">
+        <datetimepicker language="es" data-ng-model="data.fromDate"
+                        data-datetimepicker-config="{ startView:'day', minView:'day' }"/>
+      </div>
+      <div class="datepicker-summary" ng-click="deployCalendar('to');">
+        Hasta {{data.toDate | date:"dd 'de' MMMM yyyy"}}
+      </div>
+      <div ng-show="showTo.value" class="datepicker-container">
+        <datetimepicker language="es" data-ng-model="data.toDate"
+                        data-datetimepicker-config="{ startView:'day', minView:'day' }"/>
+      </div>
+
+    </ion-content>
+  <!--outside content-->
+  <div class="fixed-outside">
+    <div class="row">
+      <div class="col">
+        <button ng-click="goToNews();" class="button button-circle button-purple icon ion-checkmark-round"></button>
+      </div>
+    </div>
+  </div>
+</ion-view>

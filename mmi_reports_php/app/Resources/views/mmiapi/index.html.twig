@@ -1,0 +1,63 @@
+<html>
+
+    <head>
+        <title>{% block title %}{{ web_title }}{% endblock %}</title>
+{#
+#}
+{% block stylesheets %}
+        <link href="{{ asset('css/chosen.css') }}" rel="stylesheet" />
+        <link href="{{ asset('css/mmi-graphs.css') }}" rel="stylesheet" />
+        <link href="{{ asset('css/jquery-ui.css') }}" rel="stylesheet" />
+{% endblock %}
+    </head>
+    <body>
+    <div>
+        <div>
+            <ul id="viewList">
+                <!--fill with li view options-->
+            </ul>
+        </div>
+        <div id="categorySelectorDiv">
+            <select id="categorySelect">
+                <!--select category for graph1-->
+            </select>
+        </div>
+        <div>
+            <p>Desde: <input type="text" id="startDate"></p>
+            <p>Hasta: <input type="text" id="endDate"></p>
+        </div>
+        <button onclick="goToGraph();">GO TO GRAPH</button>
+    </div>
+    <!--GRAPHS-->
+    <div class="graph-title" id="graph-title"></div>
+        <div>
+            <div id="chart_div" style="float: left;"></div>
+            <div id="table_div" class="graph-table" style="float: left;"></div>
+        </div>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript">
+
+            var cities = ['Bogotá','Barranquilla','Santa Marta','Cali','Armenia','Pereira','Medellín'];
+
+            var categories = ['Categoria1','Categoria2','Categoria3'];
+            var nombre_categoria = '{{ nombre_categoria }}';
+//graph1, the MEDIA must be in the same order: press, radio, tv, internet
+var news_graph1 = [{{ prensa_categoria_contador }},{{ radio_categoria_contador }},{{ tv_categoria_contador }},{{ internet_categoria_contador }}];
+var valor_graph1 = [{{ prensa_categoria_recaudacion }},{{ radio_categoria_recaudacion }},{{ tv_categoria_recaudacion }},{{ internet_categoria_recaudacion }}];
+//second graph, nacional vs regional
+var news_graph2 = [ 17,20,21];
+var valor_graph2 = [243861317,198009548,198009548];
+//third graph news by cities //same order that the city array
+var news_graph3 = [1,2,3,4,5,6,7];
+var valor_graph3 = [243861317,198009548,243861317,243861317,243861317,243861317,243861317];
+        </script>
+{% block javascripts %}
+        <script src="{{ asset('js/jquery-1.11.3.min.js') }}"></script>
+        <script src="{{ asset('js/jquery-ui.js') }}"></script>
+        <script src="{{ asset('js/chosen.jquery.js') }}"></script>
+        <script src="{{ asset('js/mmi.js') }}"></script>
+{% endblock %}
+    </body>
+</html>
+
+
