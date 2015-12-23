@@ -117,6 +117,28 @@ angular.module('app.controllers', [])
 
 })
 
+.controller('originCtrl', function($scope, UserService, OriginService, $state) {
+    $scope.allSelected={value:false};
+    $scope.user = UserService.getUser();
+    $scope.origins = OriginService.getOrigins($scope.user).then(function(data) {
+      $scope.origins = data;
+    });
+    $scope.selectAll=function() {
+      $scope.allSelected={value:true};
+      OriginService.selectAll();
+    };
+    $scope.selectOrigin=function(origin) {
+      $scope.allSelected={value:false};
+      OriginService.selectOrigin(origin);
+
+    };
+    $scope.goToNews= function() {
+      $state.go('menu.noticias');
+    };
+
+})
+
+
 .controller('selectDateCtrl', function($scope,$state,FilterService,$rootScope,$ionicHistory) {
 
     //load from service
