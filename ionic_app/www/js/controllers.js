@@ -124,7 +124,7 @@ angular.module('app.controllers', [])
       fromDate: new Date(),
       toDate: new Date()
     };
-    $scope.showFrom = {value:false};
+    $scope.showFrom = {value:null};
     $scope.showTo = {value:false};
 
     $scope.selectTime = function(time) {
@@ -171,11 +171,21 @@ angular.module('app.controllers', [])
     };
 
     $scope.$watch('data.fromDate', function() {
-       $scope.showFrom.value=false;
+       if ($scope.showFrom.value===null) {
+         $scope.showFrom.value=true;
+         $scope.showTo.value=false;
+       } else {
+         $scope.showFrom.value=false;
+         $scope.showTo.value=true;
+       }
     });
     
     $scope.$watch('data.toDate', function() {
-       $scope.showTo.value=false;
+       if ($scope.showTo.value===true) {
+         $scope.showTo.value=false;
+         $scope.showFrom.value=true;
+         $state.go('menu.noticias');
+       }
     });
 
     $scope.deployCalendar = function(datepicker) {
