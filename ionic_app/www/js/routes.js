@@ -52,14 +52,10 @@ angular.module('app.routes', [])
 
 
 
-    .state('menu.subCategorias', {
+    .state('subCategorias', {
       url: '/sub-categories',
-      views: {
-        'side-menu21': {
-          templateUrl: 'templates/sub-categorias.html',
-          controller: 'subCategoriasCtrl'
-        }
-      }
+      templateUrl: 'templates/sub-categorias.html',
+      controller: 'subCategoriasCtrl'
     })
 
 

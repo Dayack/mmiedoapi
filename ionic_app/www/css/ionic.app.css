@@ -9221,33 +9221,6 @@ table.media td {
   width: 14px;
   height: 6px; }
 
-.ionic_datepicker label {
-  border-color: #95378C;
-  border-width: 2px; }
-
-.ionic_datepicker .item-select select {
-  direction: initial;
-  text-indent: 4px;
-  color: #686868; }
-
-.ionic_datepicker .item-select:after {
-  color: #63BFB8; }
-
-.ionic_datepicker div .col {
-  color: #95378C; }
-
-.ionic_datepicker div .date_col {
-  color: #686868; }
-
-.ionic_datepicker .ion-chevron-left, .ionic_datepicker .ion-chevron-right {
-  color: #95378C; }
-
-.ionic_datepicker .today {
-  background-color: transparent; }
-
-.ionic_datepicker .date_selected {
-  background-color: #63BFB8 !important; }
-
 .subCategoryTitle {
   color: #63BFB8;
   display: block;
@@ -9277,6 +9250,62 @@ table.media td {
 
 .side-menu-left {
   background-color: #95378C; }
+
+.datepicker-summary {
+  text-align: center;
+  color: #63BFB8;
+  background-color: #e0e9e6;
+  font-size: 18px;
+  padding: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px; }
+
+.datetimepicker {
+  width: 100%; }
+
+.datetimepicker .day-view {
+  width: 100%; }
+
+.datetimepicker .left, .datetimepicker .right {
+  color: #95378C;
+  font-size: 16px; }
+
+.datetimepicker .switch {
+  border: 2px solid !important;
+  border-color: #95378C !important; }
+
+.datetimepicker .dow {
+  color: #95378C; }
+
+.datetimepicker .future, .datetimepicker .past {
+  display: none; }
+
+.datetimepicker .day {
+  color: #686868; }
+
+.datetimepicker .active {
+  background-color: #63BFB8 !important;
+  background-image: none !important;
+  color: white !important;
+  border-radius: 25px !important; }
+
+.datetimepicker .table td, .datetimepicker .table th {
+  padding: 10px; }
+
+.datetimepicker .table td {
+  padding: 15px; }
+
+.timeSelectors {
+  width: 100%;
+  height: 30px;
+  color: #63BFB8;
+  margin: 0 auto; }
+
+.timeSelectors .component {
+  font-size: 17px;
+  float: left;
+  width: 25%;
+  text-align: center; }
 
 @font-face {
   font-family: 'icomoon';
