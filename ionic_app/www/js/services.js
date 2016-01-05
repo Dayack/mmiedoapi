@@ -283,6 +283,57 @@ angular.module('app.services', [])
   })
 
 
+  .service('OriginService', function (HttpService, $q) {
+
+    var allOrigins = false;
+    var origins = [];
+    var originUser = null;
+    var selectedOrigins = [];
+
+    this.getOrigins = function (user) {
+      var defer = $q.defer();
+      if (originUser === user) {
+        defer.resolve(origins);
+      } else {
+        HttpService.getOrigins(user).then(function (data) {
+          if (data !== null && data != "error" && (data !== false)) {
+            originUser = user;
+            origins = data;
+            defer.resolve(origins);
+          } else {
+            origins = null;
+            originsUser = null;
+            defer.resolve(null);
+          }
+        });
+      }
+
+      return defer.promise;
+    };
+
+    this.selectOrigin = function (origin) {
+      allOrigins = false;
+      if (selectedOrigins.indexOf(origin.IDPLACE) > -1) {
+        selectedOrigins.splice(selectedOrigins.indexOf(origin.IDPLACE), 1);
+        origin.selected = false;
+      } else {
+        selectedOrigins.push(origin.IDPLACE);
+        origin.selected = true;
+      }
+    };
+
+    this.selectAll = function() {
+      allOrigins = true;
+      for (var originIndex = 0; originIndex < origins.length; originIndex++) {
+        origins[originIndex].selected = false;
+      }
+      selectedOrigins = [];
+    };
+
+  })
+
+
+
 /**
  * HTTP Service, this service will centralize all API calls
  */
@@ -379,6 +430,26 @@ angular.module('app.services', [])
 
 
     this.getPlaces = function (user, filters) {
+      var deferred = $q.defer();
+      if (user.LOGIN === 'demo.old') {
+        deferred.resolve([
+          {"IDPLACE": "1", "NOMBRE": "Tenerife"},
+          {"IDPLACE": "2", "NOMBRE": "Fuerteventura"},
+          {"IDPLACE": "3", "NOMBRE": "La Palma"},
+          {"IDPLACE": "4", "NOMBRE": "El Hierro"},
+          {"IDPLACE": "5", "NOMBRE": "Lanzarote"},
+          {"IDPLACE": "6", "NOMBRE": "La Gomera"},
+          {"IDPLACE": "7", "NOMBRE": "Gran Canaria"},
+        ]);
+
+      } else {
+        deferred.resolved([]);
+      }
+      return deferred.promise;
+    };
+
+
+   this.getOrigins = function (user, filters) {
       var deferred = $q.defer();
       if (user.LOGIN === 'demo.old') {
         deferred.resolve([

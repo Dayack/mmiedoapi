@@ -76,6 +76,18 @@ angular.module('app.routes', [])
 
 
 
+    .state('menu.origin', {
+      url: '/origin',
+      views: {
+        'side-menu21': {
+          templateUrl: 'templates/origin.html',
+          controller: 'originCtrl'
+        }
+      }
+    })
+
+
+
 
     .state('menu.noticias', {
       url: '/news',

@@ -1,0 +1,25 @@
+<ion-view style="" title="Origen Fuente">
+  <ion-content class="has-header" overflow-scroll="true" padding="'true'">
+
+    <div>
+
+      <ion-checkbox ng-model="allSelected.value" ng-click="selectAll()">TODOS</ion-checkbox>
+      <ion-checkbox ng-model="origin.selected" ng-click="selectOrigin(origin)" ng-repeat="origin in origins">
+        <label ng-class="{selectedText: origin.selected}">{{origin.NOMBRE}}</label>
+      </ion-checkbox>
+      <label class="item item-checkbox ng-valid" style="   border: none;
+    border-top: #ddd 1px solid;">
+        <div style="height: 50px;  "></div>
+      </label>
+    </div>
+
+
+  </ion-content>
+  <div class="fixed-outside">
+    <div class="row">
+      <div class="col">
+        <button ng-click="goToNews();" class="button button-circle button-purple icon ion-checkmark-round"></button>
+      </div>
+    </div>
+  </div>
+</ion-view>
