@@ -20,7 +20,7 @@ angular.module('app.services', [])
 /**
  * User Service, used to save user info
  */
-  .service('UserService', function (HttpService, $q) {
+  .service('UserService', function (HttpService, $q, $window) {
     var user = null;
     /**
      *  Login, will send the login request, and save the user data in the Service, will return 'OK' or 'ERROR' to the controller
@@ -33,6 +33,7 @@ angular.module('app.services', [])
         //the answer from the HTTP was ok, not error and if user/password is ok
         if (data !== null && data != "error" && (data !== false)) {
           user = data;
+          $window.localStorage.setItem('user',JSON.stringify(data));
           defer.resolve("OK");
         } else {
           user = null;
@@ -42,8 +43,18 @@ angular.module('app.services', [])
       return defer.promise;
     };
 
+    this.autoLogin = function() {
+      user = JSON.parse($window.localStorage.getItem('user'));
+      if (user !== null) {
+        return true;
+      } else {
+        return false;
+      }
+    };
+
     this.logout = function() {
       user = null;
+      $window.localStorage.removeItem('user');
     };
 
     this.getUser = function () {

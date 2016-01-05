@@ -46,6 +46,12 @@ angular.module('app.controllers', [])
 
       });
     };
+    
+    //Autologin
+    if (UserService.autoLogin()) {
+      $scope.successfulLogin = true;
+      $state.go('menu.categorias');
+    }
 
 })
 
