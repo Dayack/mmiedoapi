@@ -350,8 +350,11 @@ function generateTableData(dataArray, format) {
         var totalPos = 1;
         for (var j = 0; j < tableData[i].length; j++) {
             if (tableData[i][j] === 'percent') {
-                var num = ( (dataArray[i + 1][pos - 1] * 100) / totals[totalPos]);
-                num = Math.round(num * 100) / 100;
+                var num = 0;
+                if (dataArray[i + 1][pos - 1]  !==0) {
+                    var num = ( (dataArray[i + 1][pos - 1] * 100) / totals[totalPos]);
+                    num = Math.round(num * 100) / 100;
+                }
                 tableData[i][j] = formatNumber(num) + '%';
                 totalPos++;
             } else {
