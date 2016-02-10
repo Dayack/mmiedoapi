@@ -7,7 +7,7 @@
           ng-repeat="category in categories">{{ category.NOMBRE }}</a>-->
       <ion-checkbox ng-model="allSelected.value" ng-click="selectAll()">TODOS</ion-checkbox>
       <ion-checkbox ng-model="category.selected" ng-click="selectCategory(category)" ng-repeat="category in categories">
-        <label ng-class="{selectedText: category.selected}">{{category.NOMBRE}}</label>
+        <label ng-class="{selectedText: category.selected}">{{category.NOMBREWEB}}</label>
       </ion-checkbox>
       <!--space-->
       <label class="item item-checkbox ng-valid" style="   border: none;

@@ -4,7 +4,7 @@
     <div>
       <label class="subCategoryTitle">{{selectedCategoryTitle}}</label>
       <ion-checkbox ng-model="subCategory.selected" ng-click="selectedSubCategories(subCategory)" ng-repeat="subCategory in subCategories()">
-        <label ng-class="{selectedText: subCategory.selected}">{{subCategory.NOMBRE}}</label>
+        <label ng-class="{selectedText: subCategory.selected}">{{subCategory.NOMBREWEB}}</label>
       </ion-checkbox>
       <label class="item item-checkbox ng-valid" style="border: none; border-top: #ddd 1px solid;">
         <div style="height: 50px;  "></div>

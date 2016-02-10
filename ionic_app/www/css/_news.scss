@@ -1,0 +1,42 @@
+.media-icon{
+  color: $icon-grey;
+  font-size: 20px;
+  font-weight: bold;
+}
+.icon-media-item{
+  float: left;
+}
+.date-item{
+  float: right;
+}
+.content-item{
+  clear: both;
+  border-bottom: 1px solid $icon-grey;
+}
+
+.media-header{
+  text-align: center;
+  color: $purple;
+  background-color: $backGrey;
+  border-top-width: 0;
+  border-bottom-width: 1px;
+}
+.new-item{
+  border: 0px solid;
+
+}
+.icon-white{
+  color: white;
+}
+.see-more{
+  background-color: $purple;
+  color: white;
+  text-align: right;
+  padding: 5px 40px 5px 0px;
+  cursor: pointer;
+  margin-bottom: 5px;
+}
+.no-new-content{
+  text-align: center;
+  padding: 10px;
+}
