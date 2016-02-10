@@ -46,7 +46,7 @@ angular.module('app.controllers', [])
 
       });
     };
-    
+
     //Autologin
     if (UserService.autoLogin()) {
       $scope.successfulLogin = true;
@@ -83,7 +83,7 @@ angular.module('app.controllers', [])
       CategoryService.deselectAllCategories();
     };
     $scope.goToNews= function() {
-      $state.go('menu.noticias');
+      $state.go('menu.preview-noticias');
     };
 
 })
@@ -115,7 +115,7 @@ angular.module('app.controllers', [])
     $scope.selectPlace=function(place) {
       $scope.allSelected={value:false};
       PlacesService.selectPlace(place);
-      
+
     };
     $scope.goToNews= function() {
       $state.go('menu.noticias');
@@ -207,7 +207,7 @@ angular.module('app.controllers', [])
          $scope.showTo.value=true;
        }
     });
-    
+
     $scope.$watch('data.toDate', function() {
        if ($scope.showTo.value===true) {
          $scope.showTo.value=false;
@@ -257,8 +257,52 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('noticiasCtrl', function($scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading,$rootScope) {
-    
+  .controller('previewNoticiasCtrl', function($scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading,$rootScope) {
+  $scope.blockNews= [
+    {news:[], type:"TV"},
+    {news:[], type:"RADIO"},
+    {news:[], type:"PRESS"},
+    {news:[], type:"SOCIAL"},
+    {news:[], type:"INTERNET"},
+    {news:[], type:"TWITTER"}
+
+  ];
+    $scope.loadedComplete= false;
+    //Start loading
+    $ionicLoading.show({
+      template: '<div class="icon ion-loading-c loading-color">'
+    });
+    $scope.blocksLoaded=0;//to keep the count of the blocks loaded
+    $scope.filters = FilterService.getFilters();
+    $scope.options= null;
+    for (var i = 0; i<$scope.blockNews.length;i++) {
+      NewsService.getNews($scope.user, $scope.blockNews[i].type,$scope.filters,$scope.options, 5, 0).then(function (data) {
+        for (var i = 0; i<$scope.blockNews.length;i++) {
+          if ($scope.blockNews[i].type === data.type) {
+            $scope.blockNews[i].news = data.news;
+            $scope.blocksLoaded++;
+          }
+        }
+
+      });
+    }
+    //disable loading mask when all blocks are loaded
+    $scope.$watch('blocksLoaded',function(){
+      if ($scope.blocksLoaded == $scope.blockNews.length) {
+        $ionicLoading.hide();
+        $scope.loadedComplete= true;
+      }
+    });
+
+    $scope.goToNews=function(media){
+      FilterService.setMedia(media);
+      $state.go('menu.noticias');
+    };
+
+
+  })
+    .controller('noticiasCtrl', function($scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading,$rootScope) {
+
     $rootScope.activeFilters = {value: true};
 
     $ionicLoading.show({
@@ -269,17 +313,16 @@ angular.module('app.controllers', [])
     $scope.news = [];
     $scope.user = UserService.getUser();
     $scope.filters = FilterService.getFilters();
+    $scope.media = $scope.filters.media;
 
-    NewsService.getNews($scope.user,$scope.filters).then(function(data) {
-      window.setTimeout(function() {
+    NewsService.getNews($scope.user,$scope.filters.media,$scope.filters,null,null,null).then(function(data) {
          $ionicLoading.hide();
          $scope.news = data;
-      }, 3000);  
    });
 
     $scope.loadMore = function() {
       var options = {infiniteScroll: true};
-      NewsService.getNews($scope.user,$scope.filters, options).then(function(data) {
+      NewsService.getNews($scope.user,$scope.filters.media,$scope.filters,options,null,null).then(function(data) {
         $scope.news = data;
         $scope.$broadcast('scroll.infiniteScrollComplete');
       });
@@ -290,11 +333,11 @@ angular.module('app.controllers', [])
       $ionicLoading.show({
         template: '<div class="icon ion-loading-c loading-color">'
       });
-      NewsService.getNews($scope.user,$scope.filters).then(function(data) {
+      NewsService.getNews($scope.user,$scope.filters.media,$scope.filters,null,null,null).then(function(data) {
         $scope.news = data;
         window.setTimeout(function() {
 	  $ionicLoading.hide();
-        }, 3000);    
+        }, 3000);
 	//$ionicLoading.hide();
       });
     });
