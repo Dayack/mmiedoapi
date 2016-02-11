@@ -62,6 +62,8 @@ angular.module('app.services', [])
         //the answer from the HTTP was ok, not error and if user/password is ok
         if (data !== null && data != "error" && (data !== false)) {
           user = data;
+          //MOCKED TEST DATA
+          user.IDUSUARIO=1445;
           $window.localStorage.setItem('user',JSON.stringify(data));
           defer.resolve("OK");
         } else {
@@ -98,7 +100,7 @@ angular.module('app.services', [])
  */
   .service('FilterService', function (HttpService,DateHelperService, $q) {
     var filters = {
-      media: 'ALL',
+      media: 'TV',//by default we select TV, this filter is always set
       startDate: {
         date: null,
         text:null
@@ -118,11 +120,12 @@ angular.module('app.services', [])
 
     this.restartDates = function() {
       var today = new Date();
+      var days = 365;
       filters.endDate.text = DateHelperService.formatDate(today);
       filters.endDate.date = new Date();
       filters.endDate.date.setTime(today.getTime());
       filters.startDate.date = new Date();
-      filters.startDate.date.setTime(today.getTime() -  (30 * 24 * 60 * 60 * 1000));
+      filters.startDate.date.setTime(today.getTime() -  (days * 24 * 60 * 60 * 1000));
       filters.startDate.text = DateHelperService.formatDate(filters.startDate.date);
       //to end Date -30 days
     };
@@ -159,8 +162,16 @@ angular.module('app.services', [])
      */
     this.getNews = function(user,type, filters, options,new_limit,new_offset) {
       options = options || {};
+      var offset = 0;
+      var limit = 10;
+      if (new_limit !== null) {
+        limit = new_limit;
+      }
+      if (new_offset!==null) {
+        offset = new_offset;
+      }
       var categories = CategoryService.getSelectedCategories();
-      var searchHash = JSON.stringify(user) + JSON.stringify(filters);
+      var searchHash ="type="+type+ JSON.stringify(user) + JSON.stringify(filters)+"offset="+offset+"limit="+limit;
       var defer = $q.defer();
       var result = {
         type: type,
@@ -174,10 +185,10 @@ angular.module('app.services', [])
         return defer.promise;
       }
       if (lastSearchHash === searchHash) {
-        if (options.infiniteScroll) {
+        /*if (options.infiniteScroll) {
           offset += limit;
-          HttpService.getNews(user, filters, (new_offset === null ? offset : new_offset),
-            (new_limit ===null ? limit : new_limit),categories).then(function (data) {
+          HttpService.getNews(user, type, filters, offset,
+             limit,categories).then(function (data) {
             //the answer from the HTTP was ok, not error and if user/password is ok
             if (data !== null && data != "error" && (data !== false)) {
               news = news.concat(data);
@@ -190,17 +201,16 @@ angular.module('app.services', [])
           });
           return defer.promise;
 
-        } else {
+        } else {*/
           result.news = news;
          // return news;
           defer.resolve(result);
           return defer.promise;
-        }
+      //  }
       } else {
-        offset = 0;
         lastSearchHash = searchHash;
-        HttpService.getNews(user,type, filters,  (new_offset === null ? offset : new_offset),
-          (new_limit ===null ? limit : new_limit),categories).then(function (data) {
+        HttpService.getNews(user,type, filters,   offset  ,
+           limit  ,categories).then(function (data) {
           //the answer from the HTTP was ok, not error and if user/password is ok
             result.news = data;
           if (data !== null && data != "error" && (data !== false)) {
@@ -506,29 +516,7 @@ angular.module('app.services', [])
       //MOCKED REQUEST
       //---DELETE THIS WHEN THE REQUEST IS WORKING
       var deferred = $q.defer();
-      /*if (user === 'demo.old' && password === 'demoMMI') {
-        deferred.resolve({
-          "IDUSUARIO": "41",
-          "IDZONA": "1",
-          "LOGIN": "demo.old",
-          "PASS": "demoMMI",
-          "NOMBRE": "Demo de Costa Rica",
-          "APELLIDO1": "",
-          "APELLIDO2": "",
-          "EMAIL": "",
-          "TWITTER": "",
-          "TIPO": "U",
-          "ACTIVO": "0",
-          "TELEFONO": "",
-          "CARGO": "",
-          "IDTIPOUSUARIO": "0",
-          "ULTIMOACCESO": "0000-00-00 00:00:00",
-          "ENCUESTADO": "0"
-        });
-      } else {
-        deferred.resolve(false);
-      }
-      // END MOCKED REQUEST*/
+
 
        //REAL REQUEST
        $http.get('/getusuarios_login/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/0/'+user+'/'+password).success(function(data,status){
@@ -548,29 +536,7 @@ angular.module('app.services', [])
       //MOCKED REQUEST
       //---DELETE THIS WHEN THE REQUEST IS WORKING
       var deferred = $q.defer();
-      /*if (user.LOGIN === 'demo.old') {
-        deferred.resolve([
-          {"IDCATEGORIA": "1287", "NOMBRE": "Municipio de la Orotava",
-              "SUBCATEGORIAS": [{"IDCATEGORIA": "737", "NOMBRE": "APYMEVO"},
-                                {"IDCATEGORIA": "8508", "NOMBRE": "Elecciones Ayuntamiento de La Orotava 2015"},
-                                {"IDCATEGORIA": "6117", "NOMBRE": "Universidad Europea de Canarias"}]},
-          {"IDCATEGORIA": "1286", "NOMBRE": "Municipio de Telde",
-              "SUBCATEGORIAS": [{"IDCATEGORIA": "736", "NOMBRE": "San Juan"},
-                                {"IDCATEGORIA": "8507", "NOMBRE": "Elecciones Ayuntamiento de Telde 2015"},
-                                {"IDCATEGORIA": "6116", "NOMBRE": "Instituto de Telde"}]},
-          {"IDCATEGORIA": "1285", "NOMBRE": "Binter",
-              "SUBCATEGORIAS": [{"IDCATEGORIA": "735", "NOMBRE": "Aeropuerto de Santa Cruz Norte"},
-                                {"IDCATEGORIA": "8506", "NOMBRE": "Aeropuerto de Santa Cruz Sur"},
-                                {"IDCATEGORIA": "6115", "NOMBRE": "Aeropuerto de Telde"}]},
-          {"IDCATEGORIA": "1284", "NOMBRE": "Municipio de Las Palmas",
-              "SUBCATEGORIAS": [{"IDCATEGORIA": "734", "NOMBRE": "Elecciones Ayuntamiento de Las Palmas 2015"},
-                                {"IDCATEGORIA": "8505", "NOMBRE": "Puerto de la Cruz"},
-                                {"IDCATEGORIA": "6114", "NOMBRE": "Universidad de Las Palmas de GC"}]},
-        ]);
-      } else {
-        deferred.resolve([]);
-      }*/
-      // END MOCKED REQUEST
+
 
       // REAL REQUEST
        $http.get('/getusuarios_categorias/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+user.IDUSUARIO).success(function(data,status){

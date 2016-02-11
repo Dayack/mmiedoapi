@@ -1,26 +1,35 @@
 <ion-view style="" title="{{media | mediaName}}">
     <ion-content class="has-header" overflow-scroll="true" padding="'true'">
         <ion-list style="">
-            <ion-item ng-repeat="new in news" style="" ng-click="goToNew(new)">
-                <div>
-                  <i ng-show="new.media == 'Prensa'" class="icon icon-mmi-press"></i>
-                  <i ng-show="new.media == 'Radio'" class="icon icon-mmi-radio"></i>
-                  <i ng-show="new.media == 'TV'" class="icon icon-mmi-tv"></i>
-                  <i ng-show="new.media == 'Social'" class="icon icon-mmi-social"></i>
-                  <i ng-show="new.media == 'Tweeter'" class="icon icon-mmi-tweeter"></i>
-                  <i ng-show="new.media == 'Internet'" class="icon icon-mmi-arroba"></i>
-                  <span class="news_source">Canarias 7</span> <span style="float: right;">Hoy, 12:53</span>
-                  <div class="tvScreenshot">
-                       <img ng-show="new.media == 'TV'" src="img/chicaplay.png"></img>
+            <ion-item ng-repeat="new in news" style="" class="new-item" ng-click="goToNew(new)">
+                <div><!-- |  orderBy:'FECHA'-->
+                  <div>
+                    <div class="icon-media-item">
+                      <i cla ng-show="media == 'PRESS'" class="icon icon-mmi-press media-icon"></i>
+                      <i ng-show="media == 'RADIO'" class="icon icon-mmi-radio media-icon"></i>
+                      <i ng-show="media == 'TV'" class="icon icon-mmi-tv media-icon"></i>
+                      <i ng-show="media == 'SOCIAL'" class="icon icon-mmi-social media-icon"></i>
+                      <i ng-show="media == 'TWITTER'" class="icon icon-mmi-tweeter media-icon"></i>
+                      <i ng-show="media == 'INTERNET'" class="icon icon-mmi-arroba media-icon"></i>
+
+                    </div>
+                    <div class="date-item">
+                      {{new.FECHA | DateNew}}
+                    </div>
                   </div>
-                  <div class="news_abstract">
-                      Lorem ipsum dolor sit amet, consegcuatur adipiscing elit. Aenean commodo ligula eget dolor. Aenean
-                      {{new.title}} - {{new.media}}
+                 <!-- <span class="news_source">Canarias 7</span> <span style="float: right;">Hoy, 12:53</span>-->
+
+                  <!--<div class="tvScreenshot">
+                       <img ng-show="new.media == 'TV'" src="img/chicaplay.png"></img>
+                  </div>-->
+                  <div class="content-item">
+                    {{new.TEMA}}
                   </div>
                 </div>
             </ion-item>
         </ion-list>
-        <ion-infinite-scroll on-infinite="loadMore()" distance="1%">
+      {{noMoreItemsAvailable}}
+        <ion-infinite-scroll ng-if="!noMoreItemsAvailable"  on-infinite="loadMore()" distance="1%">
         </ion-infinite-scroll>
     </ion-content>
 </ion-view>

@@ -275,8 +275,8 @@ angular.module('app.controllers', [])
     $scope.blocksLoaded=0;//to keep the count of the blocks loaded
     $scope.filters = FilterService.getFilters();
     $scope.options= null;
-    for (var i = 0; i<$scope.blockNews.length;i++) {
-      NewsService.getNews($scope.user, $scope.blockNews[i].type,$scope.filters,$scope.options, 5, 0).then(function (data) {
+    //load different MEDIAS
+      NewsService.getNews($scope.user, "TV",$scope.filters,$scope.options, 5, 0).then(function (data) {
         for (var i = 0; i<$scope.blockNews.length;i++) {
           if ($scope.blockNews[i].type === data.type) {
             $scope.blockNews[i].news = data.news;
@@ -285,7 +285,57 @@ angular.module('app.controllers', [])
         }
 
       });
-    }
+
+    //RADIO
+    NewsService.getNews($scope.user, "RADIO",$scope.filters,$scope.options, 5, 0).then(function (data) {
+      for (var i = 0; i<$scope.blockNews.length;i++) {
+        if ($scope.blockNews[i].type === data.type) {
+          $scope.blockNews[i].news = data.news;
+          $scope.blocksLoaded++;
+        }
+      }
+
+    });
+    //PRESS
+    NewsService.getNews($scope.user, "PRESS",$scope.filters,$scope.options, 5, 0).then(function (data) {
+      for (var i = 0; i<$scope.blockNews.length;i++) {
+        if ($scope.blockNews[i].type === data.type) {
+          $scope.blockNews[i].news = data.news;
+          $scope.blocksLoaded++;
+        }
+      }
+
+    });
+    //SOCIAL
+    NewsService.getNews($scope.user, "SOCIAL",$scope.filters,$scope.options, 5, 0).then(function (data) {
+      for (var i = 0; i<$scope.blockNews.length;i++) {
+        if ($scope.blockNews[i].type === data.type) {
+          $scope.blockNews[i].news = data.news;
+          $scope.blocksLoaded++;
+        }
+      }
+
+    });
+    //INTERNET
+    NewsService.getNews($scope.user, "INTERNET",$scope.filters,$scope.options, 5, 0).then(function (data) {
+      for (var i = 0; i<$scope.blockNews.length;i++) {
+        if ($scope.blockNews[i].type === data.type) {
+          $scope.blockNews[i].news = data.news;
+          $scope.blocksLoaded++;
+        }
+      }
+
+    });
+    //TWITTER
+    NewsService.getNews($scope.user, "TWITTER",$scope.filters,$scope.options, 5, 0).then(function (data) {
+      for (var i = 0; i<$scope.blockNews.length;i++) {
+        if ($scope.blockNews[i].type === data.type) {
+          $scope.blockNews[i].news = data.news;
+          $scope.blocksLoaded++;
+        }
+      }
+
+    });
     //disable loading mask when all blocks are loaded
     $scope.$watch('blocksLoaded',function(){
       if ($scope.blocksLoaded == $scope.blockNews.length) {
@@ -304,26 +354,39 @@ angular.module('app.controllers', [])
     .controller('noticiasCtrl', function($scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading,$rootScope) {
 
     $rootScope.activeFilters = {value: true};
+    $scope.noMoreItemsAvailable = false;
 
     $ionicLoading.show({
       template: '<div class="icon ion-loading-c loading-color">'
     });
-
+    $scope.offset=0;
+    $scope.limit=10;
     $ionicNavBarDelegate.showBackButton(false);//disable the back button
     $scope.news = [];
     $scope.user = UserService.getUser();
     $scope.filters = FilterService.getFilters();
     $scope.media = $scope.filters.media;
 
-    NewsService.getNews($scope.user,$scope.filters.media,$scope.filters,null,null,null).then(function(data) {
+    NewsService.getNews($scope.user,$scope.filters.media,$scope.filters,null,$scope.limit,$scope.offset).then(function(data) {
          $ionicLoading.hide();
-         $scope.news = data;
+      $scope.news = $scope.news.concat(data.news.slice());
+      if (data.news.length ===0) {
+        $scope.noMoreItemsAvailable=true;
+      } else {
+        $scope.offset += $scope.limit;
+      }
    });
 
     $scope.loadMore = function() {
       var options = {infiniteScroll: true};
-      NewsService.getNews($scope.user,$scope.filters.media,$scope.filters,options,null,null).then(function(data) {
-        $scope.news = data;
+      NewsService.getNews($scope.user,$scope.filters.media,$scope.filters,options,$scope.limit,$scope.offset).then(function(data) {
+        $scope.news = $scope.news.concat(data.news.slice());
+        if (data.news.length ===0) {
+          $scope.noMoreItemsAvailable=true;
+        } else {
+
+          $scope.offset += $scope.limit;
+        }
         $scope.$broadcast('scroll.infiniteScrollComplete');
       });
     };
