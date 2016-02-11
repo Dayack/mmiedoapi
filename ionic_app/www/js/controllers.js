@@ -365,6 +365,7 @@ angular.module('app.controllers', [])
     //this code is executed every time that state.go is invoked
    $scope.$on('$ionicView.afterEnter',
       function() {
+        $ionicNavBarDelegate.showBackButton(false);//disable the back button
         // Code here is always executed when entering this state
        // $ionicNavBarDelegate.showBar(true); //if this code is not set, the top bar will desapear
         $scope.loadBlocks();
