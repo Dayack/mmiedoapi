@@ -73,12 +73,12 @@ angular.module('app.controllers', [])
 
     $scope.user = UserService.getUser();
     //only if come from Login, and there is previous info about categories (selected), just obviate this page, and jump to preview-nes
-
-    $scope.categories = CategoryService.getCategories($scope.user).then(function(data) {
-      $scope.categories = data;
-      $scope.allSelected.value = CategoryService.isAllSelected();
+    $scope.allSelected={value:true};//all options selected?
+    $ionicLoading.show({
+      template: '<div class="icon ion-loading-c loading-color">'
     });
-    $scope.allSelected={value:false};//all options selected?
+
+
 
     $scope.selectCategory= function(category){
       $scope.allSelected.value=false;
@@ -93,13 +93,20 @@ angular.module('app.controllers', [])
     $scope.goToNews= function() {
       $rootScope.$broadcast('reload-block');
       $state.go('menu.preview-noticias');
-      /*$state.transitionTo('menu.preview-noticias',{}, {
-        reload: true,
-        inherit: false,
-        notify: true
-      });*/
 
     };
+
+    $scope.categories = CategoryService.getCategories($scope.user).then(function(data) {
+      $scope.categories = data;
+      $scope.allSelected.value = CategoryService.isAllSelected();
+      //If is the first time loaded and there is not selectedCategories or allSelected = true, autoselect all
+      if (!CategoryService.areSelectedCategories()) {
+        $scope.selectAll();
+      }
+
+
+      $ionicLoading.hide();
+    });
 
 })
 

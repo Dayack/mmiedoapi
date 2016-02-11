@@ -231,7 +231,7 @@ angular.module('app.services', [])
     // Current selection (Checkbox enables)
     var selectedCategories = {};
 	// Variable to known if all categories are selected
-    var allSelected = false;
+    var allSelected = true;
     var that = this;
     //save in localStorage the category status
     this.saveStatus=function(){
@@ -360,6 +360,10 @@ angular.module('app.services', [])
         this.loadStatus();
       }
       return selectedCategories;
+    };
+//are some cateogries selected?
+    this.areSelectedCategories = function() {
+      return (!angular.equals({},selectedCategories)|| allSelected);
     };
 
     this.getSelectedCategories = function() {
