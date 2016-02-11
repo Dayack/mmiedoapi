@@ -218,7 +218,7 @@ angular.module('app.services', [])
 /**
  * Category Service, used to save user info
  */
-  .service('CategoryService', function (HttpService, $q,$localstorage) {
+  .service('CategoryService', function (HttpService, $q,$localstorage,$window) {
     //List of all user categories
     var categories = [];
     //List of sub categories about selected category.
@@ -257,6 +257,10 @@ angular.module('app.services', [])
         return true;
       }
       return false;
+    };
+
+    this.clearStatus = function() {
+      $window.localStorage.removeItem("categories");
     };
     /**
      *  getCategories, will get all user's categories
