@@ -99,6 +99,7 @@ angular.module('app.controllers', [])
 
     $scope.categories = CategoryService.getCategories($scope.user).then(function(data) {
       $scope.categories = data;
+      $ionicLoading.hide();
       $scope.allSelected.value = CategoryService.isAllSelected();
       //If is the first time loaded and there is not selectedCategories or allSelected = true, autoselect all
       if (!CategoryService.areSelectedCategories()) {
@@ -106,7 +107,7 @@ angular.module('app.controllers', [])
       }
 
 
-      $ionicLoading.hide();
+
     });
 
 })
