@@ -4,7 +4,7 @@ angular.module('app.controllers', [])
 /**
  * Side menu Controller
  */
-.controller('menuCtrl', function($scope,$rootScope,UserService,FilterService,$state,$ionicHistory) {
+.controller('menuCtrl', function($scope,$rootScope,UserService,FilterService,$state,$ionicHistory,CategoryService) {
 
     $scope.mediaFilterCollapsed = false;
 
@@ -20,6 +20,7 @@ angular.module('app.controllers', [])
     //logout button in side menu
     $scope.logout = function() {
       UserService.logout();
+      CategoryService.clearStatus();
       $state.go('login');
       $ionicHistory.clearHistory();
     };
