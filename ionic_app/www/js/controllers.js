@@ -30,7 +30,7 @@ angular.module('app.controllers', [])
 /**
  * Login View Controller
  */
-.controller('loginCtrl', function($scope,UserService,$state) {
+.controller('loginCtrl', function($scope,UserService,$state,CategoryService) {
     $scope.user = {username : '',
     password : ''};
     $scope.successfulLogin = null; //will be set to TRUE or FALSE after the login request
@@ -50,7 +50,12 @@ angular.module('app.controllers', [])
     //Autologin
     if (UserService.autoLogin()) {
       $scope.successfulLogin = true;
-      $state.go('menu.categorias');
+        if (CategoryService.loadStatus()) {
+          //info found in the localStorate, exit from this view and go direct to news
+          $state.go('menu.preview-noticias');
+        } else {
+          $state.go('menu.categorias');
+        }
     }
 
 })
@@ -64,11 +69,14 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('categoriasCtrl', function($scope,UserService,CategoryService,$state,$ionicLoading,$rootScope) {
+.controller('categoriasCtrl', function($scope,UserService,CategoryService,$state,$ionicLoading,$rootScope,$stateParams) {
 
     $scope.user = UserService.getUser();
+    //only if come from Login, and there is previous info about categories (selected), just obviate this page, and jump to preview-nes
+
     $scope.categories = CategoryService.getCategories($scope.user).then(function(data) {
       $scope.categories = data;
+      $scope.allSelected.value = CategoryService.isAllSelected();
     });
     $scope.allSelected={value:false};//all options selected?
 
@@ -84,12 +92,13 @@ angular.module('app.controllers', [])
     };
     $scope.goToNews= function() {
       $rootScope.$broadcast('reload-block');
-      //$state.go('menu.preview-noticias');
-      $state.transitionTo('menu.preview-noticias',{}, {
+      $state.go('menu.preview-noticias');
+      /*$state.transitionTo('menu.preview-noticias',{}, {
         reload: true,
         inherit: false,
         notify: true
-      });
+      });*/
+
     };
 
 })
@@ -347,14 +356,14 @@ angular.module('app.controllers', [])
     };
 
     //this code is executed every time that state.go is invoked
-    $scope.$on('$ionicView.beforeEnter',
+   $scope.$on('$ionicView.afterEnter',
       function() {
         // Code here is always executed when entering this state
-
+       // $ionicNavBarDelegate.showBar(true); //if this code is not set, the top bar will desapear
         $scope.loadBlocks();
       }
     );
-    //
+    //*/
     $scope.$on('reload-block',function(){
       $scope.loadBlocks();
     });
@@ -388,20 +397,25 @@ angular.module('app.controllers', [])
     $scope.user = UserService.getUser();
     $scope.filters = FilterService.getFilters();
     $scope.media = $scope.filters.media;
+    $scope.loadedComplete = false;//just to check when data is loaded first time;
 
     NewsService.getNews($scope.user,$scope.filters.media,$scope.filters,null,$scope.limit,$scope.offset).then(function(data) {
          $ionicLoading.hide();
       $scope.news = $scope.news.concat(data.news.slice());
+      $scope.loadedComplete= true;
       if (data.news.length ===0) {
         $scope.noMoreItemsAvailable=true;
       }
    });
-
+    $scope.goToPreview=function(){
+      $state.go('menu.preview-noticias');
+    };
     $scope.loadMore = function() {
       var options = {infiniteScroll: true};
       $scope.offset += $scope.limit;
       NewsService.getNews($scope.user,$scope.filters.media,$scope.filters,options,$scope.limit,$scope.offset).then(function(data) {
         $scope.news = $scope.news.concat(data.news.slice());
+        $scope.loadedComplete= true;
         if (data.news.length ===0) {
           $scope.noMoreItemsAvailable=true;
         }

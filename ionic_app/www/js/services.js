@@ -248,16 +248,23 @@ angular.module('app.services', [])
     };
     this.loadStatus=function(){
       var status = $localstorage.getObject('categories');
-      allSelected = status.allSelected;
-      categories = status.categories;
-      selectedCategories = status.selectedCategories;
-      subCategories = status.subCategories;
-      categoriesUser = status.categoriesUser;
+      if (status !==null && !angular.equals(status,{})) {
+        allSelected = status.allSelected;
+        categories = status.categories;
+        selectedCategories = status.selectedCategories;
+        subCategories = status.subCategories;
+        categoriesUser = status.categoriesUser;
+        return true;
+      }
+      return false;
     };
     /**
      *  getCategories, will get all user's categories
      * @param user
      */
+    this.isAllSelected = function() {
+      return allSelected;
+    };
 
     this.getCategories = function (user) {
       var defer = $q.defer();
@@ -653,6 +660,10 @@ angular.module('app.services', [])
             params.push({"IDCATEGORIA": ""+ value});
           });
         }
+      }
+      //the API doesnt allow array of 1 category, so we must transform into an object
+      if (params.length===1) {
+        params = params[0];
       }
 
        $http.post('/'+url_get+'/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+filters.startDate.text+
