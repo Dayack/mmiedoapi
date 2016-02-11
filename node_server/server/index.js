@@ -1,5 +1,6 @@
 var express = require('express');
 var auth = require('../authentication');
+var weekcsv = require('../csv-week');
 
 var bodyParser = require('body-parser');
 module.exports = function() {
@@ -12,6 +13,10 @@ module.exports = function() {
 		res.send("hello world");
 	});
 
+	app.get('/week/',function(req,res) {
+		weekcsv.convertCsv();
+		res.send("OK");
+	});
 	app.get('/graph/:graphname',function(req,res) {
 		res.send('Page for'+req.params.graphname + 'with option' + req.query.option);
 	});

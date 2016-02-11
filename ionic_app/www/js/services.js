@@ -184,30 +184,14 @@ angular.module('app.services', [])
         });
         return defer.promise;
       }
-      if (lastSearchHash === searchHash) {
-        /*if (options.infiniteScroll) {
-          offset += limit;
-          HttpService.getNews(user, type, filters, offset,
-             limit,categories).then(function (data) {
-            //the answer from the HTTP was ok, not error and if user/password is ok
-            if (data !== null && data != "error" && (data !== false)) {
-              news = news.concat(data);
-              result.news = news;
-              defer.resolve(result);
-            } else {
+     /* if (lastSearchHash === searchHash) {
 
-              defer.resolve(result);
-            }
-          });
-          return defer.promise;
-
-        } else {*/
           result.news = news;
          // return news;
           defer.resolve(result);
           return defer.promise;
       //  }
-      } else {
+      } else {*/
         lastSearchHash = searchHash;
         HttpService.getNews(user,type, filters,   offset  ,
            limit  ,categories).then(function (data) {
@@ -223,9 +207,9 @@ angular.module('app.services', [])
         });
         return defer.promise;
 
-      }
+     /* }
       result.news= news;
-      return result;
+      return result;*/
     };
 
 
@@ -287,8 +271,18 @@ angular.module('app.services', [])
             //wee need merge all the trees
             angular.forEach(data, function(value, key) {
               categories.push(value.CONTENIDO[0]);/*data[0].CONTENIDO[1]*/
+              //check if the father is the only node
+
             });
 
+            //check all categories, is one node has not childrens, create children as the node himself
+            angular.forEach(categories,function(value,key){
+             if ( value.CHILDREN.length ===0) {
+               var newSubCat = {};
+               angular.copy(value,newSubCat);
+               value.CHILDREN.push(newSubCat);
+             }
+            });
             that.saveStatus();
             //categories.unshift({"IDCATEGORIA": "0", "NOMBRE": "TODAS"});
             defer.resolve(categories);
