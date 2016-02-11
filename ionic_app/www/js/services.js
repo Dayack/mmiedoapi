@@ -184,30 +184,14 @@ angular.module('app.services', [])
         });
         return defer.promise;
       }
-      if (lastSearchHash === searchHash) {
-        /*if (options.infiniteScroll) {
-          offset += limit;
-          HttpService.getNews(user, type, filters, offset,
-             limit,categories).then(function (data) {
-            //the answer from the HTTP was ok, not error and if user/password is ok
-            if (data !== null && data != "error" && (data !== false)) {
-              news = news.concat(data);
-              result.news = news;
-              defer.resolve(result);
-            } else {
+     /* if (lastSearchHash === searchHash) {
 
-              defer.resolve(result);
-            }
-          });
-          return defer.promise;
-
-        } else {*/
           result.news = news;
          // return news;
           defer.resolve(result);
           return defer.promise;
       //  }
-      } else {
+      } else {*/
         lastSearchHash = searchHash;
         HttpService.getNews(user,type, filters,   offset  ,
            limit  ,categories).then(function (data) {
@@ -223,9 +207,9 @@ angular.module('app.services', [])
         });
         return defer.promise;
 
-      }
+     /* }
       result.news= news;
-      return result;
+      return result;*/
     };
 
 
@@ -247,7 +231,7 @@ angular.module('app.services', [])
     // Current selection (Checkbox enables)
     var selectedCategories = {};
 	// Variable to known if all categories are selected
-    var allSelected = false;
+    var allSelected = true;
     var that = this;
     //save in localStorage the category status
     this.saveStatus=function(){
@@ -264,16 +248,23 @@ angular.module('app.services', [])
     };
     this.loadStatus=function(){
       var status = $localstorage.getObject('categories');
-      allSelected = status.allSelected;
-      categories = status.categories;
-      selectedCategories = status.selectedCategories;
-      subCategories = status.subCategories;
-      categoriesUser = status.categoriesUser;
+      if (status !==null && !angular.equals(status,{})) {
+        allSelected = status.allSelected;
+        categories = status.categories;
+        selectedCategories = status.selectedCategories;
+        subCategories = status.subCategories;
+        categoriesUser = status.categoriesUser;
+        return true;
+      }
+      return false;
     };
     /**
      *  getCategories, will get all user's categories
      * @param user
      */
+    this.isAllSelected = function() {
+      return allSelected;
+    };
 
     this.getCategories = function (user) {
       var defer = $q.defer();
@@ -287,8 +278,18 @@ angular.module('app.services', [])
             //wee need merge all the trees
             angular.forEach(data, function(value, key) {
               categories.push(value.CONTENIDO[0]);/*data[0].CONTENIDO[1]*/
+              //check if the father is the only node
+
             });
 
+            //check all categories, is one node has not childrens, create children as the node himself
+            angular.forEach(categories,function(value,key){
+             if ( value.CHILDREN.length ===0) {
+               var newSubCat = {};
+               angular.copy(value,newSubCat);
+               value.CHILDREN.push(newSubCat);
+             }
+            });
             that.saveStatus();
             //categories.unshift({"IDCATEGORIA": "0", "NOMBRE": "TODAS"});
             defer.resolve(categories);
@@ -359,6 +360,10 @@ angular.module('app.services', [])
         this.loadStatus();
       }
       return selectedCategories;
+    };
+//are some cateogries selected?
+    this.areSelectedCategories = function() {
+      return (!angular.equals({},selectedCategories)|| allSelected);
     };
 
     this.getSelectedCategories = function() {
@@ -659,6 +664,10 @@ angular.module('app.services', [])
             params.push({"IDCATEGORIA": ""+ value});
           });
         }
+      }
+      //the API doesnt allow array of 1 category, so we must transform into an object
+      if (params.length===1) {
+        params = params[0];
       }
 
        $http.post('/'+url_get+'/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+filters.startDate.text+

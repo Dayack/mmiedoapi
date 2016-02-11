@@ -30,7 +30,7 @@ angular.module('app.controllers', [])
 /**
  * Login View Controller
  */
-.controller('loginCtrl', function($scope,UserService,$state) {
+.controller('loginCtrl', function($scope,UserService,$state,CategoryService) {
     $scope.user = {username : '',
     password : ''};
     $scope.successfulLogin = null; //will be set to TRUE or FALSE after the login request
@@ -50,7 +50,12 @@ angular.module('app.controllers', [])
     //Autologin
     if (UserService.autoLogin()) {
       $scope.successfulLogin = true;
-      $state.go('menu.categorias');
+        if (CategoryService.loadStatus()) {
+          //info found in the localStorate, exit from this view and go direct to news
+          $state.go('menu.preview-noticias');
+        } else {
+          $state.go('menu.categorias');
+        }
     }
 
 })
@@ -64,13 +69,16 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('categoriasCtrl', function($scope,UserService,CategoryService,$state,$ionicLoading) {
+.controller('categoriasCtrl', function($scope,UserService,CategoryService,$state,$ionicLoading,$rootScope,$stateParams) {
 
     $scope.user = UserService.getUser();
-    $scope.categories = CategoryService.getCategories($scope.user).then(function(data) {
-      $scope.categories = data;
+    //only if come from Login, and there is previous info about categories (selected), just obviate this page, and jump to preview-nes
+    $scope.allSelected={value:true};//all options selected?
+    $ionicLoading.show({
+      template: '<div class="icon ion-loading-c loading-color">'
     });
-    $scope.allSelected={value:false};//all options selected?
+
+
 
     $scope.selectCategory= function(category){
       $scope.allSelected.value=false;
@@ -83,8 +91,22 @@ angular.module('app.controllers', [])
       CategoryService.deselectAllCategories();
     };
     $scope.goToNews= function() {
+      $rootScope.$broadcast('reload-block');
       $state.go('menu.preview-noticias');
+
     };
+
+    $scope.categories = CategoryService.getCategories($scope.user).then(function(data) {
+      $scope.categories = data;
+      $scope.allSelected.value = CategoryService.isAllSelected();
+      //If is the first time loaded and there is not selectedCategories or allSelected = true, autoselect all
+      if (!CategoryService.areSelectedCategories()) {
+        $scope.selectAll();
+      }
+
+
+      $ionicLoading.hide();
+    });
 
 })
 
@@ -267,17 +289,19 @@ angular.module('app.controllers', [])
     {news:[], type:"TWITTER"}
 
   ];
+    $ionicNavBarDelegate.showBackButton(false);//disable the back button
     $scope.loadedComplete= false;
     //Start loading
-    $ionicLoading.show({
-      template: '<div class="icon ion-loading-c loading-color">'
-    });
-    $scope.blocksLoaded=0;//to keep the count of the blocks loaded
-    $scope.filters = FilterService.getFilters();
-    $scope.options= null;
-    //load different MEDIAS
-      NewsService.getNews($scope.user, "TV",$scope.filters,$scope.options, 5, 0).then(function (data) {
-        for (var i = 0; i<$scope.blockNews.length;i++) {
+    $scope.loadBlocks = function() {
+      $ionicLoading.show({
+        template: '<div class="icon ion-loading-c loading-color">'
+      });
+      $scope.blocksLoaded = 0;//to keep the count of the blocks loaded
+      $scope.filters = FilterService.getFilters();
+      $scope.options = null;
+      //load different MEDIAS
+      NewsService.getNews($scope.user, "TV", $scope.filters, $scope.options, 5, 0).then(function (data) {
+        for (var i = 0; i < $scope.blockNews.length; i++) {
           if ($scope.blockNews[i].type === data.type) {
             $scope.blockNews[i].news = data.news;
             $scope.blocksLoaded++;
@@ -286,55 +310,70 @@ angular.module('app.controllers', [])
 
       });
 
-    //RADIO
-    NewsService.getNews($scope.user, "RADIO",$scope.filters,$scope.options, 5, 0).then(function (data) {
-      for (var i = 0; i<$scope.blockNews.length;i++) {
-        if ($scope.blockNews[i].type === data.type) {
-          $scope.blockNews[i].news = data.news;
-          $scope.blocksLoaded++;
+      //RADIO
+      NewsService.getNews($scope.user, "RADIO", $scope.filters, $scope.options, 5, 0).then(function (data) {
+        for (var i = 0; i < $scope.blockNews.length; i++) {
+          if ($scope.blockNews[i].type === data.type) {
+            $scope.blockNews[i].news = data.news;
+            $scope.blocksLoaded++;
+          }
         }
-      }
 
-    });
-    //PRESS
-    NewsService.getNews($scope.user, "PRESS",$scope.filters,$scope.options, 5, 0).then(function (data) {
-      for (var i = 0; i<$scope.blockNews.length;i++) {
-        if ($scope.blockNews[i].type === data.type) {
-          $scope.blockNews[i].news = data.news;
-          $scope.blocksLoaded++;
+      });
+      //PRESS
+      NewsService.getNews($scope.user, "PRESS", $scope.filters, $scope.options, 5, 0).then(function (data) {
+        for (var i = 0; i < $scope.blockNews.length; i++) {
+          if ($scope.blockNews[i].type === data.type) {
+            $scope.blockNews[i].news = data.news;
+            $scope.blocksLoaded++;
+          }
         }
-      }
 
-    });
-    //SOCIAL
-    NewsService.getNews($scope.user, "SOCIAL",$scope.filters,$scope.options, 5, 0).then(function (data) {
-      for (var i = 0; i<$scope.blockNews.length;i++) {
-        if ($scope.blockNews[i].type === data.type) {
-          $scope.blockNews[i].news = data.news;
-          $scope.blocksLoaded++;
+      });
+      //SOCIAL
+      NewsService.getNews($scope.user, "SOCIAL", $scope.filters, $scope.options, 5, 0).then(function (data) {
+        for (var i = 0; i < $scope.blockNews.length; i++) {
+          if ($scope.blockNews[i].type === data.type) {
+            $scope.blockNews[i].news = data.news;
+            $scope.blocksLoaded++;
+          }
         }
-      }
 
-    });
-    //INTERNET
-    NewsService.getNews($scope.user, "INTERNET",$scope.filters,$scope.options, 5, 0).then(function (data) {
-      for (var i = 0; i<$scope.blockNews.length;i++) {
-        if ($scope.blockNews[i].type === data.type) {
-          $scope.blockNews[i].news = data.news;
-          $scope.blocksLoaded++;
+      });
+      //INTERNET
+      NewsService.getNews($scope.user, "INTERNET", $scope.filters, $scope.options, 5, 0).then(function (data) {
+        for (var i = 0; i < $scope.blockNews.length; i++) {
+          if ($scope.blockNews[i].type === data.type) {
+            $scope.blockNews[i].news = data.news;
+            $scope.blocksLoaded++;
+          }
         }
-      }
 
-    });
-    //TWITTER
-    NewsService.getNews($scope.user, "TWITTER",$scope.filters,$scope.options, 5, 0).then(function (data) {
-      for (var i = 0; i<$scope.blockNews.length;i++) {
-        if ($scope.blockNews[i].type === data.type) {
-          $scope.blockNews[i].news = data.news;
-          $scope.blocksLoaded++;
+      });
+      //TWITTER
+      NewsService.getNews($scope.user, "TWITTER", $scope.filters, $scope.options, 5, 0).then(function (data) {
+        for (var i = 0; i < $scope.blockNews.length; i++) {
+          if ($scope.blockNews[i].type === data.type) {
+            $scope.blockNews[i].news = data.news;
+            $scope.blocksLoaded++;
+          }
         }
-      }
 
+      });
+    };
+
+    //this code is executed every time that state.go is invoked
+   $scope.$on('$ionicView.afterEnter',
+      function() {
+        $ionicNavBarDelegate.showBackButton(false);//disable the back button
+        // Code here is always executed when entering this state
+       // $ionicNavBarDelegate.showBar(true); //if this code is not set, the top bar will desapear
+        $scope.loadBlocks();
+      }
+    );
+    //*/
+    $scope.$on('reload-block',function(){
+      $scope.loadBlocks();
     });
     //disable loading mask when all blocks are loaded
     $scope.$watch('blocksLoaded',function(){
@@ -366,26 +405,27 @@ angular.module('app.controllers', [])
     $scope.user = UserService.getUser();
     $scope.filters = FilterService.getFilters();
     $scope.media = $scope.filters.media;
+    $scope.loadedComplete = false;//just to check when data is loaded first time;
 
     NewsService.getNews($scope.user,$scope.filters.media,$scope.filters,null,$scope.limit,$scope.offset).then(function(data) {
          $ionicLoading.hide();
       $scope.news = $scope.news.concat(data.news.slice());
+      $scope.loadedComplete= true;
       if (data.news.length ===0) {
         $scope.noMoreItemsAvailable=true;
-      } else {
-        $scope.offset += $scope.limit;
       }
    });
-
+    $scope.goToPreview=function(){
+      $state.go('menu.preview-noticias');
+    };
     $scope.loadMore = function() {
       var options = {infiniteScroll: true};
+      $scope.offset += $scope.limit;
       NewsService.getNews($scope.user,$scope.filters.media,$scope.filters,options,$scope.limit,$scope.offset).then(function(data) {
         $scope.news = $scope.news.concat(data.news.slice());
+        $scope.loadedComplete= true;
         if (data.news.length ===0) {
           $scope.noMoreItemsAvailable=true;
-        } else {
-
-          $scope.offset += $scope.limit;
         }
         $scope.$broadcast('scroll.infiniteScrollComplete');
       });
