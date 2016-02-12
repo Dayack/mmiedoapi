@@ -2,6 +2,7 @@
   color: $icon-grey;
   font-size: 20px;
   font-weight: bold;
+  margin-right: 5px;
 }
 .icon-media-item{
   float: left;
@@ -24,7 +25,8 @@
 }
 .new-item{
   border: 0px solid;
-
+  padding-bottom: 5px;
+  padding-top: 5px;
 }
 .icon-white{
   color: white;
@@ -43,5 +45,9 @@
 }
 .new-support{
    font-size: 15px;
-  margin-left: 10px;
 }
+
+.see-more-div{
+  float:right;
+}
+

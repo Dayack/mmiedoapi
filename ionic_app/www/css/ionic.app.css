@@ -9375,7 +9375,8 @@ table.media td {
 .media-icon {
   color: #BEBEBD;
   font-size: 20px;
-  font-weight: bold; }
+  font-weight: bold;
+  margin-right: 5px; }
 
 .icon-media-item {
   float: left; }
@@ -9396,7 +9397,9 @@ table.media td {
   border-bottom-width: 1px; }
 
 .new-item {
-  border: 0px solid; }
+  border: 0px solid;
+  padding-bottom: 5px;
+  padding-top: 5px; }
 
 .icon-white {
   color: white; }
@@ -9414,5 +9417,4 @@ table.media td {
   padding: 10px; }
 
 .new-support {
-  font-size: 15px;
-  margin-left: 10px; }
+  font-size: 15px; }
