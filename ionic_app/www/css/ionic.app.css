@@ -9410,7 +9410,8 @@ table.media td {
   text-align: right;
   padding: 5px 40px 5px 0px;
   cursor: pointer;
-  margin-bottom: 5px; }
+  margin-bottom: 5px;
+  height: 30px; }
 
 .no-new-content {
   text-align: center;
@@ -9418,3 +9419,7 @@ table.media td {
 
 .new-support {
   font-size: 15px; }
+
+.see-more-div {
+  float: right;
+  margin-left: 5px; }
