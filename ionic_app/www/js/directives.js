@@ -46,5 +46,15 @@ angular.module('app.directives', [])
               return "";
       }
     };
+  })
+  .filter('limitationText',function() {
+    return function(text,size) {
+      if (text.length >size) {
+        return text.substr(0,size)+"...";
+      } else {
+        return text;
+      }
+
+    };
   });
 
