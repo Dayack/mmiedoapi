@@ -15,7 +15,7 @@
                      <i ng-show="media == 'SOCIAL'" class="icon icon-mmi-social media-icon"></i>
                      <i ng-show="media == 'TWITTER'" class="icon icon-mmi-twitter media-icon"></i>
                      <i ng-show="media == 'INTERNET'" class="icon icon-mmi-arroba media-icon"></i>-->
-                     <span class="purple-text new-support">{{new.SOPORTE}}</span>
+                     <span class="purple-text new-support">{{new.SOPORTE | limitationText:30}}</span>
                    </div>
                     <div class="date-item">
                       {{new.FECHA | DateNew}}
@@ -27,7 +27,7 @@
                        <img ng-show="new.media == 'TV'" src="img/chicaplay.png"></img>
                   </div>-->
                   <div class="content-item">
-                    {{new.TEMA}}
+                    {{new.TEMA | limitationText:80}}
                   </div>
                   </div>
                 </div>
