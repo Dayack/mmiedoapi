@@ -6,16 +6,17 @@
         <ion-list style="" ng-show="loadedComplete && news.length !=0">
             <ion-item ng-repeat="new in news" style="" class="new-item" ng-click="goToNew(new)">
                 <div><!-- |  orderBy:'FECHA'-->
-                  <div>
-                    <div class="icon-media-item">
-                      <i ng-show="media == 'PRESS'" class="icon icon-mmi-press media-icon"></i>
-                      <i ng-show="media == 'RADIO'" class="icon icon-mmi-radio media-icon"></i>
-                      <i ng-show="media == 'TV'" class="icon icon-mmi-tv media-icon"></i>
-                      <i ng-show="media == 'SOCIAL'" class="icon icon-mmi-social media-icon"></i>
-                      <i ng-show="media == 'TWITTER'" class="icon icon-mmi-twitter media-icon"></i>
-                      <i ng-show="media == 'INTERNET'" class="icon icon-mmi-arroba media-icon"></i>
-                      <span class="purple-text new-support">{{new.SOPORTE}}</span>
-                    </div>
+                  <div class="news_abstract">
+                    <div>
+                   <div class="icon-media-item">
+                     <!-- <i ng-show="media == 'PRESS'" class="icon icon-mmi-press media-icon"></i>
+                     <i ng-show="media == 'RADIO'" class="icon icon-mmi-radio media-icon"></i>
+                     <i ng-show="media == 'TV'" class="icon icon-mmi-tv media-icon"></i>
+                     <i ng-show="media == 'SOCIAL'" class="icon icon-mmi-social media-icon"></i>
+                     <i ng-show="media == 'TWITTER'" class="icon icon-mmi-twitter media-icon"></i>
+                     <i ng-show="media == 'INTERNET'" class="icon icon-mmi-arroba media-icon"></i>-->
+                     <span class="purple-text new-support">{{new.SOPORTE}}</span>
+                   </div>
                     <div class="date-item">
                       {{new.FECHA | DateNew}}
                     </div>
@@ -27,6 +28,7 @@
                   </div>-->
                   <div class="content-item">
                     {{new.TEMA}}
+                  </div>
                   </div>
                 </div>
             </ion-item>

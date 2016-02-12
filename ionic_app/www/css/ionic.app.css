@@ -9381,7 +9381,8 @@ table.media td {
   float: left; }
 
 .date-item {
-  float: right; }
+  float: right;
+  font-size: 15px; }
 
 .content-item {
   clear: both;
@@ -9413,5 +9414,5 @@ table.media td {
   padding: 10px; }
 
 .new-support {
-  font-size: 20px;
+  font-size: 15px;
   margin-left: 10px; }
