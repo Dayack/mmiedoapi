@@ -90,7 +90,7 @@ angular.module('app.routes', [])
 
 
     .state('menu.noticias', {
-      url: '/news',
+      url: '/news/:media',
       views: {
         'side-menu21': {
           templateUrl: 'templates/noticias.html',
@@ -102,15 +102,27 @@ angular.module('app.routes', [])
 
 
 
+    .state('menu.preview-noticias', {
+      url: '/preview',
+      views: {
+        'side-menu21': {
+          templateUrl: 'templates/preview-noticias.html',
+          controller: 'previewNoticiasCtrl'
+        }
+      }
+    })
+
+
+
 
     .state('detalle', {
-      url: '/detail',      
+      url: '/detail',
         templateUrl: 'templates/detalleDeLaNoticia.html',
         controller: 'detalleCtrl'
     })
 
     .state('date_filter', {
-      url: '/date_filter',      
+      url: '/date_filter',
         templateUrl: 'templates/selectDate.html',
         controller: 'selectDateCtrl'
     })

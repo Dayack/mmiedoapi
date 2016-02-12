@@ -9371,3 +9371,55 @@ table.media td {
 
 .icon-mmi-twitter:before {
   content: "\e904"; }
+
+.media-icon {
+  color: #BEBEBD;
+  font-size: 20px;
+  font-weight: bold;
+  margin-right: 5px; }
+
+.icon-media-item {
+  float: left; }
+
+.date-item {
+  float: right;
+  font-size: 15px; }
+
+.content-item {
+  clear: both;
+  border-bottom: 1px solid #BEBEBD; }
+
+.media-header {
+  text-align: center;
+  color: #95378C;
+  background-color: #BFBFBE;
+  border-top-width: 0;
+  border-bottom-width: 1px; }
+
+.new-item {
+  border: 0px solid;
+  padding-bottom: 5px;
+  padding-top: 5px; }
+
+.icon-white {
+  color: white; }
+
+.see-more {
+  background-color: #95378C;
+  color: white;
+  text-align: right;
+  padding: 5px 40px 5px 0px;
+  cursor: pointer;
+  margin-bottom: 5px;
+  height: 30px; }
+
+.no-new-content {
+  text-align: center;
+  padding: 10px; }
+
+.new-support {
+  font-size: 15px; }
+
+.see-more-div {
+  float: right;
+  margin-left: 5px; }

@@ -3,6 +3,22 @@ angular.module('app.services', [])
   .factory('BlankFactory', [function () {
 
   }])
+  .factory('$localstorage', ['$window', function($window) {
+    return {
+      set: function(key, value) {
+        $window.localStorage[key] = value;
+      },
+      get: function(key, defaultValue) {
+        return $window.localStorage[key] || defaultValue;
+      },
+      setObject: function(key, value) {
+        $window.localStorage[key] = JSON.stringify(value);
+      },
+      getObject: function(key) {
+        return JSON.parse($window.localStorage[key] || '{}');
+      }
+    };
+  }])
 /**
  * Service that has the basic config info
  */
@@ -17,10 +33,23 @@ angular.module('app.services', [])
     };
 
   })
+
+  //HELPER FOR DATES
+  .service('DateHelperService',function(){
+    this.formatDate=function(date) {
+      day =  date.getDate();
+      month = date.getMonth()+1;
+      year = date.getFullYear();
+      return (day<10 ? "0":"")+day+(month<10?"0":"")+month+year;
+    };
+
+  })
+
+
 /**
  * User Service, used to save user info
  */
-  .service('UserService', function (HttpService, $q) {
+  .service('UserService', function (HttpService, $q, $window) {
     var user = null;
     /**
      *  Login, will send the login request, and save the user data in the Service, will return 'OK' or 'ERROR' to the controller
@@ -33,6 +62,9 @@ angular.module('app.services', [])
         //the answer from the HTTP was ok, not error and if user/password is ok
         if (data !== null && data != "error" && (data !== false)) {
           user = data;
+          //MOCKED TEST DATA
+          //user.IDUSUARIO=1445;
+          $window.localStorage.setItem('user',JSON.stringify(data));
           defer.resolve("OK");
         } else {
           user = null;
@@ -42,25 +74,66 @@ angular.module('app.services', [])
       return defer.promise;
     };
 
+    this.autoLogin = function() {
+      user = JSON.parse($window.localStorage.getItem('user'));
+      if (user !== null) {
+        return true;
+      } else {
+        return false;
+      }
+    };
+
     this.logout = function() {
       user = null;
+      $window.localStorage.removeItem('user');
     };
 
     this.getUser = function () {
+      if (user === null) {
+        this.autoLogin();
+      }
       return user;
     };
   })
-
-  .service('FilterService', function (HttpService, $q) {
+/**
+ * Service that has the filters saved
+ */
+  .service('FilterService', function (HttpService,DateHelperService, $q) {
     var filters = {
-      media: 'ALL',
-      startDate: {},
-      endDate: {},
+      media: 'TV',//by default we select TV, this filter is always set
+      startDate: {
+        date: null,
+        text:null
+      },
+      endDate: {
+        date: null,
+        text:null
+      },
       support_zones: [],
       new_zones: []
     };
 
+    //restart dates the filter set the date from 1 month ago to now
+    this.setMedia=function(media) {
+      filters.media = media;
+    };
+
+    this.restartDates = function() {
+      var today = new Date();
+      var days = 365;
+      filters.endDate.text = DateHelperService.formatDate(today);
+      filters.endDate.date = new Date();
+      filters.endDate.date.setTime(today.getTime());
+      filters.startDate.date = new Date();
+      filters.startDate.date.setTime(today.getTime() -  (days * 24 * 60 * 60 * 1000));
+      filters.startDate.text = DateHelperService.formatDate(filters.startDate.date);
+      //to end Date -30 days
+    };
+
     this.getFilters = function() {
+      if (filters.startDate.date ===null) {
+        this.restartDates();
+      }
       return filters;
     };
 
@@ -68,62 +141,84 @@ angular.module('app.services', [])
       filters.media = media;
     };
   })
-
-  .service('NewsService', function (HttpService, $q) {
+/**
+ * Service to load the news
+ */
+  .service('NewsService', function (HttpService,CategoryService, $q) {
 
     var limit = 10;
     var news = [];
     var offset = 0;
     var lastSearchHash = null;
-
-    this.getNews = function(user, filters, options) {
+    //-- preview config block
+    var blockLimit = 5;
+    /**
+     * Loads the news for user, filters, and options specified
+     * @param user
+     * @param type = type of the news to load 'TV','RADIO','SOCIAL','PRESS','TWITTER'
+     * @param filters
+     * @param options
+     * @returns {*}
+     */
+    this.getNews = function(user,type, filters, options,new_limit,new_offset) {
       options = options || {};
-      var searchHash = JSON.stringify(user) + JSON.stringify(filters);
+      var offset = 0;
+      var limit = 10;
+      if (new_limit !== null) {
+        limit = new_limit;
+      }
+      if (new_offset!==null) {
+        offset = new_offset;
+      }
+      var categories = CategoryService.getSelectedCategories();
+      var searchHash ="type="+type+ JSON.stringify(user) + JSON.stringify(filters)+"offset="+offset+"limit="+limit;
       var defer = $q.defer();
-       
-      if (lastSearchHash === searchHash) {
-        if (options.infiniteScroll) {
-          offset += limit;
-          HttpService.getNews(user, filters, offset).then(function (data) {
-            //the answer from the HTTP was ok, not error and if user/password is ok
-            if (data !== null && data != "error" && (data !== false)) {
-              news = news.concat(data);
-              defer.resolve(news);
-            } else {
-              defer.resolve(news);
-            }
-          });
+      var result = {
+        type: type,
+        news: []
+      };
+      if (angular.equals(categories,{})) {
+        defer.resolve({
+          type: type,
+          news: []
+        });
+        return defer.promise;
+      }
+     /* if (lastSearchHash === searchHash) {
+
+          result.news = news;
+         // return news;
+          defer.resolve(result);
           return defer.promise;
-          
-        } else {
-          return news;
-        }
-      } else {
-        offset = 0;
+      //  }
+      } else {*/
         lastSearchHash = searchHash;
-        HttpService.getNews(user, filters, offset).then(function (data) {
+        HttpService.getNews(user,type, filters,   offset  ,
+           limit  ,categories).then(function (data) {
           //the answer from the HTTP was ok, not error and if user/password is ok
+            result.news = data;
           if (data !== null && data != "error" && (data !== false)) {
             news = data;
-            defer.resolve(news);
+            defer.resolve(result);
           } else {
             news = [];
-            defer.resolve(news);
+            defer.resolve(result);
           }
         });
         return defer.promise;
 
-      }
-      return news;
+     /* }
+      result.news= news;
+      return result;*/
     };
-    
-    
+
+
   })
 
 /**
  * Category Service, used to save user info
  */
-  .service('CategoryService', function (HttpService, $q) {
+  .service('CategoryService', function (HttpService, $q,$localstorage,$window) {
     //List of all user categories
     var categories = [];
     //List of sub categories about selected category.
@@ -136,12 +231,44 @@ angular.module('app.services', [])
     // Current selection (Checkbox enables)
     var selectedCategories = {};
 	// Variable to known if all categories are selected
-    var allSelected = false;
- 
+    var allSelected = true;
+    var that = this;
+    //save in localStorage the category status
+    this.saveStatus=function(){
+      var status={
+        allSelected: allSelected,
+        categories: categories,
+        selectedCategories: selectedCategories,
+        subCategories: subCategories,
+        selectedCategory: selectedCategory,
+        categoriesUser: categoriesUser
+      };
+      $localstorage.setObject('categories',status);
+
+    };
+    this.loadStatus=function(){
+      var status = $localstorage.getObject('categories');
+      if (status !==null && !angular.equals(status,{})) {
+        allSelected = status.allSelected;
+        categories = status.categories;
+        selectedCategories = status.selectedCategories;
+        subCategories = status.subCategories;
+        categoriesUser = status.categoriesUser;
+        return true;
+      }
+      return false;
+    };
+
+    this.clearStatus = function() {
+      $window.localStorage.removeItem("categories");
+    };
     /**
      *  getCategories, will get all user's categories
      * @param user
      */
+    this.isAllSelected = function() {
+      return allSelected;
+    };
 
     this.getCategories = function (user) {
       var defer = $q.defer();
@@ -151,12 +278,29 @@ angular.module('app.services', [])
         HttpService.getCategories(user).then(function (data) {
           if (data !== null && data != "error" && (data !== false)) {
             categoriesUser = user;
-            categories = data;
+            //categories = data;
+            //wee need merge all the trees
+            angular.forEach(data, function(value, key) {
+              categories.push(value.CONTENIDO[0]);/*data[0].CONTENIDO[1]*/
+              //check if the father is the only node
+
+            });
+
+            //check all categories, is one node has not childrens, create children as the node himself
+            angular.forEach(categories,function(value,key){
+             if ( value.CHILDREN.length ===0) {
+               var newSubCat = {};
+               angular.copy(value,newSubCat);
+               value.CHILDREN.push(newSubCat);
+             }
+            });
+            that.saveStatus();
             //categories.unshift({"IDCATEGORIA": "0", "NOMBRE": "TODAS"});
             defer.resolve(categories);
           } else {
             categories = null;
             categoriesUser = null;
+            that.saveStatus();
             defer.resolve(null);
           }
         });
@@ -168,15 +312,16 @@ angular.module('app.services', [])
     this.setSelectedCategory = function (category) {
       allSelected = false;
       selectedCategory = category;
-      subCategories = selectedCategory.SUBCATEGORIAS;
-      if (selectedCategories.hasOwnProperty(category.IDCATEGORIA) && 
+      subCategories = selectedCategory.CHILDREN;
+      if (selectedCategories.hasOwnProperty(category.IDCATEGORIA) &&
           selectedCategories[category.IDCATEGORIA].length !== 0) {
         category.selected = true;
       } else {
         category.selected = false;
       }
+      that.saveStatus();
     };
-    
+
     this.getSelectedCategoryNombre = function () {
       return selectedCategory.NOMBRE;
     };
@@ -188,7 +333,7 @@ angular.module('app.services', [])
     this.selectSubCategory = function (subCategory) {
       categoryId = selectedCategory.IDCATEGORIA;
       subCategoryId = subCategory.IDCATEGORIA;
- 
+
       if (!selectedCategories.hasOwnProperty(categoryId)) {
 		subCategory.selected = true;
         selectedCategory.selected = true;
@@ -206,16 +351,45 @@ angular.module('app.services', [])
           selectedCategory.selected = true;
         }
       }
+      that.saveStatus();
     };
 
     this.setCurrentCategories = function (category) {
       selectedCategories = category;
+      that.saveStatus();
     };
 
     this.getCurrentCategories = function () {
+      if (angular.equals({},selectedCategories)) {
+        this.loadStatus();
+      }
       return selectedCategories;
     };
-    
+//are some cateogries selected?
+    this.areSelectedCategories = function() {
+      return (!angular.equals({},selectedCategories)|| allSelected);
+    };
+
+    this.getSelectedCategories = function() {
+      if (angular.equals({},selectedCategories)) {
+        this.loadStatus();
+      }
+      if (allSelected) {
+        var allCat = {};
+        angular.forEach(categories,function(value,key) {
+          if (!allCat.hasOwnProperty(value.IDCATEGORIA)) {
+            allCat[value.IDCATEGORIA] = [];
+          }
+          angular.forEach(value.CHILDREN, function (subvalue, subkey) {
+            allCat[value.IDCATEGORIA].push(subvalue.IDCATEGORIA);
+          });
+        });
+            return allCat;
+      } else {
+        return selectedCategories;
+      }
+    };
+
     this.deselectAllCategories = function () {
       allSelected = true;
       for (var categoryIndex=0;categoryIndex<categories.length;categoryIndex++) {
@@ -224,22 +398,25 @@ angular.module('app.services', [])
         if (selectedCategories.hasOwnProperty(_category.IDCATEGORIA)) {
           _category.selected = false;
 
-          for (var subCategoryIndex=0;subCategoryIndex<_category.SUBCATEGORIAS.length;subCategoryIndex++) {
-		    _category.SUBCATEGORIAS[subCategoryIndex].selected=false;
+          for (var subCategoryIndex=0;subCategoryIndex<_category.CHILDREN.length;subCategoryIndex++) {
+		    _category.CHILDREN[subCategoryIndex].selected=false;
           }
         }
       }
-      selectedCategories = {}; 
+      selectedCategories = {};
+      that.saveStatus();
     };
+
+
   })
 
   .service('PlacesService', function (HttpService, $q) {
-  
+
     var allPlaces = false;
     var places = [];
-    var placesUser = null;   
-    var selectedPlaces = [];  
- 
+    var placesUser = null;
+    var selectedPlaces = [];
+
     this.getPlaces = function (user) {
       var defer = $q.defer();
       if (placesUser === user) {
@@ -265,7 +442,7 @@ angular.module('app.services', [])
       allPlaces = false;
       if (selectedPlaces.indexOf(place.IDPLACE) > -1) {
         selectedPlaces.splice(selectedPlaces.indexOf(place.IDPLACE), 1);
-        place.selected = false; 
+        place.selected = false;
       } else {
         selectedPlaces.push(place.IDPLACE);
         place.selected = true;
@@ -348,32 +525,10 @@ angular.module('app.services', [])
       //MOCKED REQUEST
       //---DELETE THIS WHEN THE REQUEST IS WORKING
       var deferred = $q.defer();
-      if (user === 'demo.old' && password === 'demoMMI') {
-        deferred.resolve({
-          "IDUSUARIO": "41",
-          "IDZONA": "1",
-          "LOGIN": "demo.old",
-          "PASS": "demoMMI",
-          "NOMBRE": "Demo de Costa Rica",
-          "APELLIDO1": "",
-          "APELLIDO2": "",
-          "EMAIL": "",
-          "TWITTER": "",
-          "TIPO": "U",
-          "ACTIVO": "0",
-          "TELEFONO": "",
-          "CARGO": "",
-          "IDTIPOUSUARIO": "0",
-          "ULTIMOACCESO": "0000-00-00 00:00:00",
-          "ENCUESTADO": "0"
-        });
-      } else {
-        deferred.resolve(false);
-      }
-      // END MOCKED REQUEST
+
 
        //REAL REQUEST
-      /* $http.get('/getusuarios_login/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/0/'+user+'/'+password).success(function(data,status){
+       $http.get('/getusuarios_login/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/0/'+user+'/'+password).success(function(data,status){
        if (data instanceof Array && data.length >0) {
        deferred.resolve(data[0]);
        } else {
@@ -382,7 +537,7 @@ angular.module('app.services', [])
 
        }).error(function(data,status){
        deferred.resolve("error");
-       });*/
+       });
       return deferred.promise;
     };
 
@@ -390,32 +545,10 @@ angular.module('app.services', [])
       //MOCKED REQUEST
       //---DELETE THIS WHEN THE REQUEST IS WORKING
       var deferred = $q.defer();
-      if (user.LOGIN === 'demo.old') {
-        deferred.resolve([
-          {"IDCATEGORIA": "1287", "NOMBRE": "Municipio de la Orotava", 
-              "SUBCATEGORIAS": [{"IDCATEGORIA": "737", "NOMBRE": "APYMEVO"}, 
-                                {"IDCATEGORIA": "8508", "NOMBRE": "Elecciones Ayuntamiento de La Orotava 2015"}, 
-                                {"IDCATEGORIA": "6117", "NOMBRE": "Universidad Europea de Canarias"}]},
-          {"IDCATEGORIA": "1286", "NOMBRE": "Municipio de Telde", 
-              "SUBCATEGORIAS": [{"IDCATEGORIA": "736", "NOMBRE": "San Juan"}, 
-                                {"IDCATEGORIA": "8507", "NOMBRE": "Elecciones Ayuntamiento de Telde 2015"}, 
-                                {"IDCATEGORIA": "6116", "NOMBRE": "Instituto de Telde"}]},
-          {"IDCATEGORIA": "1285", "NOMBRE": "Binter", 
-              "SUBCATEGORIAS": [{"IDCATEGORIA": "735", "NOMBRE": "Aeropuerto de Santa Cruz Norte"}, 
-                                {"IDCATEGORIA": "8506", "NOMBRE": "Aeropuerto de Santa Cruz Sur"}, 
-                                {"IDCATEGORIA": "6115", "NOMBRE": "Aeropuerto de Telde"}]},
-          {"IDCATEGORIA": "1284", "NOMBRE": "Municipio de Las Palmas", 
-              "SUBCATEGORIAS": [{"IDCATEGORIA": "734", "NOMBRE": "Elecciones Ayuntamiento de Las Palmas 2015"}, 
-                                {"IDCATEGORIA": "8505", "NOMBRE": "Puerto de la Cruz"}, 
-                                {"IDCATEGORIA": "6114", "NOMBRE": "Universidad de Las Palmas de GC"}]},
-        ]);
-      } else {
-        deferred.resolve([]);
-      }
-      // END MOCKED REQUEST
-      /*
-       REAL REQUEST
-       $http.get('/getcategorias/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()).success(function(data,status){
+
+
+      // REAL REQUEST
+       $http.get('/getusuarios_categorias/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+user.IDUSUARIO).success(function(data,status){
        if (data instanceof Array && data.length >0) {
        deferred.resolve(data);
        } else {
@@ -424,7 +557,7 @@ angular.module('app.services', [])
 
        }).error(function(data,status){
        deferred.resolve("error");
-       });*/
+       });
       return deferred.promise;
     };
 
@@ -468,95 +601,82 @@ angular.module('app.services', [])
       return deferred.promise;
     };
 
+    /**
+     *
+     * @param user
+     * @param type = 'RADIO','TV','SOCIAL','PRESS','TWITTER'
+     * @param filters
+     * @param offset
+     * @returns {*|promise}
+     */
+    this.getNews = function (user,type,filters,offset, limit,categories) {
 
-    this.getNews = function (user,filters,offset) {
+      var url_radio = "getnoticiasradio_x_categorias";
+      var url_internet = "getnoticiasinternet_x_categorias";
+      var url_tv = "getnoticiastv_x_categorias";
+      var url_social = "getnoticiassocialmedia_x_categorias";
+      var url_twitter = "getnoticiassocialmedia_x_categorias";
+      var url_press = "getnoticiasprensa_x_categorias";
+      var social_type = ""; /// the social_type is because the socialMedia and twitter are the same URL
+      //1 : only twitter, 2: social without twitter, 3: all news )social + twitter)
+      var using_social=false;
+      var url_get = "";
+      switch (type) {
+        case "TV":
+          url_get = url_tv;
+          break;
+
+        case "RADIO":
+          url_get = url_radio;
+          break;
+
+        case "INTERNET":
+          url_get = url_internet;
+          break;
+
+        case "SOCIAL":
+          url_get = url_social;
+          social_type="2";
+          using_social=true;
+          break;
+
+        case "TWITTER":
+          url_get = url_twitter;
+          social_type="1";
+          using_social=true;
+          break;
+        case "PRESS":
+          url_get = url_press;
+          break;
+      }
        //window.setTimeout(function() {
-	  
-       //}, 3000);    
+
+       //}, 3000);
 
       //MOCKED REQUEST
       //---DELETE THIS WHEN THE REQUEST IS WORKING
       var deferred = $q.defer();
-      if (user.LOGIN === 'demo.old' && filters.media === 'ALL') {
-        if (offset === 0) {
-	  deferred.resolve([
-            {"title": "Noticia1", "media": "Prensa", "id": 1},
-            {"title": "Noticia2", "media": "TV", "id": 2},
-            {"title": "Noticia3", "media": "Prensa", "id": 3},
-            {"title": "Noticia4", "media": "Internet", "id": 4},
-            {"title": "Noticia5", "media": "TV", "id": 5},
-            {"title": "Noticia6", "media": "Internet", "id": 6},
-            {"title": "Noticia7", "media": "Internet", "id": 7},
-            {"title": "Noticia8", "media": "Internet", "id": 8},
-            {"title": "Noticia9", "media": "Internet", "id": 9},
-            {"title": "Noticia10", "media": "Internet", "id": 10},
-          ]);
-        } else if (offset === 10) {
-	  deferred.resolve([
-            {"title": "Noticia11", "media": "Prensa", "id": 11},
-            {"title": "Noticia12", "media": "TV", "id": 12},
-            {"title": "Noticia13", "media": "Prensa", "id": 13},
-            {"title": "Noticia14", "media": "Internet", "id": 14},
-            {"title": "Noticia15", "media": "TV", "id": 15},
-            {"title": "Noticia16", "media": "Internet", "id": 16},
-            {"title": "Noticia17", "media": "Internet", "id": 17},
-            {"title": "Noticia18", "media": "Internet", "id": 18},
-            {"title": "Noticia19", "media": "Internet", "id": 19},
-            {"title": "Noticia20", "media": "Internet", "id": 20},
-          ]);
-        } else if (offset === 20) {
-	  deferred.resolve([
-            {"title": "Noticia21", "media": "Prensa", "id": 21},
-            {"title": "Noticia22", "media": "TV", "id": 22},
-            {"title": "Noticia23", "media": "Prensa", "id": 23},
-          ]);
-        } else {
-	  deferred.resolve([]);
-        }
-      } else if (user.LOGIN === 'demo.old' && filters.media === 'PRESS') {
-        if (offset === 0) {
-	  deferred.resolve([
-            {"title": "Noticia1", "media": "Prensa", "id": 1},
-            {"title": "Noticia3", "media": "Prensa", "id": 3},
-            {"title": "Noticia11", "media": "Prensa", "id": 11},
-            {"title": "Noticia13", "media": "Prensa", "id": 13},
-            {"title": "Noticia21", "media": "Prensa", "id": 21},
-            {"title": "Noticia23", "media": "Prensa", "id": 23},
-          ]);
-        } else {
-	  deferred.resolve([]);
-        }
-      } else if (user.LOGIN === 'demo.old' && filters.media === 'INTERNET') {
-        if (offset === 0) {
-	  deferred.resolve([
-            {"title": "Noticia4", "media": "Internet", "id": 4},
-            {"title": "Noticia6", "media": "Internet", "id": 6},
-            {"title": "Noticia7", "media": "Internet", "id": 7},
-            {"title": "Noticia8", "media": "Internet", "id": 8},
-            {"title": "Noticia9", "media": "Internet", "id": 9},
-            {"title": "Noticia10", "media": "Internet", "id": 10},
-            {"title": "Noticia14", "media": "Internet", "id": 14},
-            {"title": "Noticia16", "media": "Internet", "id": 16},
-            {"title": "Noticia17", "media": "Internet", "id": 17},
-            {"title": "Noticia18", "media": "Internet", "id": 18},
-          ]);
-        } else if (offset === 10) {
-	  deferred.resolve([
-            {"title": "Noticia19", "media": "Internet", "id": 19},
-            {"title": "Noticia20", "media": "Internet", "id": 20},
-          ]);
-        } else {
-	  deferred.resolve([]);
-        }
-      } else {
-        deferred.resolve([]);
-      }
-      // END MOCKED REQUEST
-      /*
-       REAL REQUEST
-       var filters = FilterService.getFilters();
+
+       //REAL REQUEST
+       //var filters = FilterService.getFilters();
        //PARSE FILTERS TO QUERY
-       $http.get('/getNoticias/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()).success(function(data,status){
+      var params = [];
+      for (var property in categories) {
+        if (categories.hasOwnProperty(property)) {
+          // do stuff
+          angular.forEach(categories[property], function(value,key) {
+            params.push({"IDCATEGORIA": ""+ value});
+          });
+        }
+      }
+      //the API doesnt allow array of 1 category, so we must transform into an object
+      if (params.length===1) {
+        params = params[0];
+      }
+
+       $http.post('/'+url_get+'/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+filters.startDate.text+
+       '/'+filters.endDate.text+'/'+offset+'/'+limit+
+         (using_social ? ('/'+social_type ) : ""),params).success(function(data,status){
        if (data instanceof Array && data.length >0) {
        deferred.resolve(data);
        } else {
@@ -565,7 +685,7 @@ angular.module('app.services', [])
 
        }).error(function(data,status){
        deferred.resolve("error");
-       });*/
+       });
       return deferred.promise;
     };
 
