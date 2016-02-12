@@ -9411,3 +9411,7 @@ table.media td {
 .no-new-content {
   text-align: center;
   padding: 10px; }
+
+.new-support {
+  font-size: 20px;
+  margin-left: 10px; }
