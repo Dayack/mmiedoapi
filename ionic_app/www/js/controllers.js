@@ -394,7 +394,7 @@ angular.module('app.controllers', [])
   })
     .controller('noticiasCtrl', function($scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading,$rootScope) {
 
-    $rootScope.activeFilters = {value: true};
+    $rootScope.activeFilters = {value: false};
     $scope.noMoreItemsAvailable = false;
 
     $ionicLoading.show({
