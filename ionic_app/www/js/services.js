@@ -42,6 +42,14 @@ angular.module('app.services', [])
       year = date.getFullYear();
       return (day<10 ? "0":"")+day+(month<10?"0":"")+month+year;
     };
+    this.getToday=function(){
+      var today = new Date();
+      today= new Date(today.setHours(0));
+      today= new Date(today.setMinutes(0));
+      today= new Date(today.setSeconds(0));
+      today= new Date(today.setMilliseconds(0));
+      return today;
+    };
 
   })
 
@@ -63,7 +71,7 @@ angular.module('app.services', [])
         if (data !== null && data != "error" && (data !== false)) {
           user = data;
           //MOCKED TEST DATA
-          //user.IDUSUARIO=1445;
+          user.IDUSUARIO=1445;
           $window.localStorage.setItem('user',JSON.stringify(data));
           defer.resolve("OK");
         } else {
@@ -139,6 +147,17 @@ angular.module('app.services', [])
 
     this.setMedia = function(media) {
       filters.media = media;
+    };
+
+    this.setFromDate=function(dateFrom){
+      filters.startDate.date = dateFrom;
+      filters.startDate.text = DateHelperService.formatDate(filters.startDate.date);
+    };
+
+
+    this.setToDate=function(dateTo){
+      filters.endDate.date = dateTo;
+      filters.endDate.text = DateHelperService.formatDate(filters.endDate.date);
     };
   })
 /**

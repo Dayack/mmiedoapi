@@ -169,7 +169,7 @@ angular.module('app.controllers', [])
 })
 
 
-.controller('selectDateCtrl', function($scope,$state,FilterService,$rootScope,$ionicHistory) {
+.controller('selectDateCtrl', function($scope,$state,FilterService,$rootScope,$ionicHistory,DateHelperService) {
 
     //load from service
     $scope.data = {
@@ -179,47 +179,48 @@ angular.module('app.controllers', [])
     $scope.showFrom = {value:null};
     $scope.showTo = {value:false};
 
+    //save the dates in the filter service and exit to the news blocks
+    $scope.saveAndExit=function(){
+      FilterService.setFromDate($scope.data.fromDate);
+      FilterService.setToDate($scope.data.toDate);
+      $state.go('menu.preview-noticias');
+    };
+
+    $scope.returnToday = function(){
+      var today = new Date();
+      t
+    };
+
     $scope.selectTime = function(time) {
       switch (time) {
         case 'Today':
-          $scope.data.toDate = new Date();
-          $scope.data.fromDate = new Date();
-          $scope.data.fromDate= new Date($scope.data.fromDate.setHours(0));
-          $scope.data.fromDate= new Date($scope.data.fromDate.setMinutes(0));
-          $scope.data.fromDate= new Date($scope.data.fromDate.setSeconds(0));
-          $scope.data.fromDate= new Date($scope.data.fromDate.setMilliseconds(0));
+          $scope.data.toDate = DateHelperService.getToday();
+          $scope.data.fromDate = DateHelperService.getToday();
               break;
         case 'yesterday':
-          $scope.data.toDate = new Date();
-          $scope.data.toDate = new Date($scope.data.toDate.setHours(0));
-          $scope.data.toDate = new Date($scope.data.toDate.setMinutes(0));
-          $scope.data.toDate = new Date($scope.data.toDate.setSeconds(0));
-          $scope.data.toDate = new Date($scope.data.toDate.setMilliseconds(0));
+          $scope.data.toDate =  DateHelperService.getToday();
           $scope.data.fromDate = new Date();
           $scope.data.fromDate.setDate($scope.data.toDate.getDate() - 1);
           $scope.data.toDate.setDate($scope.data.fromDate.getDate());
           break;
         case '7d':
-          $scope.data.toDate = new Date();
-          $scope.data.toDate=new Date($scope.data.toDate.setHours(0));
-          $scope.data.toDate=new Date($scope.data.toDate.setMinutes(0));
-          $scope.data.toDate=new Date($scope.data.toDate.setSeconds(0));
-          $scope.data.toDate=new Date($scope.data.toDate.setMilliseconds(0));
+          $scope.data.toDate = DateHelperService.getToday();
           $scope.data.fromDate = new Date();
           $scope.data.fromDate.setDate($scope.data.toDate.getDate() - 7);
           break;
         case '30d':
-          $scope.data.toDate = new Date();
-          $scope.data.toDate=new Date($scope.data.toDate);
-          $scope.data.toDate=new Date($scope.data.toDate.setHours(0));
-          $scope.data.toDate=new Date($scope.data.toDate.setMinutes(0));
-          $scope.data.toDate=new Date($scope.data.toDate.setSeconds(0));
+          $scope.data.toDate = DateHelperService.getToday();
           $scope.data.toDate=new Date($scope.data.toDate.setMilliseconds(0));
           $scope.data.fromDate = new Date();
           $scope.data.fromDate.setDate($scope.data.toDate.getDate() - 30);
           break;
+        case '5y':
+          $scope.data.toDate = DateHelperService.getToday();
+          $scope.data.fromDate = new Date();
+          $scope.data.fromDate.setDate($scope.data.toDate.getDate() - 30);
 
       }
+      $scope.saveAndExit();
     };
 
     $scope.$watch('data.fromDate', function() {
@@ -236,7 +237,7 @@ angular.module('app.controllers', [])
        if ($scope.showTo.value===true) {
          $scope.showTo.value=false;
          $scope.showFrom.value=true;
-         $state.go('menu.noticias');
+         $scope.saveAndExit();
        }
     });
 
@@ -272,13 +273,6 @@ angular.module('app.controllers', [])
         $scope.toDatepickerObject.inputDate = val;
       }
     };
-
-    $scope.goToNews= function() {
-      $state.go('menu.noticias');
-    };
-
-
-
 })
 
   .controller('previewNoticiasCtrl', function($scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading,$rootScope) {
