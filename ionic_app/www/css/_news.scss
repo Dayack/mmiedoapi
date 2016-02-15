@@ -6,6 +6,8 @@
 }
 .icon-media-item{
   float: left;
+  white-space:nowrap;
+  overflow:hidden;
 }
 .date-item{
   float: right;
