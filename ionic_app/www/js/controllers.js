@@ -17,7 +17,7 @@ angular.module('app.controllers', [])
         $state.go('menu.preview-noticias');
       } else {
         FilterService.setMedia(media);
-        $rootScope.$broadcast('filtersChanged');
+        //$rootScope.$broadcast('filtersChanged');
       }
     };
 
@@ -28,6 +28,10 @@ angular.module('app.controllers', [])
       $state.go('login');
       $ionicHistory.clearHistory();
     };
+
+    $scope.on('filtersChanged',function(){
+     $rootScope.activeFilters.value = FilterService.getFiltered();
+    });
 
 })
 
@@ -71,7 +75,7 @@ angular.module('app.controllers', [])
         $state.go('menu.preview-noticias');
       } else {
         FilterService.setMedia(media);
-        $rootScope.$broadcast('filtersChanged');
+        //$rootScope.$broadcast('filtersChanged');
         $state.go('menu.noticias');
       }
     };
@@ -150,12 +154,15 @@ angular.module('app.controllers', [])
 
     };
     $scope.goToNews= function() {
+      FilterService.setFiltered(!$scope.allSelected);
+
+      $rootSCope.$broadcast('filtersChanged');
       $state.go('menu.noticias');
     };
 
 })
 
-.controller('originCtrl', function($scope, UserService, OriginService, $state) {
+.controller('originCtrl', function($scope, UserService, OriginService, $state,FilterService,$rootScope) {
     $scope.allSelected={value:OriginService.areAllSelected()};
     $scope.user = UserService.getUser();
     $scope.origins = OriginService.getOrigins($scope.user).then(function(data) {
@@ -171,6 +178,9 @@ angular.module('app.controllers', [])
 
     };
     $scope.goToNews= function() {
+      FilterService.setFiltered(!$scope.allSelected);
+      $rootSCope.$broadcast('filtersChanged');
+
       $state.go('menu.noticias');
     };
 
@@ -192,6 +202,8 @@ angular.module('app.controllers', [])
     $scope.saveAndExit=function(){
       FilterService.setFromDate($scope.data.fromDate);
       FilterService.setToDate($scope.data.toDate);
+      $rootSCope.$broadcast('filtersChanged');
+
       $state.go('menu.preview-noticias');
     };
 
@@ -201,7 +213,7 @@ angular.module('app.controllers', [])
         case 'Today':
           $scope.data.toDate = DateHelperService.getToday();
           $scope.data.fromDate = DateHelperService.getToday();
-          $rootScope.defaultDates=false;
+          $scope.defaultDates=false;
               break;
         case 'yesterday':
           $scope.data.toDate =  DateHelperService.getToday();
@@ -243,7 +255,7 @@ angular.module('app.controllers', [])
       if ($scope.defaultDates === null) {
         $scope.defaultDates=false;
       }
-      $rootScope.activeFilters.value = !$scope.defaultDates;
+      FilterService.setFiltered(!$scope.defaultDates);
     });
 
     $scope.$watch('data.toDate', function() {
@@ -253,7 +265,7 @@ angular.module('app.controllers', [])
          if ($scope.defaultDates === null) {
            $scope.defaultDates=false;
          }
-         $rootScope.activeFilters.value = !$scope.defaultDates;
+         FilterService.setFiltered(!$scope.defaultDates);
          $scope.saveAndExit();
        }
     });
@@ -444,7 +456,7 @@ angular.module('app.controllers', [])
       });
     };
 
-    $scope.$on('filtersChanged', function() {
+    /*$scope.$on('filtersChanged', function() {
       $scope.filters = FilterService.getFilters();
       $ionicLoading.show({
         template: '<div class="icon ion-loading-c loading-color">'
@@ -456,7 +468,7 @@ angular.module('app.controllers', [])
         },500);
 	//$ionicLoading.hide();
       });
-    });
+    });*/
 
     $scope.goToNew =function(detailNew){
       //$state.go('detalle');

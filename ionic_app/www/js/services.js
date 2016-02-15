@@ -129,6 +129,7 @@ angular.module('app.services', [])
       support_zones: [],
       new_zones: []
     };
+    var filtered = false;
 
     //restart dates the filter set the date from 1 month ago to now
     this.setMedia=function(media) {
@@ -163,6 +164,13 @@ angular.module('app.services', [])
     this.setToDate=function(dateTo){
       filters.endDate.date = dateTo;
       filters.endDate.text = DateHelperService.formatDate(filters.endDate.date);
+    };
+
+    this.setFiltered=function(newFilter){
+      filtered =newFilter;
+    };
+    this.getFiltered=function(){
+      return filtered;
     };
   })
 /**
