@@ -306,6 +306,8 @@ angular.module('app.services', [])
 
     this.clearStatus = function() {
       $window.localStorage.removeItem("categories");
+      categories = [];
+      selectedCategory=[];
     };
     /**
      *  getCategories, will get all user's categories
