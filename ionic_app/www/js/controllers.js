@@ -157,7 +157,7 @@ angular.module('app.controllers', [])
       FilterService.setFilterByPlace(!$scope.allSelected.value);
 
       $rootScope.$broadcast('filtersChanged');
-      $state.go('menu.noticias');
+      $state.go('menu.preview-noticias');
     };
 
 })
@@ -181,7 +181,7 @@ angular.module('app.controllers', [])
       FilterService.setFilterByOrigin(!$scope.allSelected.value);
       $rootScope.$broadcast('filtersChanged');
 
-      $state.go('menu.noticias');
+      $state.go('menu.preview-noticias');
     };
 
 })
@@ -217,7 +217,8 @@ angular.module('app.controllers', [])
               break;
         case 'yesterday':
           $scope.data.toDate =  DateHelperService.getToday();
-          $scope.data.fromDate = DateHelperService.addDays($scope.data.toDate,-1);
+          $scope.data.toDate = DateHelperService.addDays($scope.data.toDate,-1);
+          $scope.data.fromDate = DateHelperService.addDays($scope.data.toDate,0);
           $rootScope.activeFilters.value=true;
           $scope.defaultDates=false;
           break;
