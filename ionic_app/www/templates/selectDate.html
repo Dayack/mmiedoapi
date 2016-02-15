@@ -25,6 +25,9 @@
         </div>
         <div class="component" ng-click="selectTime('30d')">
           30 Días
+        </div >
+        <div class="component" ng-click="selectTime('5y')">
+          Todos
         </div>
       </div>
       <div class="datepicker-summary" ng-click="deployCalendar('from');">
@@ -47,7 +50,7 @@
   <div class="fixed-outside">
     <div class="row">
       <div class="col">
-        <button ng-click="goToNews();" class="button button-circle button-purple icon ion-checkmark-round"></button>
+        <button ng-click="saveAndExit();" class="button button-circle button-purple icon ion-checkmark-round"></button>
       </div>
     </div>
   </div>

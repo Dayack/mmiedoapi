@@ -4,7 +4,7 @@
         No existen noticias para los filtros aplicados
       </div>
         <ion-list style="" ng-show="loadedComplete && news.length !=0">
-            <ion-item ng-repeat="new in news" style="" class="new-item" ng-click="goToNew(new)">
+            <ion-item ng-repeat="new in news | unique: 'IDNOTICIA'" style="" class="new-item" ng-click="goToNew(new)">
                 <div><!-- |  orderBy:'FECHA'-->
                   <div class="news_abstract">
                     <div>
