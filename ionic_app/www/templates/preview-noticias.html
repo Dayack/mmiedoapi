@@ -6,7 +6,7 @@
     <div ng-repeat="block in blockNews track by $index">
       <div style="padding: 0px;" class=" row responsive-sm media-header">
         <div style="margin-bottom: -5px;" class="col">
-          <h3 style="color: #95378C;" class="title title-color">{{block.type | mediaName}}</h3>
+          <h3 class="title title-color">{{block.type | mediaName}}</h3>
         </div>
       </div>
       <!--warning of no news-->
@@ -43,7 +43,7 @@
       </ion-list>
       <!--ver mas-->
       <div class="see-more" ng-click="goToNews(block.type)">
-        <div class="see-more-div">Ver más</div>
+        <div class="see-more-div">Ver&nbsp;más</div>
 <div style="float: right; height: 10px;">
         <i cla ng-show="block.type == 'PRESS'" class="icon icon-mmi-press media-icon icon-white"></i>
         <i ng-show="block.type == 'RADIO'" class="icon icon-mmi-radio media-icon icon-white"></i>
