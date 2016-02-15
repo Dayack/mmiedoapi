@@ -9404,7 +9404,9 @@ table.media td {
   margin-right: 5px; }
 
 .icon-media-item {
-  float: left; }
+  float: left;
+  white-space: nowrap;
+  overflow: hidden; }
 
 .date-item {
   float: right;
