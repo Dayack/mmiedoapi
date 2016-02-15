@@ -28,8 +28,26 @@ angular.module('app.directives', [])
       }
     };
   })
+//disable repated items from the keyname
+  .filter('unique', function() {
+    return function (collection, keyname) {
+      var output = [],
+        keys = [];
 
+      angular.forEach(collection, function (item) {
+        var key = item[keyname];
+        if (keys.indexOf(key) === -1) {
+          keys.push(key);
+          output.push(item);
+        } /*else {
+          console.log("noticia "+key+" repetida");
+        }*/
+      });
+      return output;
+    };
+  })
 
+//get the media name from the media Type
   .filter('mediaName', function($filter){
     return function(type) {
       switch (type) {

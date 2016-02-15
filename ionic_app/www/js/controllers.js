@@ -13,8 +13,12 @@ angular.module('app.controllers', [])
     };
 
     $scope.selectMedia = function(media) {
-      FilterService.setMedia(media);
-      $rootScope.$broadcast('filtersChanged');
+      if (media ==="ALL") {
+        $state.go('menu.preview-noticias');
+      } else {
+        FilterService.setMedia(media);
+        $rootScope.$broadcast('filtersChanged');
+      }
     };
 
     //logout button in side menu
@@ -63,9 +67,13 @@ angular.module('app.controllers', [])
 
 .controller('mediosCtrl', function($scope,FilterService,$state,$rootScope) {
     $scope.selectMedia = function(media) {
-      FilterService.setMedia(media);
-      $rootScope.$broadcast('filtersChanged');
-      $state.go('menu.noticias');
+      if (media ==="ALL") {
+        $state.go('menu.preview-noticias');
+      } else {
+        FilterService.setMedia(media);
+        $rootScope.$broadcast('filtersChanged');
+        $state.go('menu.noticias');
+      }
     };
 
 })
@@ -127,7 +135,7 @@ angular.module('app.controllers', [])
 })
 
 .controller('eventPlaceCtrl', function($scope, UserService, PlacesService, $state) {
-	$scope.allSelected={value:false};
+	$scope.allSelected={value:PlacesService.areAllSelected()};//all is by defect
     $scope.user = UserService.getUser();
     $scope.places = PlacesService.getPlaces($scope.user).then(function(data) {
       $scope.places = data;
@@ -148,7 +156,7 @@ angular.module('app.controllers', [])
 })
 
 .controller('originCtrl', function($scope, UserService, OriginService, $state) {
-    $scope.allSelected={value:false};
+    $scope.allSelected={value:OriginService.areAllSelected()};
     $scope.user = UserService.getUser();
     $scope.origins = OriginService.getOrigins($scope.user).then(function(data) {
       $scope.origins = data;
@@ -170,7 +178,8 @@ angular.module('app.controllers', [])
 
 
 .controller('selectDateCtrl', function($scope,$state,FilterService,$rootScope,$ionicHistory,DateHelperService) {
-
+    $scope.defaultDates= null;//if set false, is to activate filters, if false, are default dates the disable filters icon
+    // , if null, the data has not been changed in the top options (today,yesterday..) so is changed in the datepicker
     //load from service
     $scope.data = {
       fromDate: new Date(),
@@ -186,38 +195,38 @@ angular.module('app.controllers', [])
       $state.go('menu.preview-noticias');
     };
 
-    $scope.returnToday = function(){
-      var today = new Date();
-      t
-    };
 
     $scope.selectTime = function(time) {
       switch (time) {
         case 'Today':
           $scope.data.toDate = DateHelperService.getToday();
           $scope.data.fromDate = DateHelperService.getToday();
+          $rootScope.defaultDates=false;
               break;
         case 'yesterday':
           $scope.data.toDate =  DateHelperService.getToday();
-          $scope.data.fromDate = new Date();
-          $scope.data.fromDate.setDate($scope.data.toDate.getDate() - 1);
-          $scope.data.toDate.setDate($scope.data.fromDate.getDate());
+          $scope.data.fromDate = DateHelperService.addDays($scope.data.toDate,-1);
+          $rootScope.activeFilters.value=true;
+          $scope.defaultDates=false;
           break;
         case '7d':
           $scope.data.toDate = DateHelperService.getToday();
-          $scope.data.fromDate = new Date();
-          $scope.data.fromDate.setDate($scope.data.toDate.getDate() - 7);
+          $scope.data.fromDate = DateHelperService.addDays($scope.data.toDate,-7);
+          $rootScope.activeFilters.value=true;
+          $scope.defaultDates=false;
           break;
         case '30d':
           $scope.data.toDate = DateHelperService.getToday();
-          $scope.data.toDate=new Date($scope.data.toDate.setMilliseconds(0));
-          $scope.data.fromDate = new Date();
-          $scope.data.fromDate.setDate($scope.data.toDate.getDate() - 30);
+          $scope.data.fromDate = DateHelperService.addDays($scope.data.toDate,-30);
+          $rootScope.activeFilters.value=true;
+          $scope.defaultDates=false;
           break;
         case '5y':
           $scope.data.toDate = DateHelperService.getToday();
-          $scope.data.fromDate = new Date();
-          $scope.data.fromDate.setDate($scope.data.toDate.getDate() - 30);
+          $scope.data.fromDate = DateHelperService.addDays($scope.data.toDate,-1865);
+
+          $rootScope.activeFilters.value=false;
+          $scope.defaultDates=true;
 
       }
       $scope.saveAndExit();
@@ -231,12 +240,20 @@ angular.module('app.controllers', [])
          $scope.showFrom.value=false;
          $scope.showTo.value=true;
        }
+      if ($scope.defaultDates === null) {
+        $scope.defaultDates=false;
+      }
+      $rootScope.activeFilters.value = !$scope.defaultDates;
     });
 
     $scope.$watch('data.toDate', function() {
        if ($scope.showTo.value===true) {
          $scope.showTo.value=false;
          $scope.showFrom.value=true;
+         if ($scope.defaultDates === null) {
+           $scope.defaultDates=false;
+         }
+         $rootScope.activeFilters.value = !$scope.defaultDates;
          $scope.saveAndExit();
        }
     });
@@ -277,12 +294,12 @@ angular.module('app.controllers', [])
 
   .controller('previewNoticiasCtrl', function($scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading,$rootScope) {
   $scope.blockNews= [
-    {news:[], type:"TV"},
-    {news:[], type:"RADIO"},
-    {news:[], type:"PRESS"},
-    {news:[], type:"SOCIAL"},
-    {news:[], type:"INTERNET"},
-    {news:[], type:"TWITTER"}
+    {news:[],ids:[], type:"TV"},
+    {news:[],ids:[], type:"RADIO"},
+    {news:[],ids:[], type:"PRESS"},
+    {news:[],ids:[], type:"SOCIAL"},
+    {news:[],ids:[], type:"INTERNET"},
+    {news:[],ids:[], type:"TWITTER"}
 
   ];
     $ionicNavBarDelegate.showBackButton(false);//disable the back button
@@ -388,7 +405,7 @@ angular.module('app.controllers', [])
   })
     .controller('noticiasCtrl', function($scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading,$rootScope) {
 
-    $rootScope.activeFilters = {value: false};
+    //$rootScope.activeFilters = {value: false};
     $scope.noMoreItemsAvailable = false;
 
     $ionicLoading.show({
@@ -436,7 +453,7 @@ angular.module('app.controllers', [])
         $scope.news = data;
         window.setTimeout(function() {
 	  $ionicLoading.hide();
-        }, 3000);
+        },500);
 	//$ionicLoading.hide();
       });
     });

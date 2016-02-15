@@ -36,12 +36,14 @@ angular.module('app.services', [])
 
   //HELPER FOR DATES
   .service('DateHelperService',function(){
+    //format the date to String DD-MM-YYYY
     this.formatDate=function(date) {
       day =  date.getDate();
       month = date.getMonth()+1;
       year = date.getFullYear();
       return (day<10 ? "0":"")+day+(month<10?"0":"")+month+year;
     };
+    //get the Date of today
     this.getToday=function(){
       var today = new Date();
       today= new Date(today.setHours(0));
@@ -49,6 +51,13 @@ angular.module('app.services', [])
       today= new Date(today.setSeconds(0));
       today= new Date(today.setMilliseconds(0));
       return today;
+    };
+
+    //add or extract days to a date
+    this.addDays=function(date,days) {
+      var newDate = new Date();
+      newDate.setTime(date.getTime() + (days* 24 * 60 * 60 * 1000));
+      return newDate;
     };
 
   })
@@ -127,13 +136,9 @@ angular.module('app.services', [])
     };
 
     this.restartDates = function() {
-      var today = new Date();
-      var days = 365;
-      filters.endDate.text = DateHelperService.formatDate(today);
-      filters.endDate.date = new Date();
-      filters.endDate.date.setTime(today.getTime());
-      filters.startDate.date = new Date();
-      filters.startDate.date.setTime(today.getTime() -  (days * 24 * 60 * 60 * 1000));
+      filters.endDate.date  = DateHelperService.getToday();
+      filters.endDate.text = DateHelperService.formatDate(filters.endDate.date);
+      filters.startDate.date =DateHelperService.addDays(filters.endDate.date,-1865);
       filters.startDate.text = DateHelperService.formatDate(filters.startDate.date);
       //to end Date -30 days
     };
@@ -174,7 +179,7 @@ angular.module('app.services', [])
     /**
      * Loads the news for user, filters, and options specified
      * @param user
-     * @param type = type of the news to load 'TV','RADIO','SOCIAL','PRESS','TWITTER'
+     * @param type = type of the news to load 'TV','RADIO','SOCIAL','PRESS','TWITTER','INTERNET'
      * @param filters
      * @param options
      * @returns {*}
@@ -230,6 +235,7 @@ angular.module('app.services', [])
       result.news= news;
       return result;*/
     };
+
 
 
   })
@@ -431,7 +437,7 @@ angular.module('app.services', [])
 
   .service('PlacesService', function (HttpService, $q) {
 
-    var allPlaces = false;
+    var allPlaces = true;
     var places = [];
     var placesUser = null;
     var selectedPlaces = [];
@@ -475,17 +481,22 @@ angular.module('app.services', [])
       }
       selectedPlaces = [];
     };
+    this.areAllSelected=function(){
+      return allPlaces;
+    };
 
   })
 
 
   .service('OriginService', function (HttpService, $q) {
 
-    var allOrigins = false;
+    var allOrigins = true;
     var origins = [];
     var originUser = null;
     var selectedOrigins = [];
-
+    this.areAllSelected=function(){
+      return allOrigins;
+    };
     this.getOrigins = function (user) {
       var defer = $q.defer();
       if (originUser === user) {
