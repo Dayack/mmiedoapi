@@ -29,7 +29,7 @@ angular.module('app.controllers', [])
       $ionicHistory.clearHistory();
     };
 
-    $scope.on('filtersChanged',function(){
+    $scope.$on('filtersChanged',function(){
      $rootScope.activeFilters.value = FilterService.getFiltered();
     });
 
@@ -138,7 +138,7 @@ angular.module('app.controllers', [])
     };
 })
 
-.controller('eventPlaceCtrl', function($scope, UserService, PlacesService, $state) {
+.controller('eventPlaceCtrl', function($scope, UserService, PlacesService, $state,FilterService,$rootScope) {
 	$scope.allSelected={value:PlacesService.areAllSelected()};//all is by defect
     $scope.user = UserService.getUser();
     $scope.places = PlacesService.getPlaces($scope.user).then(function(data) {
@@ -154,9 +154,9 @@ angular.module('app.controllers', [])
 
     };
     $scope.goToNews= function() {
-      FilterService.setFiltered(!$scope.allSelected);
+      FilterService.setFilterByPlace(!$scope.allSelected.value);
 
-      $rootSCope.$broadcast('filtersChanged');
+      $rootScope.$broadcast('filtersChanged');
       $state.go('menu.noticias');
     };
 
@@ -178,8 +178,8 @@ angular.module('app.controllers', [])
 
     };
     $scope.goToNews= function() {
-      FilterService.setFiltered(!$scope.allSelected);
-      $rootSCope.$broadcast('filtersChanged');
+      FilterService.setFilterByOrigin(!$scope.allSelected.value);
+      $rootScope.$broadcast('filtersChanged');
 
       $state.go('menu.noticias');
     };
@@ -202,7 +202,7 @@ angular.module('app.controllers', [])
     $scope.saveAndExit=function(){
       FilterService.setFromDate($scope.data.fromDate);
       FilterService.setToDate($scope.data.toDate);
-      $rootSCope.$broadcast('filtersChanged');
+      $rootScope.$broadcast('filtersChanged');
 
       $state.go('menu.preview-noticias');
     };
@@ -255,7 +255,7 @@ angular.module('app.controllers', [])
       if ($scope.defaultDates === null) {
         $scope.defaultDates=false;
       }
-      FilterService.setFiltered(!$scope.defaultDates);
+      FilterService.setFilterByDate(!$scope.defaultDates);
     });
 
     $scope.$watch('data.toDate', function() {
@@ -265,7 +265,7 @@ angular.module('app.controllers', [])
          if ($scope.defaultDates === null) {
            $scope.defaultDates=false;
          }
-         FilterService.setFiltered(!$scope.defaultDates);
+         FilterService.setFilterByDate(!$scope.defaultDates);
          $scope.saveAndExit();
        }
     });

@@ -129,7 +129,9 @@ angular.module('app.services', [])
       support_zones: [],
       new_zones: []
     };
-    var filtered = false;
+    var filteredByDate = false;
+    var filteredByOrigin = false;
+    var filteredByPlace=false;
 
     //restart dates the filter set the date from 1 month ago to now
     this.setMedia=function(media) {
@@ -169,8 +171,18 @@ angular.module('app.services', [])
     this.setFiltered=function(newFilter){
       filtered =newFilter;
     };
+    this.setFilterByDate=function(filter) {
+      filteredByDate = filter;
+    };
+    this.setFilterByOrigin= function(filter){
+      filteredByOrigin=filter;
+    };
+
+    this.setFilterByPlace = function(filter){
+      filteredByPlace=filter;
+    };
     this.getFiltered=function(){
-      return filtered;
+      return ((filteredByDate || filteredByOrigin) || filteredByPlace);
     };
   })
 /**
