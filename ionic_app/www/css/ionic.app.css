@@ -9278,7 +9278,7 @@ table.media td {
   color: #95378C; }
 
 .datetimepicker .future, .datetimepicker .past {
-  display: none; }
+  visibility: hidden; }
 
 .datetimepicker .day {
   color: #686868; }
@@ -9315,6 +9315,31 @@ table.media td {
 .tvScreenshot img {
   max-width: 40%;
   max-height: 30%; }
+
+.col_new {
+  margin-bottom: -5px !important;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  -moz-box-flex: 1;
+  -moz-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: block;
+  padding: -5px;
+  width: 100%; }
+
+.row_new {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: flex;
+  width: 100%;
+  padding: 0px; }
+
+.title-color {
+  color: #95378C !important; }
 
 @font-face {
   font-family: 'icomoon';
