@@ -741,4 +741,3 @@ angular.module('app.services', [])
 
   })
 ;
-
