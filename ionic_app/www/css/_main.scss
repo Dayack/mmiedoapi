@@ -299,4 +299,13 @@ table.media td{
 
 
 .title-color{
-  color: #95378C !important;}
+  color: $purple !important;}
+
+.media.button.activated{
+  background-color:$purple !important;
+  color: white !important;
+}
+.date-option.activated{
+  background-color: $light-blue;
+  color: white;
+}

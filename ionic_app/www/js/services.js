@@ -60,6 +60,13 @@ angular.module('app.services', [])
       return newDate;
     };
 
+    //transform YYYY-MM-DD to DDMMYYYY
+    this.formatStringDate = function(date) {
+      var stringDate = date.split("-");
+      return stringDate[2]+stringDate[1]+stringDate[0];
+
+    };
+
   })
 
 
@@ -188,7 +195,7 @@ angular.module('app.services', [])
 /**
  * Service to load the news
  */
-  .service('NewsService', function (HttpService,CategoryService, $q) {
+  .service('NewsService', function (HttpService,CategoryService, $q,DateHelperService) {
 
     var limit = 10;
     var news = [];
@@ -254,6 +261,15 @@ angular.module('app.services', [])
      /* }
       result.news= news;
       return result;*/
+    };
+
+    this.getNew=function(media,date,id) {
+      var defer = $q.defer();
+      HttpService.getDetailNew(media,DateHelperService.formatStringDate(date),id).then(function(data){
+         defer.resolve(data);
+
+     });
+      return defer.promise;
     };
 
 
@@ -590,6 +606,33 @@ angular.module('app.services', [])
        }).error(function(data,status){
        deferred.resolve("error");
        });
+      return deferred.promise;
+    };
+
+    this.getDetailNew = function(media,date,id){
+      var deferred = $q.defer();
+      var url="";
+      switch (media) {
+        case "PRESS":
+          url="/getnoticiasprensa_detalle";
+          break;
+        case "TV":
+          url="/getnoticiastv_detalle";
+          break;
+        case "RADIO":
+          url="/getnoticiasradio_detalle";
+          break;
+        case "INTERNET":
+          url="/getnoticiasinternet_detalle";
+          break;
+        case "SOCIAL":
+        case "TWITTER":
+          url="/getnoticiassocialmedia_detalle";
+          break;
+      }
+      $http.get(url+'/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+id+'/'+date).then(function(data){
+        deferred.resolve(data.data[0]);
+      });
       return deferred.promise;
     };
 
