@@ -468,4 +468,21 @@ angular.module('app.controllers', [])
       $state.go('menu.detalle');
     };
 })
+
+.controller('multimediaCtrl', function($scope, $http) {
+
+    $scope.getData = function() {
+      $http.get("http://api.mmi-e.com/mmiapi.php/get_url_multimedia_tv/DFKGMKLJOIRJNG/1/02/2016/161")
+      //$http.get("http://localhost:8889/ejemplo.json")
+        .success(function(data) {
+          $scope.URL = data[0].URL;
+          //alert(data[0].URL);
+        })
+        .error(function(data) {
+          alert("ERROR");
+        });
+      }
+
+})
+
 ;

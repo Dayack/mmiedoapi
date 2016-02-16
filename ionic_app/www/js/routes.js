@@ -36,7 +36,11 @@ angular.module('app.routes', [])
     })
 
 
-
+    .state('multimedia', {
+      url: '/mm',
+      templateUrl: 'templates/multimedia.html',
+      controller: 'multimediaCtrl'
+    })
 
 
     .state('menu.categorias', {
