@@ -6,11 +6,11 @@
         <div style="">
           <p>Bla bla bla bla bla bla...</p>
           <!--TV-->
-          <video controls class="video-frame">
+          <video ng-show="media == 'TV'" controls class="video-frame">
             <source ng-src="{{resourceUrl| trusted}}" type="video/mp4"/>
           </video>
           <!--RADIO-->
-          <audio controls>
+          <audio ng-show="media == 'RADIO'" controls>
             <source ng-src="{{resourceMp3 | trusted}}" type="audio/mp3">
           </audio>
           <!--PDF-->

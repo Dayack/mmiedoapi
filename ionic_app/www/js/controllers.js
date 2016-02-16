@@ -485,11 +485,13 @@ angular.module('app.controllers', [])
       $scope.dataNew = data;
     });
 
+    NewsService.getVideo($scope.media,$scope.date,$scope.id).then(function(data) {
+      $scope.resourceUrl = data;
+    });
 
     $ionicNavBarDelegate.showBackButton(true);//disable the back button
-    $scope.resourceUrl = "http://test.can.mmi-e.com/accesovideo_pub.php?zona_id=1&mes=02&ano=2016&id=TVRZeA==&tipo=mp4";
-
-    $scope.resourceMp3 = "http://test.can.mmi-e.com/accesoradio_pub.php?zona_id=1&mes=02&ano=2016&id=Tmpjdw==&tipo=mp3";
+    //$scope.resourceUrl = "http://test.can.mmi-e.com/accesovideo_pub.php?zona_id=1&mes=02&ano=2016&id=TVRZeA==&tipo=mp4";
+    //$scope.resourceMp3 = "http://test.can.mmi-e.com/accesoradio_pub.php?zona_id=1&mes=02&ano=2016&id=Tmpjdw==&tipo=mp3";
     $scope.user = UserService.getUser();
     //$scope.categories = [{"IDCATEGORIA": "2", "NOMBRE": "Categoria 1"},{"IDCATEGORIA": "3", "NOMBRE": "Categoria 2"}];
     //$scope.categories = CategoryService.getCategories($scope.user);
@@ -508,15 +510,13 @@ angular.module('app.controllers', [])
 
     $scope.getData = function() {
       $http.get("http://api.mmi-e.com/mmiapi.php/get_url_multimedia_tv/DFKGMKLJOIRJNG/1/02/2016/161")
-      //$http.get("http://localhost:8889/ejemplo.json")
         .success(function(data) {
           $scope.URL = data[0].URL;
-          //alert(data[0].URL);
         })
         .error(function(data) {
           alert("ERROR");
         });
-      }
+      };
 
 })
 
