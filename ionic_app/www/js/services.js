@@ -80,7 +80,7 @@ angular.module('app.services', [])
         if (data !== null && data != "error" && (data !== false)) {
           user = data;
           //MOCKED TEST DATA
-         // user.IDUSUARIO=1445;
+         user.IDUSUARIO=1445;
           $window.localStorage.setItem('user',JSON.stringify(data));
           defer.resolve("OK");
         } else {
@@ -306,6 +306,8 @@ angular.module('app.services', [])
 
     this.clearStatus = function() {
       $window.localStorage.removeItem("categories");
+      categories = [];
+      selectedCategory=[];
     };
     /**
      *  getCategories, will get all user's categories
