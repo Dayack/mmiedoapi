@@ -1,20 +1,49 @@
 <ion-view style="" title="Detalle de la noticia">
   <ion-content class="has-header" overflow-scroll="true" padding="'true'">
     <div style="" class="list card">
-      <div class="item item-divider">Título de la noticia</div>
+      <div class="item item-avatar">
+        <div class="icon-media-item">
+          <i cla ng-show="media == 'PRESS'" class="icon icon-mmi-press media-icon"></i>
+          <i ng-show="media == 'RADIO'" class="icon icon-mmi-radio media-icon"></i>
+          <i ng-show="media == 'TV'" class="icon icon-mmi-tv media-icon"></i>
+          <i ng-show="media == 'SOCIAL'" class="icon icon-mmi-social media-icon"></i>
+          <i ng-show="media == 'TWITTER'" class="icon icon-mmi-twitter media-icon"></i>
+          <i ng-show="media == 'INTERNET'" class="icon icon-mmi-arroba media-icon"></i>
+
+        </div>    <span class="purple-text new-support">{{support}}</span>
+        <p>{{dataNew.FECHA}}</p>
+      </div>
       <div class="item item-body">
         <div style="">
-          <p>Bla bla bla bla bla bla...</p>
           <!--TV-->
+          <div ng-show="media ==='TV'">
           <video controls class="video-frame">
             <source ng-src="{{resourceUrl| trusted}}" type="video/mp4"/>
           </video>
+          </div>
           <!--RADIO-->
+          <div ng-show="media ==='RADIO'">
           <audio controls>
             <source ng-src="{{resourceMp3 | trusted}}" type="audio/mp3">
           </audio>
+          </div>
           <!--PDF-->
+          <!--URL SOCIAL MEDIA/TWITTER/INTERNET-->
+          <div ng-show="(media === 'SOCIAL' || media ==='INTERNET') || media ==='TWITTER'">
+            <div>
+            ENLACE
+            </div>
+          </div>
 
+        </div>
+        <div>
+
+          <p>{{dataNew.TEMA}}</p>
+
+        </div>
+        <div ng-show="extendedText">
+          <!--ROLLO-->
+          <p>{{dataNew.ROLLO}}</p>
         </div>
       </div>
     </div>

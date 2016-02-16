@@ -480,9 +480,12 @@ angular.module('app.controllers', [])
     $scope.media= $stateParams.media;
     $scope.date= $stateParams.date;
     $scope.id = $stateParams.id;
+    $scope.support= $stateParams.support;
     $scope.dataNew = null;
+    $scope.extendedText=false;
     NewsService.getNew($scope.media,$scope.date,$scope.id).then(function(data) {
       $scope.dataNew = data;
+      $scope.extendedText = (angular.isDefined($scope.dataNew.ROLLO));
     });
 
 
