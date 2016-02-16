@@ -475,21 +475,31 @@ angular.module('app.controllers', [])
     };
 })
 
-.controller('detalleCtrl', function($scope,UserService,CategoryService,$state,$ionicNavBarDelegate) {
-    $ionicNavBarDelegate.showBackButton(true);//disable the back button
-$scope.resourceUrl= "http://test.can.mmi-e.com/accesovideo_pub.php?zona_id=1&mes=02&ano=2016&id=TVRZeA==&tipo=mp4";
+.controller('detalleCtrl', function($scope,UserService,CategoryService,$state,$ionicNavBarDelegate,$stateParams,NewsService) {
 
-    $scope.resourceMp3="http://test.can.mmi-e.com/accesoradio_pub.php?zona_id=1&mes=02&ano=2016&id=Tmpjdw==&tipo=mp3";
+    $scope.media= $stateParams.media;
+    $scope.date= $stateParams.date;
+    $scope.id = $stateParams.id;
+    $scope.dataNew = null;
+    NewsService.getNew($scope.media,$scope.date,$scope.id).then(function(data) {
+      $scope.dataNew = data;
+    });
+
+
+    $ionicNavBarDelegate.showBackButton(true);//disable the back button
+    $scope.resourceUrl = "http://test.can.mmi-e.com/accesovideo_pub.php?zona_id=1&mes=02&ano=2016&id=TVRZeA==&tipo=mp4";
+
+    $scope.resourceMp3 = "http://test.can.mmi-e.com/accesoradio_pub.php?zona_id=1&mes=02&ano=2016&id=Tmpjdw==&tipo=mp3";
     $scope.user = UserService.getUser();
     //$scope.categories = [{"IDCATEGORIA": "2", "NOMBRE": "Categoria 1"},{"IDCATEGORIA": "3", "NOMBRE": "Categoria 2"}];
     //$scope.categories = CategoryService.getCategories($scope.user);
-    $scope.categories = CategoryService.getCategories($scope.user).then(function(data) {
+    $scope.categories = CategoryService.getCategories($scope.user).then(function (data) {
       $scope.categories = data;
     });
 
-    $scope.selectCategory= function(category){
+    $scope.selectCategory = function (category) {
       CategoryService.setCurrentCategory(category);
-     // $state.go('menu.noticias');
+      // $state.go('menu.noticias');
       $state.go('menu.detalle');
     };
 })
