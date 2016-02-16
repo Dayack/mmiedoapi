@@ -13,8 +13,12 @@ angular.module('app.controllers', [])
     };
 
     $scope.selectMedia = function(media) {
-      FilterService.setMedia(media);
-      $rootScope.$broadcast('filtersChanged');
+      if (media ==="ALL") {
+        $state.go('menu.preview-noticias');
+      } else {
+        FilterService.setMedia(media);
+        //$rootScope.$broadcast('filtersChanged');
+      }
     };
 
     //logout button in side menu
@@ -24,6 +28,10 @@ angular.module('app.controllers', [])
       $state.go('login');
       $ionicHistory.clearHistory();
     };
+
+    $scope.$on('filtersChanged',function(){
+     $rootScope.activeFilters.value = FilterService.getFiltered();
+    });
 
 })
 
@@ -63,9 +71,13 @@ angular.module('app.controllers', [])
 
 .controller('mediosCtrl', function($scope,FilterService,$state,$rootScope) {
     $scope.selectMedia = function(media) {
-      FilterService.setMedia(media);
-      $rootScope.$broadcast('filtersChanged');
-      $state.go('menu.noticias');
+      if (media ==="ALL") {
+        $state.go('menu.preview-noticias');
+      } else {
+        FilterService.setMedia(media);
+        //$rootScope.$broadcast('filtersChanged');
+        $state.go('menu.noticias');
+      }
     };
 
 })
@@ -126,8 +138,8 @@ angular.module('app.controllers', [])
     };
 })
 
-.controller('eventPlaceCtrl', function($scope, UserService, PlacesService, $state) {
-	$scope.allSelected={value:false};
+.controller('eventPlaceCtrl', function($scope, UserService, PlacesService, $state,FilterService,$rootScope) {
+	$scope.allSelected={value:PlacesService.areAllSelected()};//all is by defect
     $scope.user = UserService.getUser();
     $scope.places = PlacesService.getPlaces($scope.user).then(function(data) {
       $scope.places = data;
@@ -142,13 +154,15 @@ angular.module('app.controllers', [])
 
     };
     $scope.goToNews= function() {
-      $state.go('menu.noticias');
+      FilterService.setFilterByPlace(!$scope.allSelected.value);
+      $rootScope.$broadcast('filtersChanged');
+      $state.go('menu.preview-noticias');
     };
 
 })
 
-.controller('originCtrl', function($scope, UserService, OriginService, $state) {
-    $scope.allSelected={value:false};
+.controller('originCtrl', function($scope, UserService, OriginService, $state,FilterService,$rootScope) {
+    $scope.allSelected={value:OriginService.areAllSelected()};
     $scope.user = UserService.getUser();
     $scope.origins = OriginService.getOrigins($scope.user).then(function(data) {
       $scope.origins = data;
@@ -163,14 +177,18 @@ angular.module('app.controllers', [])
 
     };
     $scope.goToNews= function() {
-      $state.go('menu.noticias');
+      FilterService.setFilterByOrigin(!$scope.allSelected.value);
+      $rootScope.$broadcast('filtersChanged');
+
+      $state.go('menu.preview-noticias');
     };
 
 })
 
 
-.controller('selectDateCtrl', function($scope,$state,FilterService,$rootScope,$ionicHistory) {
-
+.controller('selectDateCtrl', function($scope,$state,FilterService,$rootScope,$ionicHistory,DateHelperService) {
+    $scope.defaultDates= null;//if set false, is to activate filters, if false, are default dates the disable filters icon
+    // , if null, the data has not been changed in the top options (today,yesterday..) so is changed in the datepicker
     //load from service
     $scope.data = {
       fromDate: new Date(),
@@ -179,47 +197,51 @@ angular.module('app.controllers', [])
     $scope.showFrom = {value:null};
     $scope.showTo = {value:false};
 
+    //save the dates in the filter service and exit to the news blocks
+    $scope.saveAndExit=function(){
+      FilterService.setFromDate($scope.data.fromDate);
+      FilterService.setToDate($scope.data.toDate);
+      $rootScope.$broadcast('filtersChanged');
+
+      $state.go('menu.preview-noticias');
+    };
+
+
     $scope.selectTime = function(time) {
       switch (time) {
         case 'Today':
-          $scope.data.toDate = new Date();
-          $scope.data.fromDate = new Date();
-          $scope.data.fromDate= new Date($scope.data.fromDate.setHours(0));
-          $scope.data.fromDate= new Date($scope.data.fromDate.setMinutes(0));
-          $scope.data.fromDate= new Date($scope.data.fromDate.setSeconds(0));
-          $scope.data.fromDate= new Date($scope.data.fromDate.setMilliseconds(0));
+          $scope.data.toDate = DateHelperService.getToday();
+          $scope.data.fromDate = DateHelperService.getToday();
+          $scope.defaultDates=false;
               break;
         case 'yesterday':
-          $scope.data.toDate = new Date();
-          $scope.data.toDate = new Date($scope.data.toDate.setHours(0));
-          $scope.data.toDate = new Date($scope.data.toDate.setMinutes(0));
-          $scope.data.toDate = new Date($scope.data.toDate.setSeconds(0));
-          $scope.data.toDate = new Date($scope.data.toDate.setMilliseconds(0));
-          $scope.data.fromDate = new Date();
-          $scope.data.fromDate.setDate($scope.data.toDate.getDate() - 1);
-          $scope.data.toDate.setDate($scope.data.fromDate.getDate());
+          $scope.data.toDate =  DateHelperService.getToday();
+          $scope.data.toDate = DateHelperService.addDays($scope.data.toDate,-1);
+          $scope.data.fromDate = DateHelperService.addDays($scope.data.toDate,0);
+          $rootScope.activeFilters.value=true;
+          $scope.defaultDates=false;
           break;
         case '7d':
-          $scope.data.toDate = new Date();
-          $scope.data.toDate=new Date($scope.data.toDate.setHours(0));
-          $scope.data.toDate=new Date($scope.data.toDate.setMinutes(0));
-          $scope.data.toDate=new Date($scope.data.toDate.setSeconds(0));
-          $scope.data.toDate=new Date($scope.data.toDate.setMilliseconds(0));
-          $scope.data.fromDate = new Date();
-          $scope.data.fromDate.setDate($scope.data.toDate.getDate() - 7);
+          $scope.data.toDate = DateHelperService.getToday();
+          $scope.data.fromDate = DateHelperService.addDays($scope.data.toDate,-7);
+          $rootScope.activeFilters.value=true;
+          $scope.defaultDates=false;
           break;
         case '30d':
-          $scope.data.toDate = new Date();
-          $scope.data.toDate=new Date($scope.data.toDate);
-          $scope.data.toDate=new Date($scope.data.toDate.setHours(0));
-          $scope.data.toDate=new Date($scope.data.toDate.setMinutes(0));
-          $scope.data.toDate=new Date($scope.data.toDate.setSeconds(0));
-          $scope.data.toDate=new Date($scope.data.toDate.setMilliseconds(0));
-          $scope.data.fromDate = new Date();
-          $scope.data.fromDate.setDate($scope.data.toDate.getDate() - 30);
+          $scope.data.toDate = DateHelperService.getToday();
+          $scope.data.fromDate = DateHelperService.addDays($scope.data.toDate,-30);
+          $rootScope.activeFilters.value=true;
+          $scope.defaultDates=false;
           break;
+        case '5y':
+          $scope.data.toDate = DateHelperService.getToday();
+          $scope.data.fromDate = DateHelperService.addDays($scope.data.toDate,-1865);
+
+          $rootScope.activeFilters.value=false;
+          $scope.defaultDates=true;
 
       }
+      $scope.saveAndExit();
     };
 
     $scope.$watch('data.fromDate', function() {
@@ -230,13 +252,21 @@ angular.module('app.controllers', [])
          $scope.showFrom.value=false;
          $scope.showTo.value=true;
        }
+      if ($scope.defaultDates === null) {
+        $scope.defaultDates=false;
+      }
+      FilterService.setFilterByDate(!$scope.defaultDates);
     });
 
     $scope.$watch('data.toDate', function() {
        if ($scope.showTo.value===true) {
          $scope.showTo.value=false;
          $scope.showFrom.value=true;
-         $state.go('menu.noticias');
+         if ($scope.defaultDates === null) {
+           $scope.defaultDates=false;
+         }
+         FilterService.setFilterByDate(!$scope.defaultDates);
+         $scope.saveAndExit();
        }
     });
 
@@ -272,23 +302,16 @@ angular.module('app.controllers', [])
         $scope.toDatepickerObject.inputDate = val;
       }
     };
-
-    $scope.goToNews= function() {
-      $state.go('menu.noticias');
-    };
-
-
-
 })
 
   .controller('previewNoticiasCtrl', function($scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading,$rootScope) {
   $scope.blockNews= [
-    {news:[], type:"TV"},
-    {news:[], type:"RADIO"},
-    {news:[], type:"PRESS"},
-    {news:[], type:"SOCIAL"},
-    {news:[], type:"INTERNET"},
-    {news:[], type:"TWITTER"}
+    {news:[],ids:[], type:"TV"},
+    {news:[],ids:[], type:"RADIO"},
+    {news:[],ids:[], type:"PRESS"},
+    {news:[],ids:[], type:"SOCIAL"},
+    {news:[],ids:[], type:"INTERNET"},
+    {news:[],ids:[], type:"TWITTER"}
 
   ];
     $ionicNavBarDelegate.showBackButton(false);//disable the back button
@@ -394,7 +417,7 @@ angular.module('app.controllers', [])
   })
     .controller('noticiasCtrl', function($scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading,$rootScope) {
 
-    $rootScope.activeFilters = {value: false};
+    //$rootScope.activeFilters = {value: false};
     $scope.noMoreItemsAvailable = false;
 
     $ionicLoading.show({
@@ -433,7 +456,7 @@ angular.module('app.controllers', [])
       });
     };
 
-    $scope.$on('filtersChanged', function() {
+    /*$scope.$on('filtersChanged', function() {
       $scope.filters = FilterService.getFilters();
       $ionicLoading.show({
         template: '<div class="icon ion-loading-c loading-color">'
@@ -442,19 +465,21 @@ angular.module('app.controllers', [])
         $scope.news = data;
         window.setTimeout(function() {
 	  $ionicLoading.hide();
-        }, 3000);
+        },500);
 	//$ionicLoading.hide();
       });
-    });
+    });*/
 
     $scope.goToNew =function(detailNew){
-      //$state.go('detalle');
+     $state.go('detalle');
     };
 })
 
 .controller('detalleCtrl', function($scope,UserService,CategoryService,$state,$ionicNavBarDelegate) {
     $ionicNavBarDelegate.showBackButton(true);//disable the back button
+$scope.resourceUrl= "http://test.can.mmi-e.com/accesovideo_pub.php?zona_id=1&mes=02&ano=2016&id=TVRZeA==&tipo=mp4";
 
+    $scope.resourceMp3="http://test.can.mmi-e.com/accesoradio_pub.php?zona_id=1&mes=02&ano=2016&id=Tmpjdw==&tipo=mp3";
     $scope.user = UserService.getUser();
     //$scope.categories = [{"IDCATEGORIA": "2", "NOMBRE": "Categoria 1"},{"IDCATEGORIA": "3", "NOMBRE": "Categoria 2"}];
     //$scope.categories = CategoryService.getCategories($scope.user);

@@ -29,7 +29,7 @@ $httpProvider.defaults.headers.common = {};
       };
     });
   })
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform,$rootScope) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -39,7 +39,9 @@ $httpProvider.defaults.headers.common = {};
     if(window.StatusBar) {
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
+
     }
   });
-})
+    $rootScope.activeFilters= {value:false};
+  })
 ;
