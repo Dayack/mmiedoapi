@@ -155,7 +155,6 @@ angular.module('app.controllers', [])
     };
     $scope.goToNews= function() {
       FilterService.setFilterByPlace(!$scope.allSelected.value);
-
       $rootScope.$broadcast('filtersChanged');
       $state.go('menu.preview-noticias');
     };
@@ -472,13 +471,15 @@ angular.module('app.controllers', [])
     });*/
 
     $scope.goToNew =function(detailNew){
-      //$state.go('detalle');
+     $state.go('detalle');
     };
 })
 
 .controller('detalleCtrl', function($scope,UserService,CategoryService,$state,$ionicNavBarDelegate) {
     $ionicNavBarDelegate.showBackButton(true);//disable the back button
+$scope.resourceUrl= "http://test.can.mmi-e.com/accesovideo_pub.php?zona_id=1&mes=02&ano=2016&id=TVRZeA==&tipo=mp4";
 
+    $scope.resourceMp3="http://test.can.mmi-e.com/accesoradio_pub.php?zona_id=1&mes=02&ano=2016&id=Tmpjdw==&tipo=mp3";
     $scope.user = UserService.getUser();
     //$scope.categories = [{"IDCATEGORIA": "2", "NOMBRE": "Categoria 1"},{"IDCATEGORIA": "3", "NOMBRE": "Categoria 2"}];
     //$scope.categories = CategoryService.getCategories($scope.user);

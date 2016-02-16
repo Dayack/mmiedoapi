@@ -1,12 +1,22 @@
 <ion-view style="" title="Detalle de la noticia">
-    <ion-content class="has-header" overflow-scroll="true" padding="'true'">
-        <div style="" class="list card">
-            <div class="item item-divider">Título de la noticia</div>
-            <div class="item item-body">
-                <div style="">
-                    <p>Bla bla bla bla bla bla...</p>
-                </div>
-            </div>
+  <ion-content class="has-header" overflow-scroll="true" padding="'true'">
+    <div style="" class="list card">
+      <div class="item item-divider">Título de la noticia</div>
+      <div class="item item-body">
+        <div style="">
+          <p>Bla bla bla bla bla bla...</p>
+          <!--TV-->
+          <video controls class="video-frame">
+            <source ng-src="{{resourceUrl| trusted}}" type="video/mp4"/>
+          </video>
+          <!--RADIO-->
+          <audio controls>
+            <source ng-src="{{resourceMp3 | trusted}}" type="audio/mp3">
+          </audio>
+          <!--PDF-->
+
         </div>
-    </ion-content>
+      </div>
+    </div>
+  </ion-content>
 </ion-view>

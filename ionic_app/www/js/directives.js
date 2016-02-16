@@ -3,6 +3,12 @@ angular.module('app.directives', [])
 .directive('blankDirective', [function(){
 
 }])
+//indicates that the source of the filter is trusted url
+  .filter('trusted', function ($sce) {
+  return function(url) {
+    return $sce.trustAsResourceUrl(url);
+  };
+})
   //date filter to show TODAY or the date formated
   .filter('DateNew', function($filter){
     return function(newDate) {
