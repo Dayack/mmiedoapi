@@ -273,6 +273,23 @@ angular.module('app.services', [])
     };
 
 
+    this.getVideo=function(media, date, id) {
+      var defer = $q.defer();
+
+      var pos= date.indexOf("-");
+      var year = date.substring(0, pos);
+
+      var pos2= date.indexOf("-", pos+1);
+      var month = date.substring(pos+1, pos2);
+
+      HttpService.getDetailVideo(media,month, year, id).then(function(data){
+        //alert(data);
+         defer.resolve(data);
+      });
+      return defer.promise;
+    };
+
+
 
   })
 
@@ -632,6 +649,7 @@ angular.module('app.services', [])
       }
       $http.get(url+'/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+id+'/'+date).then(function(data){
         deferred.resolve(data.data[0]);
+        //alert(data);
       });
       return deferred.promise;
     };
@@ -643,7 +661,8 @@ angular.module('app.services', [])
 
 
       // REAL REQUEST
-       $http.get('/getusuarios_categorias/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+user.IDUSUARIO).success(function(data,status){
+      //alert('/getusuarios_categorias/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+user.IDUSUARIO);
+    $http.get('/getusuarios_categorias/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+user.IDUSUARIO).success(function(data,status){
        if (data instanceof Array && data.length >0) {
        deferred.resolve(data);
        } else {
@@ -654,6 +673,44 @@ angular.module('app.services', [])
        deferred.resolve("error");
        });
       return deferred.promise;
+    };
+
+
+    this.getDetailVideo = function (media,month, year, id) {
+      var deferred = $q.defer();
+
+      var url_tv = "get_url_multimedia_tv";
+      var url_radio = "get_url_multimedia_radio";
+
+      var url_get = "";
+      switch (media) {
+        case "TV":
+          url_get = url_tv;
+          break;
+
+        case "RADIO":
+          url_get = url_radio;
+          break;
+      }
+
+
+      //$http.get("http://api.mmi-e.com/mmiapi.php/get_url_multimedia_tv/DFKGMKLJOIRJNG/1/02/2016/161")
+      //alert('http://api.mmi-e.com/mmiapi.php/'+ url_get + '/' + ConfigService.getApiKey() + '/' + ConfigService.getZona() + '/' + month + '/' + year + '/' + id);
+      $http.get('http://api.mmi-e.com/mmiapi.php/'+ url_get + '/' +  ConfigService.getApiKey() + '/' + ConfigService.getZona() + '/' + month + '/' + year + '/' + id)
+      .success(function(data) {
+          //alert(data[0].URL);
+          //alert('http://test.can.mmi-e.com/' + data[0].URL);
+          var final_url = 'http://test.can.mmi-e.com/' + data[0].URL;
+          deferred.resolve(final_url);
+          //alert(data[0].URL);
+        })
+        .error(function(data) {
+          //alert("ERROR");
+          deferred.resolve("error");
+        });
+
+        return deferred.promise;
+
     };
 
 

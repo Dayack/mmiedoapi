@@ -9361,6 +9361,17 @@ table.media td {
 .title-color {
   color: #95378C !important; }
 
+.media.button.activated {
+  background-color: #95378C !important;
+  color: white !important; }
+
+.date-option.activated {
+  background-color: #63BFB8;
+  color: white; }
+
+.detail-header {
+  padding-left: 25px; }
+
 @font-face {
   font-family: 'icomoon';
   src: url("fonts/icomoon.eot?lddfsr");
@@ -9474,3 +9485,7 @@ table.media td {
 
 .title-left {
   text-align: center !important; }
+
+/*detail css*/
+.video-frame {
+  width: 100%; }
