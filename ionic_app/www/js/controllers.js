@@ -475,7 +475,7 @@ angular.module('app.controllers', [])
     };
 })
 
-.controller('detalleCtrl', function($scope,UserService,CategoryService,$state,$ionicNavBarDelegate,$stateParams,NewsService) {
+.controller('detalleCtrl', function($cordovaInAppBrowser,$scope,$window,UserService,CategoryService,$state,$ionicNavBarDelegate,$stateParams,NewsService) {
 
     $scope.media= $stateParams.media;
     $scope.date= $stateParams.date;
@@ -488,6 +488,30 @@ angular.module('app.controllers', [])
       $scope.extendedText = (angular.isDefined($scope.dataNew.ROLLO));
     });
 
+
+    $scope.openLink=function(){
+     // $window.open('http://www.google.com', '_system');
+      var scheme;
+      if(device.platform === 'iOS') {
+        scheme = 'twitter://';
+      }
+      else if(device.platform === 'Android') {
+        scheme = 'com.twitter.android';
+      }
+
+      appAvailability.check(
+        scheme, // URI Scheme
+        function() {  // Success callback
+          window.open('twitter://user?screen_name=gajotres', '_system', 'location=no');
+          console.log('Twitter is available');
+        },
+        function() {  // Error callback
+          window.open('https://twitter.com/gajotres', '_system', 'location=no');
+          console.log('Twitter is not available');
+        }
+      );
+
+    };
 
     $ionicNavBarDelegate.showBackButton(true);//disable the back button
     $scope.resourceUrl = "http://test.can.mmi-e.com/accesovideo_pub.php?zona_id=1&mes=02&ano=2016&id=TVRZeA==&tipo=mp4";

@@ -14,6 +14,7 @@
         <p>{{dataNew.FECHA}}</p>
       </div>
       <div class="item item-body">
+
         <div style="">
           <!--TV-->
           <div ng-show="media ==='TV'">
@@ -31,7 +32,8 @@
           <!--URL SOCIAL MEDIA/TWITTER/INTERNET-->
           <div ng-show="(media === 'SOCIAL' || media ==='INTERNET') || media ==='TWITTER'">
             <div>
-            ENLACE
+              <button class="button button-purple col" browse-to="{{dataNew.URL}}">ENLACE A NOTICIA</button>
+              </div>
             </div>
           </div>
 
