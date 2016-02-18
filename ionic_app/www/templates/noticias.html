@@ -37,11 +37,14 @@
         </ion-infinite-scroll>
     </ion-content>
   <!--back button outside-->
-  <div class="fixed-outside">
+  <!--<div class="fixed-outside">
     <div class="row">
       <div class="col">
         <button ng-click="goToPreview();" class="button button-circle button-purple icon ion-checkmark-round"></button>
       </div>
     </div>
-  </div>
+  </div>-->
+  <ion-footer-bar align-title="left" class="invisible-footer">
+      <button ng-click="goToPreview();" class=" centered button button-circle button-purple icon ion-checkmark-round"></button>
+  </ion-footer-bar>
 </ion-view>

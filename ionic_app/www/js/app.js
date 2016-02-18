@@ -29,10 +29,21 @@ $httpProvider.defaults.headers.common = {};
       };
     });
   })
-.run(function($ionicPlatform,$rootScope) {
+.run(function($ionicPlatform,$rootScope,$state) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
+    $rootScope.actualState="";
+
+
+    $rootScope.$on('$stateChangeStart', function (event, toState, toStateParams, fromState, fromStateParams) {
+
+      console.log("Changing state to :");
+      console.log(toState.name);
+      $rootScope.actualState=toState.name;
+
+    });
+
     if(window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
     }

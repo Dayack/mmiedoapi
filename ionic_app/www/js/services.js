@@ -87,7 +87,7 @@ angular.module('app.services', [])
         if (data !== null && data != "error" && (data !== false)) {
           user = data;
           //MOCKED TEST DATA
-         user.IDUSUARIO=17640;//1445;
+         //user.IDUSUARIO=17640;//1445;
           $window.localStorage.setItem('user',JSON.stringify(data));
           defer.resolve("OK");
         } else {
@@ -716,7 +716,7 @@ angular.module('app.services', [])
 
     this.getPlaces = function (user, filters) {
       var deferred = $q.defer();
-      if (user.LOGIN === 'demo.old') {
+      //if (user.LOGIN === 'demo.old') {
         deferred.resolve([
           {"IDPLACE": "1", "NOMBRE": "Tenerife"},
           {"IDPLACE": "2", "NOMBRE": "Fuerteventura"},
@@ -727,16 +727,16 @@ angular.module('app.services', [])
           {"IDPLACE": "7", "NOMBRE": "Gran Canaria"},
         ]);
 
-      } else {
+      /*} else {
         deferred.resolved([]);
-      }
+      }*/
       return deferred.promise;
     };
 
 
    this.getOrigins = function (user, filters) {
       var deferred = $q.defer();
-      if (user.LOGIN === 'demo.old') {
+     // if (user.LOGIN === 'demo.old') {
         deferred.resolve([
           {"IDPLACE": "1", "NOMBRE": "Tenerife"},
           {"IDPLACE": "2", "NOMBRE": "Fuerteventura"},
@@ -747,9 +747,9 @@ angular.module('app.services', [])
           {"IDPLACE": "7", "NOMBRE": "Gran Canaria"},
         ]);
 
-      } else {
+    /*  } else {
         deferred.resolved([]);
-      }
+      }*/
       return deferred.promise;
     };
 

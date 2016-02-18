@@ -4,7 +4,7 @@ angular.module('app.controllers', [])
 /**
  * Side menu Controller
  */
-.controller('menuCtrl', function($scope,$rootScope,UserService,FilterService,$state,$ionicHistory,CategoryService) {
+.controller('menuCtrl', function($ionicSideMenuDelegate,$scope,$rootScope,UserService,FilterService,$state,$ionicHistory,CategoryService) {
 
     $scope.mediaFilterCollapsed = false;
 
@@ -18,6 +18,19 @@ angular.module('app.controllers', [])
       } else {
         FilterService.setMedia(media);
         //$rootScope.$broadcast('filtersChanged');
+      }
+    };
+
+    $scope.goToPage=function(state) {
+      console.log("actual state "+$state.current.name);
+      console.log("go to "+state);
+      if (angular.equals(state,$state.current.name)) {
+       console.log("closing menu");
+        $ionicSideMenuDelegate.toggleLeft();
+
+      } else {
+        console.log("moving");
+        $state.go(state);
       }
     };
 
@@ -475,7 +488,7 @@ angular.module('app.controllers', [])
     };
 })
 
-.controller('detalleCtrl', function($sce,$http,$timeout,$document,$ionicHistory,$cordovaInAppBrowser,$scope,$window,UserService,CategoryService,$state,$ionicNavBarDelegate,$stateParams,NewsService) {
+.controller('detalleCtrl', function($rootScope,$sce,$http,$timeout,$document,$ionicHistory,$cordovaInAppBrowser,$scope,$window,UserService,CategoryService,$state,$ionicNavBarDelegate,$stateParams,NewsService) {
 
     $scope.media= $stateParams.media;
     $scope.date= $stateParams.date;
@@ -490,7 +503,7 @@ angular.module('app.controllers', [])
       $scope.extendedText = (angular.isDefined($scope.dataNew.ROLLO));
       if ($scope.media=='TWITTER') {
         //if is twitter, the title and the text are the same, so the title now is Twitter
-        $scope.dataNew.TEMA = 'Twitter';
+        $scope.dataNew.TEMA = '';
       }
       $scope.hasLink = ((angular.isDefined($scope.dataNew.URL) && $scope.dataNew.URL.length >0));
     });

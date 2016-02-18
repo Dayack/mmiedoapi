@@ -9369,8 +9369,22 @@ table.media td {
   background-color: #63BFB8;
   color: white; }
 
+.invisible-footer {
+  background-color: transparent !important;
+  height: 65px;
+  border: 0px !important;
+  width: 65px;
+  margin: auto;
+  border-top: 0px !important; }
+
 .detail-header {
   padding-left: 25px; }
+
+.centered {
+  margin: auto; }
+
+.has-footer {
+  bottom: 0px; }
 
 @font-face {
   font-family: 'icomoon';
