@@ -29,10 +29,13 @@ angular.module('app.routes', [])
 
 
 
-    .state('medios', {
+    .state('menu.medios', {
       url: '/media',
-      templateUrl: 'templates/medios.html',
-      controller: 'mediosCtrl'
+      views: {
+        'side-menu21': {
+          templateUrl: 'templates/medios.html',
+          controller: 'mediosCtrl'
+        }}
     })
 
 
@@ -125,10 +128,14 @@ angular.module('app.routes', [])
         controller: 'detalleCtrl'
     })
 
-    .state('date_filter', {
+    .state('menu.date_filter', {
       url: '/date_filter',
-        templateUrl: 'templates/selectDate.html',
-        controller: 'selectDateCtrl'
+      views: {
+        'side-menu21': {
+          templateUrl: 'templates/selectDate.html',
+          controller: 'selectDateCtrl'
+        }
+      }
     })
 
 

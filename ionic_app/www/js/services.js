@@ -87,7 +87,7 @@ angular.module('app.services', [])
         if (data !== null && data != "error" && (data !== false)) {
           user = data;
           //MOCKED TEST DATA
-         user.IDUSUARIO=1445;
+         user.IDUSUARIO=17640;//1445;
           $window.localStorage.setItem('user',JSON.stringify(data));
           defer.resolve("OK");
         } else {
@@ -273,7 +273,7 @@ angular.module('app.services', [])
     };
 
 
-    this.getVideo=function(media, date, id) {
+    this.getMedia=function(media, date, id) {
       var defer = $q.defer();
 
       var pos= date.indexOf("-");
@@ -282,7 +282,7 @@ angular.module('app.services', [])
       var pos2= date.indexOf("-", pos+1);
       var month = date.substring(pos+1, pos2);
 
-      HttpService.getDetailVideo(media,month, year, id).then(function(data){
+      HttpService.getDetailMedia(media,month, year, id).then(function(data){
         //alert(data);
          defer.resolve(data);
       });
@@ -352,7 +352,7 @@ angular.module('app.services', [])
 
     this.getCategories = function (user) {
       var defer = $q.defer();
-      if (categoriesUser === user) {
+      if (angular.equals(categoriesUser,user)) {
         defer.resolve(categories);
       } else {
         HttpService.getCategories(user).then(function (data) {
@@ -676,7 +676,7 @@ angular.module('app.services', [])
     };
 
 
-    this.getDetailVideo = function (media,month, year, id) {
+    this.getDetailMedia = function (media,month, year, id) {
       var deferred = $q.defer();
 
       var url_tv = "get_url_multimedia_tv";

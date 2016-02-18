@@ -475,7 +475,7 @@ angular.module('app.controllers', [])
     };
 })
 
-.controller('detalleCtrl', function($cordovaInAppBrowser,$scope,$window,UserService,CategoryService,$state,$ionicNavBarDelegate,$stateParams,NewsService) {
+.controller('detalleCtrl', function($sce,$http,$timeout,$document,$ionicHistory,$cordovaInAppBrowser,$scope,$window,UserService,CategoryService,$state,$ionicNavBarDelegate,$stateParams,NewsService) {
 
     $scope.media= $stateParams.media;
     $scope.date= $stateParams.date;
@@ -483,14 +483,45 @@ angular.module('app.controllers', [])
     $scope.support= $stateParams.support;
     $scope.dataNew = null;
     $scope.extendedText=false;
+    $scope.hasLink=false;//has a link to external web?
     NewsService.getNew($scope.media,$scope.date,$scope.id).then(function(data) {
       $scope.dataNew = data;
-      $scope.extendedText = (angular.isDefined($scope.dataNew.ROLLO));
-    });
 
-    NewsService.getVideo($scope.media,$scope.date,$scope.id).then(function(data) {
-      $scope.resourceUrl = data;
+      $scope.extendedText = (angular.isDefined($scope.dataNew.ROLLO));
+      if ($scope.media=='TWITTER') {
+        //if is twitter, the title and the text are the same, so the title now is Twitter
+        $scope.dataNew.TEMA = 'Twitter';
+      }
+      $scope.hasLink = ((angular.isDefined($scope.dataNew.URL) && $scope.dataNew.URL.length >0));
     });
+    $scope.mediaLoaded=false;//to render the video, audio tag
+    if ($scope.media ==='TV' || $scope.media ==='RADIO') {
+      NewsService.getMedia($scope.media, $scope.date, $scope.id).then(function (data) {
+        if (data != "error") {
+          $scope.multimedia = {url: data};
+
+          //TEST
+          //$scope.multimedia.url ="http://test.can.mmi-e.com/accesoradio_pub.php?zona_id=1&mes=02&ano=2016&id=Tmpjdw==&tipo=mp3";
+          /*$http.get($sce.trustAsResourceUrl($scope.multimedia.url)).then(
+            function(data){
+              console.log("success video/audio");
+              $scope.urlOK=data;
+
+            }
+          );*/
+   $scope.mediaLoaded = true;
+
+          /*if ($scope.media ==='RADIO') { trying to load in audio tag..
+            //create audio tag
+            $timeout(function () {
+              $scope.audioDiv = document.getElementsByClassName("audio");
+              $scope.audioElement = angular.element("<audio controls><source src='" + $scope.multimedia.url + "' type='audio/mp3'></audio>");
+              angular.element($scope.audioDiv).append($scope.audioElement);
+            }, 500);
+          }*/
+        }
+      });
+    }
 
     $scope.openLink=function(){
      // $window.open('http://www.google.com', '_system');
@@ -517,10 +548,14 @@ angular.module('app.controllers', [])
     };
 
     $ionicNavBarDelegate.showBackButton(true);//disable the back button
+
+    $scope.goBack = function(){
+      $ionicHistory.goBack();
+    };
     //$scope.resourceUrl = "http://test.can.mmi-e.com/accesovideo_pub.php?zona_id=1&mes=02&ano=2016&id=TVRZeA==&tipo=mp4";
     //$scope.resourceMp3 = "http://test.can.mmi-e.com/accesoradio_pub.php?zona_id=1&mes=02&ano=2016&id=Tmpjdw==&tipo=mp3";
     $scope.user = UserService.getUser();
-    //$scope.categories = [{"IDCATEGORIA": "2", "NOMBRE": "Categoria 1"},{"IDCATEGORIA": "3", "NOMBRE": "Categoria 2"}];
+    /*//$scope.categories = [{"IDCATEGORIA": "2", "NOMBRE": "Categoria 1"},{"IDCATEGORIA": "3", "NOMBRE": "Categoria 2"}];
     //$scope.categories = CategoryService.getCategories($scope.user);
     $scope.categories = CategoryService.getCategories($scope.user).then(function (data) {
       $scope.categories = data;
@@ -530,7 +565,7 @@ angular.module('app.controllers', [])
       CategoryService.setCurrentCategory(category);
       // $state.go('menu.noticias');
       $state.go('menu.detalle');
-    };
+    };*/
 })
 
 .controller('multimediaCtrl', function($scope, $http) {

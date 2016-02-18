@@ -26,7 +26,10 @@
     "cordova-plugin-splashscreen",
     "cordova-plugin-statusbar",
     "ionic-plugin-keyboard",
-    "cordova-plugin-inappbrowser"
+    "cordova-plugin-inappbrowser",
+    "com.lampa.startapp",
+    "cordova-plugin-media",
+    "cordova-plugin-file"
   ],
   "cordovaPlatforms": [
     "android",

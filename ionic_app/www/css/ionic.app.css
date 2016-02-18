@@ -9459,6 +9459,9 @@ table.media td {
   padding-bottom: 5px;
   padding-top: 5px; }
 
+.new-item a {
+  padding: 16px !important; }
+
 .icon-white {
   color: white; }
 
@@ -9489,3 +9492,12 @@ table.media td {
 /*detail css*/
 .video-frame {
   width: 100%; }
+
+.audioPlugin .item-thumbnail-left {
+  padding: 0px; }
+
+.audioPlugin .item {
+  float: left;
+  border: 0px;
+  padding: 0px;
+  padding-left: 10px; }

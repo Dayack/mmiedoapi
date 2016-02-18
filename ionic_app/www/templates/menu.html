@@ -1,5 +1,5 @@
 <ion-side-menus style="" enable-menu-with-back-views="true">
-    <ion-side-menu-content>
+    <ion-side-menu-content edge-drag-threshold="true">
         <ion-nav-bar class="bar-royal">
             <ion-nav-back-button></ion-nav-back-button>
             <ion-nav-buttons side="left">
@@ -17,11 +17,11 @@
         </ion-header-bar>
         <ion-content padding="true" class="side-menu-left has-header">
             <ion-list style="">
-                <ion-item style="" menu-close="" href="#/side-menu/categories">Categorías</ion-item>
-    		    <ion-item style="" menu-close="" href="#/date_filter">Fechas</ion-item>
-                <ion-item style="" menu-close="" href="#/media">Medios</ion-item>
-                <ion-item style="" menu-close="" href="#/side-menu/eventPlace">Lugar Evento</ion-item>
-                <ion-item style="" menu-close="" href="#/side-menu/origin">Origen Fuente</ion-item>
+                <ion-item style="" menu-close="" ui-sref="menu.categorias">Categorías</ion-item>
+    		    <ion-item style="" menu-close="" ui-sref="menu.date_filter">Fechas</ion-item>
+                <ion-item style="" menu-close="" ui-sref="menu.medios">Medios</ion-item>
+                <ion-item style="" menu-close="" ui-sref="menu.eventPlace">Lugar Evento</ion-item>
+                <ion-item style="" menu-close="" ui-sref="menu.origin">Origen Fuente</ion-item>
                 <ion-item style="" menu-close="" ng-click="logout()">Logout</ion-item>
             </ion-list>
         </ion-content>

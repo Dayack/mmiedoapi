@@ -1,7 +1,7 @@
 <ion-view style="" title="Detalle de la noticia">
   <ion-content class="has-header" overflow-scroll="true" padding="'true'">
     <div style="" class="list card">
-      <div class="item item-avatar">
+      <div class="item item-avatar detail-header">
         <div class="icon-media-item">
           <i cla ng-show="media == 'PRESS'" class="icon icon-mmi-press media-icon"></i>
           <i ng-show="media == 'RADIO'" class="icon icon-mmi-radio media-icon"></i>
@@ -10,44 +10,80 @@
           <i ng-show="media == 'TWITTER'" class="icon icon-mmi-twitter media-icon"></i>
           <i ng-show="media == 'INTERNET'" class="icon icon-mmi-arroba media-icon"></i>
 
-        </div>    <span class="purple-text new-support">{{support}}</span>
+        </div>
+        <span class="purple-text new-support">{{support}}</span>
+
         <p>{{dataNew.FECHA}}</p>
       </div>
       <div class="item item-body">
 
-        <div style="">
+        <div ng-if="mediaLoaded">
           <!--TV-->
           <div ng-show="media ==='TV'">
-          <video controls class="video-frame">
-            <source ng-src="{{resourceUrl| trusted}}" type="video/mp4"/>
-          </video>
+            <video controls class="video-frame">
+              <source ng-src="{{multimedia.url| trusted}}" type="video/mp4"/>
+            </video>
           </div>
           <!--RADIO-->
           <div ng-show="media ==='RADIO'">
-          <audio controls>
-            <source ng-src="{{resourceMp3 | trusted}}" type="audio/mp3">
-          </audio>
+            <div id="audio" class="audio">
+              <!--<audio controls>
+                 <source ng-src="{{resourceUrl | trusted}}" type="audio/mp3">
+               </audio>-->
+            </div>
+            <ion-audio-track class="audioPlugin" track="multimedia">
+              <div class="list list-inset">
+                <div class="item item-thumbnail-left">
+                  <!--<img src="{{track.art}}">
+                  <h2>{{track.title}}</h2>
+                  <p>{{track.artist}}</p>-->
+                  <ion-audio-controls>
+                    <a class="button button-icon icon" ion-audio-play></a>
+                    <ion-spinner icon="ios"></ion-spinner>
+                  </ion-audio-controls>
+                </div>
+                <div class="item">
+                  <ion-audio-progress-bar track="multimedia" display-time></ion-audio-progress-bar>
+                </div>
+              </div>
+            </ion-audio-track>
           </div>
           <!--PDF-->
           <!--URL SOCIAL MEDIA/TWITTER/INTERNET-->
-          <div ng-show="(media === 'SOCIAL' || media ==='INTERNET') || media ==='TWITTER'">
-            <div>
-              <button class="button button-purple col" browse-to="{{dataNew.URL}}">ENLACE A NOTICIA</button>
-              </div>
-            </div>
-          </div>
+
 
         </div>
+        <div ng-if="hasLink">
+          <div>
+            <button class="button button-purple col" browse-to="{{dataNew.URL}}">ENLACE A NOTICIA</button>
+          </div>
+        </div>
+
         <div>
 
-          <p>{{dataNew.TEMA}}</p>
+          <h3 class="purple-text">{{dataNew.TEMA}}</h3>
 
         </div>
         <div ng-show="extendedText">
           <!--ROLLO-->
           <p>{{dataNew.ROLLO}}</p>
         </div>
+
+      </div>
+    </div>
+    </div>
+    <!--blank space to left space to the back button-->
+    <div class="row">
+      <div style="height: 50px;" class="col">
+
       </div>
     </div>
   </ion-content>
+  <div class="fixed-outside">
+    <div class="row">
+      <div class="col">
+        <button ng-click="goBack();" class="button button-circle button-purple icon ion-checkmark-round"></button>
+      </div>
+    </div>
+  </div>
 </ion-view>
