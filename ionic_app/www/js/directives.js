@@ -80,13 +80,13 @@ angular.module('app.directives', [])
         case "RADIO":
               return "Radio";
         case "SOCIAL":
-              return "Social Media";
+              return "Redes Sociales";
         case "TWITTER":
               return "Twitter";
         case "PRESS":
               return "Prensa";
         case "INTERNET":
-              return "Internet";
+              return "Medios Digitales";
         default :
               return "";
       }

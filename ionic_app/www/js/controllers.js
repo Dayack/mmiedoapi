@@ -38,8 +38,9 @@ angular.module('app.controllers', [])
     $scope.logout = function() {
       UserService.logout();
       CategoryService.clearStatus();
-      $state.go('login');
       $ionicHistory.clearHistory();
+      $scope.$broadcast('filtersChanged');
+      $state.go('login');
     };
 
     $scope.$on('filtersChanged',function(){
@@ -322,8 +323,8 @@ angular.module('app.controllers', [])
     {news:[],ids:[], type:"TV"},
     {news:[],ids:[], type:"RADIO"},
     {news:[],ids:[], type:"PRESS"},
-    {news:[],ids:[], type:"SOCIAL"},
     {news:[],ids:[], type:"INTERNET"},
+    {news:[],ids:[], type:"SOCIAL"},
     {news:[],ids:[], type:"TWITTER"}
 
   ];

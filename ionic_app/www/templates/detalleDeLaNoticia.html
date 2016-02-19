@@ -13,7 +13,7 @@
         </div>
         <span class="purple-text new-support">{{support}}</span>
 
-        <p>{{dataNew.FECHA}}</p>
+        <p>{{dataNew.FECHA | DateNew}}</p>
       </div>
       <div class="item item-body">
 
@@ -55,7 +55,8 @@
         </div>
         <div ng-if="hasLink">
           <div>
-            <button class="button button-purple col" browse-to="{{dataNew.URL}}">ENLACE A NOTICIA</button>
+            <button ng-if="media !=='TWITTER'" class="button button-purple col" browse-to="{{dataNew.URL}}">ENLACE A NOTICIA</button>
+            <button ng-if="media =='TWITTER'" class="button button-purple col" browse-to="{{dataNew.URL}}">ENLACE A TWEET</button>
           </div>
         </div>
 

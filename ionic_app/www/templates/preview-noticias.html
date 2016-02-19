@@ -19,6 +19,8 @@
           <div>
 
             <div class="news_abstract">
+              <!--CASE FOR NOT TV/RADIO
+              <div ng-if="(block.type !=='TV' && block.type !=='RADIO')">-->
               <div>
                 <div class="icon-media-item">
                   <i cla ng-show="block.type == 'PRESS'" class="icon icon-mmi-press media-icon"></i>
@@ -27,12 +29,29 @@
                   <i ng-show="block.type == 'SOCIAL'" class="icon icon-mmi-social media-icon"></i>
                   <i ng-show="block.type == 'TWITTER'" class="icon icon-mmi-twitter media-icon"></i>
                   <i ng-show="block.type == 'INTERNET'" class="icon icon-mmi-arroba media-icon"></i>
-                  <span class="purple-text new-support">{{new.SOPORTE | limitationText:15}}</span>
+                  <span class="purple-text new-support">{{new.SOPORTE | limitationText:25}}</span>
                 </div>
                 <div class="date-item">
                   {{new.FECHA | DateNew}}
                 </div>
               </div>
+              <!--CASE FOR TV/RADIO
+              <div ng-if="(block.type == 'TV' || block.type =='RADIO')">
+                <div class="icon-media-item">
+                  <i cla ng-show="block.type == 'PRESS'" class="icon icon-mmi-press media-icon"></i>
+                  <i ng-show="block.type == 'RADIO'" class="icon icon-mmi-radio media-icon"></i>
+                  <i ng-show="block.type == 'TV'" class="icon icon-mmi-tv media-icon"></i>
+                  <i ng-show="block.type == 'SOCIAL'" class="icon icon-mmi-social media-icon"></i>
+                  <i ng-show="block.type == 'TWITTER'" class="icon icon-mmi-twitter media-icon"></i>
+                  <i ng-show="block.type == 'INTERNET'" class="icon icon-mmi-arroba media-icon"></i>
+                </div>
+                <div class="date-item">
+                  <span> {{new.FECHA | DateNew}}</span>
+                </div>
+                <div style="clear:both;">
+                <span class="purple-text new-support">{{new.SOPORTE}}</span>
+                </div>
+              </div>-->
               <div class="content-item">
                 {{new.TEMA | limitationText:80}}
               </div>

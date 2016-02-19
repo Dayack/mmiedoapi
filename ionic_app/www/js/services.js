@@ -73,7 +73,7 @@ angular.module('app.services', [])
 /**
  * User Service, used to save user info
  */
-  .service('UserService', function (HttpService, $q, $window) {
+  .service('UserService', function (HttpService, $q, $window,FilterService) {
     var user = null;
     /**
      *  Login, will send the login request, and save the user data in the Service, will return 'OK' or 'ERROR' to the controller
@@ -110,6 +110,8 @@ angular.module('app.services', [])
     this.logout = function() {
       user = null;
       $window.localStorage.removeItem('user');
+      $window.localStorage.removeItem('categories');
+      FilterService.resetFilters();
     };
 
     this.getUser = function () {
@@ -190,6 +192,26 @@ angular.module('app.services', [])
     };
     this.getFiltered=function(){
       return ((filteredByDate || filteredByOrigin) || filteredByPlace);
+    };
+
+    //restart when logout
+    this.resetFilters = function(){
+      filters = {
+        media: 'TV',//by default we select TV, this filter is always set
+        startDate: {
+          date: null,
+          text:null
+        },
+        endDate: {
+          date: null,
+          text:null
+        },
+        support_zones: [],
+        new_zones: []
+      };
+      filteredByDate=false;
+      filteredByOrigin=false;
+      filteredByPlace=false;
     };
   })
 /**
@@ -341,6 +363,8 @@ angular.module('app.services', [])
       $window.localStorage.removeItem("categories");
       categories = [];
       selectedCategory=[];
+      categoriesUser=[];
+      allSelected=true;
     };
     /**
      *  getCategories, will get all user's categories
@@ -352,7 +376,7 @@ angular.module('app.services', [])
 
     this.getCategories = function (user) {
       var defer = $q.defer();
-      if (angular.equals(categoriesUser,user)) {
+      if (angular.equals(categoriesUser,user) && categories !==[]) {
         defer.resolve(categories);
       } else {
         HttpService.getCategories(user).then(function (data) {

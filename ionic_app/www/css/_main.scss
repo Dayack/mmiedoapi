@@ -53,32 +53,31 @@ table.media td{
   min-height: 25%;
 }
 .media.button{
- /* font-size: 15px;
-  line-height: 15px; // Ad
-  /* width: 100px; */
-
-  font-size: 24px;
-  width: 135px;
-  height: 115px;
-
+  font-size: 18px;
+  width: 109px;
+  /*height: 75px;*/
   word-break: normal;
   word-spacing: normal;
   word-wrap: normal;
   line-height: 1.7;
   text-align: center;
+  padding-top:10px;
 }
 
 .media.button:before{
-  font-size: 60px;
+  font-size: 45px;
+  display: block;
 }
 
 .allmedia.button{
-  width: 118px;
-  height: 115px;
-  font-size: 24px;
+  /*width: 118px;*/
+  /*height: 115px;*/
+  font-size: 18px;
+  padding-top:10px;
 }
 .allmedia.button:before{
-  font-size: 60px;
+  font-size: 45px;
+  display: block;
 }
 
 .media.button-icon .icon{
@@ -116,6 +115,10 @@ table.media td{
   padding-right: 20px !important;
   max-width: 100% !important;
   text-align: left !important;
+}
+
+.datetimepicker .table td{
+  padding:8px !important;
 }
 
 /* ---------------------------- */
@@ -328,4 +331,10 @@ table.media td{
 }
 .has-footer{
   bottom:0px;
+}
+.overflow{
+  overflow:visible !important;
+}
+.padding-media{
+  padding-top:15px;
 }

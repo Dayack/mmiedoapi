@@ -6,7 +6,7 @@
       <!-- <a style="" class="button button-stable button-block " ng-click="selectCategory(category)"
           ng-repeat="category in categories">{{ category.NOMBRE }}</a>-->
       <ion-checkbox ng-model="allSelected.value" ng-click="selectAll()">TODOS</ion-checkbox>
-      <ion-checkbox ng-model="place.selected" ng-click="selectPlace(place)" ng-repeat="place in places">
+      <ion-checkbox ng-model="place.selected" ng-click="selectPlace(place)" ng-repeat="place in places | orderBy:'NOMBRE'">
         <label ng-class="{selectedText: place.selected}">{{place.NOMBRE}}</label>
       </ion-checkbox>
       <!--space-->

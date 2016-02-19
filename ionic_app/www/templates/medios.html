@@ -1,40 +1,42 @@
 <ion-view style="" title="Medios">
   <ion-content class="has-header" scroll="false" overflow-scroll="true" padding="'true'">
-    <div class="row row-50">
-      <div class="col center-text">
-        <button ng-click="selectMedia('ALL')" class="button button-icon icon icon-mmi-all media allmedia">Todo</button>
+    <div class="row row-50 overflow">
+      <div class="col center-text overflow padding-media">
+        <button ng-click="selectMedia('ALL')" class="button button-icon icon icon-mmi-all media allmedia overflow">Todo</button>
       </div>
     </div>
     <!--1-->
-    <div class="row row-50">
-      <div class="col-50 center-text">
-        <button ng-class="" ng-click="selectMedia('PRESS')" class="button button-icon icon icon-mmi-press media">Prensa</button>
+    <div class="row row-50 overflow">
+      <div class="col-50 center-text overflow padding-media">
+        <button ng-click="selectMedia('TV')" class="button button-icon icon icon-mmi-tv media overflow">Televisión</button>
       </div>
 
-      <div class="col-50 center-text">
-        <button ng-click="selectMedia('RADIO')" class="button button-icon icon icon-mmi-radio media">Radio</button>
+
+      <div class="col-50 center-text overflow padding-media">
+        <button ng-click="selectMedia('RADIO')" class="button button-icon icon icon-mmi-radio media overflow">Radio</button>
       </div>
     </div>
     <!--2-->
-    <div class="row row-50">
-      <div class="col-50 center-text">
-        <button ng-click="selectMedia('TV')" class="button button-icon icon icon-mmi-tv media">Televisión</button>
+    <div class="row row-50 overflow">
+      <div class="col-50 center-text overflow padding-media">
+        <button ng-class="" ng-click="selectMedia('PRESS')" class="button button-icon icon icon-mmi-press media overflow">Prensa</button>
       </div>
-      <div class="col-50 center-text">
-        <button ng-click="selectMedia('INTERNET')" class="button button-icon icon icon-mmi-arroba media">Internet
+      <div class="col-50 center-text overflow padding-media">
+        <button ng-click="selectMedia('INTERNET')" class="button button-icon icon icon-mmi-arroba media overflow">Medios Digitales
         </button>
       </div>
     </div>
     <!--3-->
-    <div class="row row-50">
-      <div class="col-50 center-text">
-        <button ng-click="selectMedia('TWITTER')" class="button button-icon icon icon-mmi-twitter media">Twitter
+    <div class="row row-50 overflow">
+      <div class="col-50 center-text overflow padding-media">
+        <button ng-click="selectMedia('SOCIAL')" class="button button-icon icon icon-mmi-social media overflow">Redes Sociales
         </button>
       </div>
-      <div class="col-50 center-text">
-        <button ng-click="selectMedia('SOCIAL')" class="button button-icon icon icon-mmi-social media">Redes Sociales
+      <div class="col-50 center-text overflow padding-media">
+        <button ng-click="selectMedia('TWITTER')" class="button button-icon icon icon-mmi-twitter media overflow">Twitter
         </button>
       </div>
+
     </div>
 
     <!--
