@@ -9161,7 +9161,7 @@ table.media td {
   border: 2px solid; }
 
 .active_filters {
-  background-color: #63BFB8;
+  /*background-color: $light-blue;*/
   color: white;
   border-radius: 50%;
   font-size: 10px;
@@ -9395,6 +9395,25 @@ table.media td {
 
 .padding-media {
   padding-top: 15px; }
+
+.login-title {
+  background-color: rgba(82, 46, 111, 0.5);
+  position: absolute;
+  top: 20px;
+  color: white !important;
+  text-align: center;
+  width: 100%; }
+  .login-title h1 {
+    color: white; }
+  .login-title h3 {
+    color: white;
+    margin: 0px; }
+
+.white-text {
+  color: white; }
+
+.login-h1 {
+  margin-bottom: 0px; }
 
 @font-face {
   font-family: 'icomoon';

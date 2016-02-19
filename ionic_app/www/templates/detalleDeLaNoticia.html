@@ -69,9 +69,21 @@
           <!--ROLLO-->
           <p>{{dataNew.ROLLO}}</p>
         </div>
+        <!--PDF-->
+
 
       </div>
     </div>
+    <!--PDF PREVIEW-->
+    <div ng-if="media=='PRESS' && mediaLoaded">
+      <button  class="button button-purple col" browse-to="{{pdfurl}}">ENLACE A PDF</button>
+      <iframe ng-src="{{pdfurl}}" style="width:100%;height:460px;"></iframe>
+    </div>
+
+    <!--LINK TO PDF-->
+
+
+
     </div>
     <!--blank space to left space to the back button-->
     <div class="row">

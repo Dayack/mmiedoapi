@@ -1,6 +1,6 @@
 {
   "name": "mmi",
-  "app_id": "#APP_ID",
+  "app_id": "4e2382bd",
   "gulpStartupTasks": [
     "sass",
     "watch"

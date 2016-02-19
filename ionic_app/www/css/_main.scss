@@ -1,5 +1,6 @@
 $dark-red:#b50c0c;
 $purple: #95378C;
+$dark-purple:rgba(82, 46, 111,0.5);
 $light-blue: #63BFB8;
 $text-grey: #686868;
 $icon-grey: #BEBEBD;
@@ -88,7 +89,7 @@ table.media td{
 }
 
 .active_filters{
-  background-color: $light-blue;
+  /*background-color: $light-blue;*/
   color: white;
   border-radius: 50%;
   font-size: 10px;
@@ -337,4 +338,27 @@ table.media td{
 }
 .padding-media{
   padding-top:15px;
+}
+
+.login-title{
+  background-color: $dark-purple;
+
+  position: absolute;
+  top: 20px;
+  color: white !important;
+  text-align: center;
+  width: 100%;
+  h1{
+    color:white;
+  }
+  h3{
+    color:white;
+    margin: 0px;
+  }
+}
+.white-text{
+  color: white;
+}
+.login-h1{
+  margin-bottom: 0px;
 }

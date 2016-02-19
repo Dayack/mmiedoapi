@@ -31,6 +31,9 @@ angular.module('app.directives', [])
   .filter('DateNew', function($filter){
     return function(newDate) {
       date = new Date();
+      if (!angular.isDefined(newDate)) {
+        return null;
+      }
       newDate = newDate.split("-");
       date.setFullYear(newDate[0]);
       date.setMonth(parseInt(newDate[1])-1);

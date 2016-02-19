@@ -703,8 +703,9 @@ angular.module('app.services', [])
     this.getDetailMedia = function (media,month, year, id) {
       var deferred = $q.defer();
 
-      var url_tv = "get_url_multimedia_tv";
-      var url_radio = "get_url_multimedia_radio";
+      var url_tv = "/get_url_multimedia_tv";
+      var url_radio = "/get_url_multimedia_radio";
+      var url_press = "/get_url_pdf_prensa";
 
       var url_get = "";
       switch (media) {
@@ -715,16 +716,24 @@ angular.module('app.services', [])
         case "RADIO":
           url_get = url_radio;
           break;
+        case "PRESS"://ni case of press the base url is not necessary
+              url_get = url_press;
+              break;
       }
 
 
       //$http.get("http://api.mmi-e.com/mmiapi.php/get_url_multimedia_tv/DFKGMKLJOIRJNG/1/02/2016/161")
       //alert('http://api.mmi-e.com/mmiapi.php/'+ url_get + '/' + ConfigService.getApiKey() + '/' + ConfigService.getZona() + '/' + month + '/' + year + '/' + id);
-      $http.get('http://api.mmi-e.com/mmiapi.php/'+ url_get + '/' +  ConfigService.getApiKey() + '/' + ConfigService.getZona() + '/' + month + '/' + year + '/' + id)
+      $http.get(url_get + '/' +  ConfigService.getApiKey() + '/' + ConfigService.getZona() + '/' + month + '/' + year + '/' + id)
       .success(function(data) {
           //alert(data[0].URL);
+          var final_url = "";
           //alert('http://test.can.mmi-e.com/' + data[0].URL);
-          var final_url = 'http://test.can.mmi-e.com/' + data[0].URL;
+          if (media !== 'PRESS') {
+            final_url = 'http://test.can.mmi-e.com/' + data[0].URL;
+          } else {
+            final_url = data[0].URL;
+          }
           deferred.resolve(final_url);
           //alert(data[0].URL);
         })

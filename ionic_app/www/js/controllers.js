@@ -509,30 +509,17 @@ angular.module('app.controllers', [])
       $scope.hasLink = ((angular.isDefined($scope.dataNew.URL) && $scope.dataNew.URL.length >0));
     });
     $scope.mediaLoaded=false;//to render the video, audio tag
-    if ($scope.media ==='TV' || $scope.media ==='RADIO') {
+    if ($scope.media === 'TV' || $scope.media === 'RADIO' || $scope.media ==='PRESS') {
       NewsService.getMedia($scope.media, $scope.date, $scope.id).then(function (data) {
         if (data != "error") {
           $scope.multimedia = {url: data};
 
-          //TEST
-          //$scope.multimedia.url ="http://test.can.mmi-e.com/accesoradio_pub.php?zona_id=1&mes=02&ano=2016&id=Tmpjdw==&tipo=mp3";
-          /*$http.get($sce.trustAsResourceUrl($scope.multimedia.url)).then(
-            function(data){
-              console.log("success video/audio");
-              $scope.urlOK=data;
 
-            }
-          );*/
-   $scope.mediaLoaded = true;
-
-          /*if ($scope.media ==='RADIO') { trying to load in audio tag..
-            //create audio tag
-            $timeout(function () {
-              $scope.audioDiv = document.getElementsByClassName("audio");
-              $scope.audioElement = angular.element("<audio controls><source src='" + $scope.multimedia.url + "' type='audio/mp3'></audio>");
-              angular.element($scope.audioDiv).append($scope.audioElement);
-            }, 500);
-          }*/
+          $scope.mediaLoaded = true;
+          if ($scope.media ==='PRESS') {
+            //open in google reader, to be compatible with all devices:
+            $scope.pdfurl = $sce.trustAsResourceUrl("http://docs.google.com/gview?embedded=true&url="+$scope.multimedia.url);
+          }
         }
       });
     }
