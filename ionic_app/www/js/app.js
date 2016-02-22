@@ -40,6 +40,7 @@ $httpProvider.defaults.headers.common = {};
 
       console.log("Changing state to :");
       console.log(toState.name);
+      $rootScope.fromState=fromState;
       $rootScope.actualState=toState.name;
 
     });

@@ -15,7 +15,7 @@
       </div>
       <!--list of items-->
       <ion-list ng-show="(block.news.length >0) && loadedComplete">
-        <ion-item ng-repeat="new in block.news | unique: 'IDNOTICIA' "  ui-sref="detalle({date:new.FECHA ,id:new.IDNOTICIA, media:block.type, support:new.SOPORTE})" style=""  class="new-item"><!--ng-click="goToNew(new)"-->
+        <ion-item ng-repeat="new in block.news | unique: 'IDNOTICIA' "  ng-click="goToNew(new.FECHA ,new.IDNOTICIA, block.type, new.SOPORTE)" style=""  class="new-item"><!--ng-click="goToNew(new)"-->
           <div>
 
             <div class="news_abstract">

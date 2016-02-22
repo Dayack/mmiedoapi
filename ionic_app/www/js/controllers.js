@@ -318,7 +318,7 @@ angular.module('app.controllers', [])
     };
 })
 
-  .controller('previewNoticiasCtrl', function($scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading,$rootScope) {
+  .controller('previewNoticiasCtrl', function(ScrollService,$location,$scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading,$rootScope) {
   $scope.blockNews= [
     {news:[],ids:[], type:"TV"},
     {news:[],ids:[], type:"RADIO"},
@@ -424,21 +424,41 @@ angular.module('app.controllers', [])
 
     $scope.goToNews=function(media){
       FilterService.setMedia(media);
-      $state.go('menu.noticias');
+      $state.go('menu.noticias',{media: media, pag: 0});
+    };
+
+    $scope.goToNew=function(date,id,media,support){
+      ScrollService.setLastUrl($location.path());
+      ScrollService.setScroll(null);
+      ScrollService.setOffset(null);
+      $state.go('detalle',{date:date,id:id,media:media,support:support});
     };
 
 
   })
-    .controller('noticiasCtrl', function($scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading,$rootScope) {
+    .controller('noticiasCtrl', function(ScrollService,$stateParams,$scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading,$rootScope,ConfigService,$location) {
 
     //$rootScope.activeFilters = {value: false};
     $scope.noMoreItemsAvailable = false;
 
+    console.log();
     $ionicLoading.show({
       template: '<div class="icon ion-loading-c loading-color">'
     });
     $scope.offset=0;
-    $scope.limit=10;
+    $scope.limit=ConfigService.getLimitPage();
+    //the Page will be pass by param so we can keep in the url the page number
+    if ($rootScope.fromState.name === 'detalle'){
+      //is coming from detail
+
+      if (ScrollService.getOffset() != null) {
+        if (ScrollService.getOffset() >0) {
+          $scope.limit = ScrollService.getOffset();
+          //so, if we have to go to page 5, we load from 0 to page 5 (page * limit)
+        }
+      }
+    }
+
     $ionicNavBarDelegate.showBackButton(false);//disable the back button
     $scope.news = [];
     $scope.user = UserService.getUser();
@@ -446,28 +466,51 @@ angular.module('app.controllers', [])
     $scope.media = $scope.filters.media;
     $scope.loadedComplete = false;//just to check when data is loaded first time;
 
-    NewsService.getNews($scope.user,$scope.filters.media,$scope.filters,null,$scope.limit,$scope.offset).then(function(data) {
+    /*NewsService.getNews($scope.user,$scope.filters.media,$scope.filters,null,$scope.limit,$scope.offset).then(function(data) {
          $ionicLoading.hide();
       $scope.news = $scope.news.concat(data.news.slice());
-      $scope.loadedComplete= true;
+      if (!$scope.loadedComplete) {
+        //first load, we need restore the limit page, and set the offset
+        if ($scope.offset < ScrollService.getOffset()) {
+          $scope.offset = ScrollService.getOffset();
+          $scope.limit = ConfigService.getLimitPage();
+          $scope.loadedComplete = true;
+        }
+        //update the url with page:
+
+      }
+
       if (data.news.length ===0) {
         $scope.noMoreItemsAvailable=true;
       }
-   });
+   });*/
     $scope.goToPreview=function(){
       $state.go('menu.preview-noticias');
     };
     $scope.loadMore = function() {
       var options = {infiniteScroll: true};
-      $scope.offset += $scope.limit;
-      NewsService.getNews($scope.user,$scope.filters.media,$scope.filters,options,$scope.limit,$scope.offset).then(function(data) {
-        $scope.news = $scope.news.concat(data.news.slice());
-        $scope.loadedComplete= true;
-        if (data.news.length ===0) {
-          $scope.noMoreItemsAvailable=true;
-        }
-        $scope.$broadcast('scroll.infiniteScrollComplete');
-      });
+      //if ($scope.loadedComplete) {
+        NewsService.getNews($scope.user, $scope.filters.media, $scope.filters, options, $scope.limit, $scope.offset).then(function (data) {
+          $scope.news = $scope.news.concat(data.news.slice());
+          if ($scope.offset < ScrollService.getOffset()) {
+            $scope.offset = ScrollService.getOffset();
+            $scope.limit = ConfigService.getLimitPage();
+          } else {
+
+            $scope.offset += $scope.limit;
+          }
+          $ionicLoading.hide();
+          $scope.loadedComplete = true;
+
+          //$state.go('menu.noticias', {media: $scope.media, pag: $scope.offset}, {notify: false});
+          $location.search('page', $scope.offset);
+
+          if (data.news.length === 0) {
+            $scope.noMoreItemsAvailable = true;
+          }
+          $scope.$broadcast('scroll.infiniteScrollComplete');
+        });
+      //}
     };
 
     /*$scope.$on('filtersChanged', function() {
@@ -484,12 +527,15 @@ angular.module('app.controllers', [])
       });
     });*/
 
-    $scope.goToNew =function(detailNew){
-     $state.go('detalle');
+    $scope.goToNew =function(date,id,media,support){
+      ScrollService.setLastUrl($location.path());
+      ScrollService.setScroll(null);
+      ScrollService.setOffset($scope.offset);
+     $state.go('detalle',{date:date ,id:id, media:media, support:support});
     };
 })
 
-.controller('detalleCtrl', function($rootScope,$sce,$http,$timeout,$document,$ionicHistory,$cordovaInAppBrowser,$scope,$window,UserService,CategoryService,$state,$ionicNavBarDelegate,$stateParams,NewsService) {
+.controller('detalleCtrl', function(ScrollService,$location,$rootScope,$sce,$http,$timeout,$document,$ionicHistory,$cordovaInAppBrowser,$scope,$window,UserService,CategoryService,$state,$ionicNavBarDelegate,$stateParams,NewsService) {
 
     $scope.media= $stateParams.media;
     $scope.date= $stateParams.date;
@@ -551,7 +597,13 @@ angular.module('app.controllers', [])
     $ionicNavBarDelegate.showBackButton(true);//disable the back button
 
     $scope.goBack = function(){
-      $ionicHistory.goBack();
+      $scope.backUrl = ScrollService.getLastUrl();
+      if ($scope.backUrl !=null) {
+        $location.path($scope.backUrl);
+      } else {
+        $scope.backView = $ionicHistory.backView();
+        $state.go($scope.backView.stateName, $scope.backView.stateParams);
+      }
     };
     //$scope.resourceUrl = "http://test.can.mmi-e.com/accesovideo_pub.php?zona_id=1&mes=02&ano=2016&id=TVRZeA==&tipo=mp4";
     //$scope.resourceMp3 = "http://test.can.mmi-e.com/accesoradio_pub.php?zona_id=1&mes=02&ano=2016&id=Tmpjdw==&tipo=mp3";

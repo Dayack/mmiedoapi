@@ -97,7 +97,8 @@ angular.module('app.routes', [])
 
 
     .state('menu.noticias', {
-      url: '/news/:media',
+      url: '/news/:media/:pag',
+    reloadOnSearch: false,
       views: {
         'side-menu21': {
           templateUrl: 'templates/noticias.html',

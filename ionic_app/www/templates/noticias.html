@@ -4,7 +4,7 @@
         No existen noticias para los filtros aplicados
       </div>
         <ion-list style="" ng-show="loadedComplete && news.length !=0">
-            <ion-item ng-repeat="new in news | unique: 'IDNOTICIA'" style="" class="new-item" ui-sref="detalle({date:new.FECHA ,id:new.IDNOTICIA, media:media, support:new.SOPORTE})" ><!--ng-click="goToNew(new)"-->
+            <ion-item ng-repeat="new in news | unique: 'IDNOTICIA'" style="" class="new-item" ng-click="goToNew(new.FECHA ,new.IDNOTICIA,media,new.SOPORTE)" ><!--ng-click="goToNew(new)"-->
                 <div><!-- |  orderBy:'FECHA'-->
                   <div class="news_abstract">
                     <div>
@@ -33,7 +33,7 @@
                 </div>
             </ion-item>
         </ion-list>
-        <ion-infinite-scroll ng-if="!noMoreItemsAvailable"  on-infinite="loadMore()" distance="1%">
+        <ion-infinite-scroll ng-if="!noMoreItemsAvailable"  on-infinite="loadMore()" distance="0%">
         </ion-infinite-scroll>
     </ion-content>
   <!--back button outside-->

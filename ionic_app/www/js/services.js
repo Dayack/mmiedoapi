@@ -31,6 +31,10 @@ angular.module('app.services', [])
     this.getApiKey = function () {
       return api_key;
     };
+    var limitPage = 10;
+    this.getLimitPage = function() {
+      return limitPage;
+    }
 
   })
 
@@ -214,6 +218,30 @@ angular.module('app.services', [])
       filteredByPlace=false;
     };
   })
+
+  .service('ScrollService',function(){
+    var lastUrl=null;//last state visited
+    var lastOffset=null;
+    var lastScroll=null;
+    this.getLastUrl=function(){
+      return lastUrl;
+    };
+    this.setLastUrl=function(newUrl){
+      lastUrl = newUrl;
+    };
+    this.setOffset=function(newOffset){
+      lastOffset= newOffset;
+    };
+    this.getOffset=function(){
+      return lastOffset;
+    };
+    this.setScroll=function(newScroll){
+      lastScroll = newScroll;
+    };
+    this.getScroll=function(){
+      return lastScroll;
+    };
+  })
 /**
  * Service to load the news
  */
@@ -223,8 +251,12 @@ angular.module('app.services', [])
     var news = [];
     var offset = 0;
     var lastSearchHash = null;
+
     //-- preview config block
     var blockLimit = 5;
+    //save and load the last url to save the scroll position
+
+
     /**
      * Loads the news for user, filters, and options specified
      * @param user
