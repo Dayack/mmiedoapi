@@ -34,7 +34,7 @@ angular.module('app.services', [])
  * Service that has the basic config info
  */
   .service('ConfigService', function () {
-    var zona = '1';
+    var zona = '5';
     var api_key = 'DFKGMKLJOIRJNG';
     this.getZona = function () {
       return zona;

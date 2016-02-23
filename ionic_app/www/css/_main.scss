@@ -36,6 +36,39 @@ $backGrey: #BFBFBE;
   background: url('../img/login_background_image.jpg') no-repeat center;
   background-size: cover;
 }
+.login-view-bogota{
+  background: url('../img/login_bogota.jpg') no-repeat center;
+  background-size: cover;
+}
+.logo-colombia{
+
+  color: white;
+  width: auto;
+  margin: auto;
+  position: relative;
+  text-align: center;
+  margin-top: 30px;
+  h1{
+    color:white;
+    font-weight: bold;
+    margin: 0px;
+  }
+  .box{
+    display: inline-block;
+    padding: 10px;
+    background-color: $purple;
+    padding: 5px 20px 5px 20px;
+    h1{
+      color: white;
+      margin: 0px;
+      line-height: 30px;
+    }
+    h3{
+      color:white;
+      margin: 0px;
+    }
+  }
+}
 
 table.media{
   width: 10%;
