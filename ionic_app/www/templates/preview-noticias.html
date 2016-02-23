@@ -1,4 +1,4 @@
-<ion-view style="" title="Noticias" cache-view="false">
+<ion-view style="" title="Noticias" cache-view="true">
   <ion-content class="has-header" overflow-scroll="true" padding="'true'">
     <!--<ion-list>
       <ion-item ng-repeat="newBlock in blockNews track by type">
@@ -19,8 +19,8 @@
           <div>
 
             <div class="news_abstract">
-              <!--CASE FOR NOT TV/RADIO
-              <div ng-if="(block.type !=='TV' && block.type !=='RADIO')">-->
+              <!--CASE FOR NOT TV/RADIO-->
+              <div ng-if="(block.type !=='TV' && block.type !=='RADIO')">
               <div>
                 <div class="icon-media-item">
                   <i cla ng-show="block.type == 'PRESS'" class="icon icon-mmi-press media-icon"></i>
@@ -35,7 +35,8 @@
                   {{new.FECHA | DateNew}}
                 </div>
               </div>
-              <!--CASE FOR TV/RADIO
+                </div>
+              <!--CASE FOR TV/RADIO-->
               <div ng-if="(block.type == 'TV' || block.type =='RADIO')">
                 <div class="icon-media-item">
                   <i cla ng-show="block.type == 'PRESS'" class="icon icon-mmi-press media-icon"></i>
@@ -51,7 +52,7 @@
                 <div style="clear:both;">
                 <span class="purple-text new-support">{{new.SOPORTE}}</span>
                 </div>
-              </div>-->
+              </div>
               <div class="content-item">
                 {{new.TEMA | limitationText:80}}
               </div>

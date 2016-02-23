@@ -53,7 +53,7 @@ angular.module('app.controllers', [])
 /**
  * Login View Controller
  */
-.controller('loginCtrl', function($scope,UserService,$state,CategoryService) {
+.controller('loginCtrl', function($scope,UserService,$state,CategoryService,$ionicHistory) {
     $scope.user = {username : '',
     password : ''};
     $scope.successfulLogin = null; //will be set to TRUE or FALSE after the login request
@@ -75,7 +75,9 @@ angular.module('app.controllers', [])
       $scope.successfulLogin = true;
         if (CategoryService.loadStatus()) {
           //info found in the localStorate, exit from this view and go direct to news
-          $state.go('menu.preview-noticias');
+          $ionicHistory.clearCache().then(function() {
+            $state.go('menu.preview-noticias');
+          });
         } else {
           $state.go('menu.categorias');
         }
@@ -83,20 +85,24 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('mediosCtrl', function($scope,FilterService,$state,$rootScope) {
+.controller('mediosCtrl', function($scope,FilterService,$state,$rootScope,$ionicHistory) {
     $scope.selectMedia = function(media) {
       if (media ==="ALL") {
-        $state.go('menu.preview-noticias');
+        $ionicHistory.clearCache().then(function() {
+          $state.go('menu.preview-noticias');
+        });
       } else {
         FilterService.setMedia(media);
         //$rootScope.$broadcast('filtersChanged');
-        $state.go('menu.noticias');
+        $ionicHistory.clearCache().then(function() {
+          $state.go('menu.noticias', {media: media, pag: 0, cache: false});
+        });
       }
     };
 
 })
 
-.controller('categoriasCtrl', function($scope,UserService,CategoryService,$state,$ionicLoading,$rootScope,$stateParams) {
+.controller('categoriasCtrl', function($scope,UserService,CategoryService,$state,$ionicLoading,$rootScope,$stateParams,$ionicHistory) {
 
     $scope.user = UserService.getUser();
     //only if come from Login, and there is previous info about categories (selected), just obviate this page, and jump to preview-nes
@@ -119,7 +125,9 @@ angular.module('app.controllers', [])
     };
     $scope.goToNews= function() {
       $rootScope.$broadcast('reload-block');
-      $state.go('menu.preview-noticias');
+      $ionicHistory.clearCache().then(function() {
+        $state.go('menu.preview-noticias');
+      });
 
     };
 
@@ -138,7 +146,7 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('subCategoriasCtrl', function($scope, UserService,CategoryService,$state) {
+.controller('subCategoriasCtrl', function($scope, UserService,CategoryService,$state,$ionicHistory) {
     $scope.user = UserService.getUser();
     $scope.subCategories = function() {
       return CategoryService.getSubCategories();
@@ -152,7 +160,7 @@ angular.module('app.controllers', [])
     };
 })
 
-.controller('eventPlaceCtrl', function($scope, UserService, PlacesService, $state,FilterService,$rootScope) {
+.controller('eventPlaceCtrl', function($ionicHistory,$scope, UserService, PlacesService, $state,FilterService,$rootScope) {
 	$scope.allSelected={value:PlacesService.areAllSelected()};//all is by defect
     $scope.user = UserService.getUser();
     $scope.places = PlacesService.getPlaces($scope.user).then(function(data) {
@@ -170,12 +178,14 @@ angular.module('app.controllers', [])
     $scope.goToNews= function() {
       FilterService.setFilterByPlace(!$scope.allSelected.value);
       $rootScope.$broadcast('filtersChanged');
-      $state.go('menu.preview-noticias');
+      $ionicHistory.clearCache().then(function() {
+        $state.go('menu.preview-noticias');
+      });
     };
 
 })
 
-.controller('originCtrl', function($scope, UserService, OriginService, $state,FilterService,$rootScope) {
+.controller('originCtrl', function($ionicHistory,$scope, UserService, OriginService, $state,FilterService,$rootScope) {
     $scope.allSelected={value:OriginService.areAllSelected()};
     $scope.user = UserService.getUser();
     $scope.origins = OriginService.getOrigins($scope.user).then(function(data) {
@@ -194,13 +204,15 @@ angular.module('app.controllers', [])
       FilterService.setFilterByOrigin(!$scope.allSelected.value);
       $rootScope.$broadcast('filtersChanged');
 
-      $state.go('menu.preview-noticias');
+      $ionicHistory.clearCache().then(function() {
+        $state.go('menu.preview-noticias');
+      });
     };
 
 })
 
 
-.controller('selectDateCtrl', function($scope,$state,FilterService,$rootScope,$ionicHistory,DateHelperService) {
+.controller('selectDateCtrl', function($ionicHistory,$scope,$state,FilterService,$rootScope,$ionicHistory,DateHelperService) {
     $scope.defaultDates= null;//if set false, is to activate filters, if false, are default dates the disable filters icon
     // , if null, the data has not been changed in the top options (today,yesterday..) so is changed in the datepicker
     //load from service
@@ -217,7 +229,9 @@ angular.module('app.controllers', [])
       FilterService.setToDate($scope.data.toDate);
       $rootScope.$broadcast('filtersChanged');
 
-      $state.go('menu.preview-noticias');
+      $ionicHistory.clearCache().then(function() {
+        $state.go('menu.preview-noticias');
+      });
     };
 
 
@@ -318,7 +332,7 @@ angular.module('app.controllers', [])
     };
 })
 
-  .controller('previewNoticiasCtrl', function(ScrollService,$location,$scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading,$rootScope) {
+  .controller('previewNoticiasCtrl', function($timeout,$ionicHistory,$window,ScrollService,$location,$scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading,$rootScope) {
   $scope.blockNews= [
     {news:[],ids:[], type:"TV"},
     {news:[],ids:[], type:"RADIO"},
@@ -424,19 +438,24 @@ angular.module('app.controllers', [])
 
     $scope.goToNews=function(media){
       FilterService.setMedia(media);
-      $state.go('menu.noticias',{media: media, pag: 0});
+      $ionicHistory.clearCache().then(function() {
+        $state.go('menu.noticias', {media: media, pag: 0, cache: false});
+      });
     };
 
     $scope.goToNew=function(date,id,media,support){
-      ScrollService.setLastUrl($location.path());
-      ScrollService.setScroll(null);
-      ScrollService.setOffset(null);
+      ScrollService.setLastUrl($scope.currentState);
+      $timeout(function(){
+        $scope.$digest();
+
+      ScrollService.setOffset(0);
       $state.go('detalle',{date:date,id:id,media:media,support:support});
+      },500);
     };
 
 
   })
-    .controller('noticiasCtrl', function(ScrollService,$stateParams,$scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading,$rootScope,ConfigService,$location) {
+    .controller('noticiasCtrl', function($ionicHistory,$timeout,ScrollService,$stateParams,$scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading,$rootScope,ConfigService,$location,$window) {
 
     //$rootScope.activeFilters = {value: false};
     $scope.noMoreItemsAvailable = false;
@@ -448,7 +467,7 @@ angular.module('app.controllers', [])
     $scope.offset=0;
     $scope.limit=ConfigService.getLimitPage();
     //the Page will be pass by param so we can keep in the url the page number
-    if ($rootScope.fromState.name === 'detalle'){
+    if (angular.isDefined($rootScope.fromState) && $rootScope.fromState.name === 'detalle'){
       //is coming from detail
 
       if (ScrollService.getOffset() != null) {
@@ -485,7 +504,9 @@ angular.module('app.controllers', [])
       }
    });*/
     $scope.goToPreview=function(){
-      $state.go('menu.preview-noticias');
+      $ionicHistory.clearCache().then(function() {
+        $state.go('menu.preview-noticias');
+      });
     };
     $scope.loadMore = function() {
       var options = {infiniteScroll: true};
@@ -495,6 +516,7 @@ angular.module('app.controllers', [])
           if ($scope.offset < ScrollService.getOffset()) {
             $scope.offset = ScrollService.getOffset();
             $scope.limit = ConfigService.getLimitPage();
+
           } else {
 
             $scope.offset += $scope.limit;
@@ -513,6 +535,7 @@ angular.module('app.controllers', [])
       //}
     };
 
+
     /*$scope.$on('filtersChanged', function() {
       $scope.filters = FilterService.getFilters();
       $ionicLoading.show({
@@ -527,11 +550,15 @@ angular.module('app.controllers', [])
       });
     });*/
 
+
     $scope.goToNew =function(date,id,media,support){
-      ScrollService.setLastUrl($location.path());
-      ScrollService.setScroll(null);
+      ScrollService.setLastUrl($scope.currentState);
+      $timeout(function(){
+        $scope.$digest();
+
       ScrollService.setOffset($scope.offset);
      $state.go('detalle',{date:date ,id:id, media:media, support:support});
+      },500);
     };
 })
 
@@ -544,8 +571,16 @@ angular.module('app.controllers', [])
     $scope.dataNew = null;
     $scope.extendedText=false;
     $scope.hasLink=false;//has a link to external web?
+    $scope.loaded=false;
+    $scope.errorLoading=false;
+
+
     NewsService.getNew($scope.media,$scope.date,$scope.id).then(function(data) {
       $scope.dataNew = data;
+      if ($scope.dataNew == "ERROR") {
+        $scope.errorLoading=true;
+      }
+      $scope.loaded=true;
 
       $scope.extendedText = (angular.isDefined($scope.dataNew.ROLLO));
       if ($scope.media=='TWITTER') {
@@ -597,13 +632,15 @@ angular.module('app.controllers', [])
     $ionicNavBarDelegate.showBackButton(true);//disable the back button
 
     $scope.goBack = function(){
+      $ionicHistory.goBack();
+      /*
       $scope.backUrl = ScrollService.getLastUrl();
       if ($scope.backUrl !=null) {
-        $location.path($scope.backUrl);
+        $state.go($scope.backUrl.name,$scope.backUrl.stateParams);
       } else {
         $scope.backView = $ionicHistory.backView();
         $state.go($scope.backView.stateName, $scope.backView.stateParams);
-      }
+      }*/
     };
     //$scope.resourceUrl = "http://test.can.mmi-e.com/accesovideo_pub.php?zona_id=1&mes=02&ano=2016&id=TVRZeA==&tipo=mp4";
     //$scope.resourceMp3 = "http://test.can.mmi-e.com/accesoradio_pub.php?zona_id=1&mes=02&ano=2016&id=Tmpjdw==&tipo=mp3";

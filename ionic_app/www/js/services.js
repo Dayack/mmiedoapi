@@ -3,6 +3,17 @@ angular.module('app.services', [])
   .factory('BlankFactory', [function () {
 
   }])
+
+  .factory('timeoutHttpIntercept', function ($rootScope, $q) {
+    return {
+      'request': function (config) {
+        config.timeout = 20000;//20 seconds of timeout
+        return config;
+      }
+    };
+  }
+    )
+
   .factory('$localstorage', ['$window', function($window) {
     return {
       set: function(key, value) {
@@ -34,7 +45,7 @@ angular.module('app.services', [])
     var limitPage = 10;
     this.getLimitPage = function() {
       return limitPage;
-    }
+    };
 
   })
 
@@ -88,7 +99,7 @@ angular.module('app.services', [])
       var defer = $q.defer();
       HttpService.login(username, password).then(function (data) {
         //the answer from the HTTP was ok, not error and if user/password is ok
-        if (data !== null && data != "error" && (data !== false)) {
+        if ((data !== null && data != "error" && (data !== false)) && angular.isDefined(data.IDUSUARIO)) {
           user = data;
           //MOCKED TEST DATA
          //user.IDUSUARIO=17640;//1445;
@@ -704,7 +715,11 @@ angular.module('app.services', [])
           break;
       }
       $http.get(url+'/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+id+'/'+date).then(function(data){
-        deferred.resolve(data.data[0]);
+        if (angular.isDefined(data.data) && (angular.isArray(data.data) && data.data[0] != false)) {
+          deferred.resolve(data.data[0]);
+        } else {
+          deferred.resolve("ERROR");
+        }
         //alert(data);
       });
       return deferred.promise;

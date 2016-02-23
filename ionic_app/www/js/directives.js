@@ -97,6 +97,9 @@ angular.module('app.directives', [])
   })
   .filter('limitationText',function() {
     return function(text,size) {
+      if (!angular.isDefined(text)) {
+        return "";
+      }
       if (text.length >size) {
         return text.substr(0,size)+"...";
       } else {

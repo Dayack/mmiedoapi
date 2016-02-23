@@ -13,7 +13,8 @@ $httpProvider.defaults.headers.common = {};
     $httpProvider.defaults.headers.put = {};
     $httpProvider.defaults.headers.patch = {};
     /***/
-    $ionicConfigProvider.views.maxCache(0);
+   // $ionicConfigProvider.views.maxCache(0); --cache views, now each view has its own cachessytem
+    $httpProvider.interceptors.push('timeoutHttpIntercept');//add timeout to requests, check services.js
 
 
     $httpProvider.interceptors.push(function(){
@@ -42,6 +43,7 @@ $httpProvider.defaults.headers.common = {};
       console.log(toState.name);
       $rootScope.fromState=fromState;
       $rootScope.actualState=toState.name;
+      $rootScope.currentState = toState;
 
     });
 

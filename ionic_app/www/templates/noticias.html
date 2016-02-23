@@ -1,5 +1,5 @@
-<ion-view style="" title="{{media | mediaName}}" cache-view="false">
-    <ion-content class="has-header" overflow-scroll="true" padding="'true'">
+<ion-view style="" title="{{media | mediaName}}" cache-view="true">
+    <ion-content   class="has-header" overflow-scroll="true" padding="'true'">
       <div ng-show="loadedComplete && news.length ==0">
         No existen noticias para los filtros aplicados
       </div>
@@ -7,20 +7,26 @@
             <ion-item ng-repeat="new in news | unique: 'IDNOTICIA'" style="" class="new-item" ng-click="goToNew(new.FECHA ,new.IDNOTICIA,media,new.SOPORTE)" ><!--ng-click="goToNew(new)"-->
                 <div><!-- |  orderBy:'FECHA'-->
                   <div class="news_abstract">
-                    <div>
-                   <div class="icon-media-item">
-                     <!-- <i ng-show="media == 'PRESS'" class="icon icon-mmi-press media-icon"></i>
-                     <i ng-show="media == 'RADIO'" class="icon icon-mmi-radio media-icon"></i>
-                     <i ng-show="media == 'TV'" class="icon icon-mmi-tv media-icon"></i>
-                     <i ng-show="media == 'SOCIAL'" class="icon icon-mmi-social media-icon"></i>
-                     <i ng-show="media == 'TWITTER'" class="icon icon-mmi-twitter media-icon"></i>
-                     <i ng-show="media == 'INTERNET'" class="icon icon-mmi-arroba media-icon"></i>-->
-                     <span class="purple-text new-support">{{new.SOPORTE | limitationText:25}}</span>
-                   </div>
-                    <div class="date-item">
-                      {{new.FECHA | DateNew}}
+                    <div ng-if="(media !=='TV' && media !=='RADIO')">
+                      <div class="icon-media-item">
+
+                        <span class="purple-text new-support">{{new.SOPORTE | limitationText:25}}</span>
+                      </div>
+                      <div class="date-item">
+                        {{new.FECHA | DateNew}}
+                      </div>
                     </div>
-                  </div>
+
+                    <div ng-if="(media == 'TV' || media =='RADIO')">
+
+                      <div class="date-item" style="clear: both;">
+                        {{new.FECHA | DateNew}}
+                      </div>
+                      <div class="icon-media-item" style="clear: both;">
+
+                        <span class="purple-text new-support" >{{new.SOPORTE | limitationText:80}}</span>
+                      </div>
+                    </div>
                  <!-- <span class="news_source">Canarias 7</span> <span style="float: right;">Hoy, 12:53</span>-->
 
                   <!--<div class="tvScreenshot">
@@ -35,6 +41,7 @@
         </ion-list>
         <ion-infinite-scroll ng-if="!noMoreItemsAvailable"  on-infinite="loadMore()" distance="0%">
         </ion-infinite-scroll>
+</ion-scroll>
     </ion-content>
   <!--back button outside-->
   <!--<div class="fixed-outside">
