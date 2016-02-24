@@ -262,6 +262,30 @@ angular.module('app.services', [])
     var news = [];
     var offset = 0;
     var lastSearchHash = null;
+    var thumbnails=[];
+    var mediaUrl=null;
+    var idNew=null;
+    this.setIdNew=function(id){
+      idNew=id;
+    };
+    this.getIdNew=function(){
+      return idNew;
+    };
+
+    this.setThumbNails=function(thumbs){
+      thumbnails=thumbs;
+    };
+    this.getThumbNails=function(){
+      return thumbnails;
+    };
+
+    this.setMediaUrl=function(url){
+      mediaUrl=url;
+    };
+
+    this.getMediaUrl=function(){
+      return mediaUrl;
+    };
 
     //-- preview config block
     var blockLimit = 5;

@@ -443,13 +443,39 @@ angular.module('app.controllers', [])
       });
     };
 
-    $scope.goToNew=function(date,id,media,support){
+    $scope.goToNew=function(item,media){
+
       ScrollService.setLastUrl($scope.currentState);
       $timeout(function(){
         $scope.$digest();
 
+        //first of all, restart the information sved about last detail
+        NewsService.setMediaUrl(null);
+        NewsService.setIdNew(item.IDNOTICIA);
+        NewsService.setThumbNails([]);
+        var thumbs=["THUMB1","THUMB2","THUMB3","THUMB4","THUMB5"];
       ScrollService.setOffset(0);
-      $state.go('detalle',{date:date,id:id,media:media,support:support});
+        //in case of TV, PRESS or RADIO, save mediaUrl (mp4,mp3, pdf)
+        switch (media){
+          case 'RADIO':
+          case 'PRESS':
+          case 'TV':
+            //if has multimedia, thumbnails, save in the service
+            if (angular.isDefined(item.MULTIMEDIA)) {
+              NewsService.setMediaUrl(item.MULTIMEDIA);
+            }
+            //in case of TV also we must save the thumbnails
+            for (var i=0;i<thumbs.length;i++) {
+              if (angular.isDefined(item[thumbs[i]])) {
+                NewsService.getThumbNails().push(item[thumbs[i]]);
+              }
+            }
+
+                break;
+          default:
+                break;
+        }
+      $state.go('detalle',{date:item.FECHA,id:item.IDNOTICIA,media:media,support:item.SOPORTE});
       },500);
     };
 
@@ -550,14 +576,41 @@ angular.module('app.controllers', [])
       });
     });*/
 
+    $scope.goToNew=function(item,media){
 
-    $scope.goToNew =function(date,id,media,support){
       ScrollService.setLastUrl($scope.currentState);
+
+      ScrollService.setOffset($scope.offset);
       $timeout(function(){
         $scope.$digest();
 
-      ScrollService.setOffset($scope.offset);
-     $state.go('detalle',{date:date ,id:id, media:media, support:support});
+        //first of all, restart the information sved about last detail
+        NewsService.setMediaUrl(null);
+        NewsService.setIdNew(item.IDNOTICIA);
+        NewsService.setThumbNails([]);
+        var thumbs=["THUMB1","THUMB2","THUMB3","THUMB4","THUMB5"];
+        ScrollService.setOffset(0);
+        //in case of TV, PRESS or RADIO, save mediaUrl (mp4,mp3, pdf)
+        switch (media){
+          case 'RADIO':
+          case 'PRESS':
+          case 'TV':
+            //if has multimedia, thumbnails, save in the service
+            if (angular.isDefined(item.MULTIMEDIA)) {
+              NewsService.setMediaUrl(item.MULTIMEDIA);
+            }
+            //in case of TV also we must save the thumbnails
+            for (var i=0;i<thumbs.length;i++) {
+              if (angular.isDefined(item[thumbs[i]])) {
+                NewsService.getThumbNails().push(item[thumbs[i]]);
+              }
+            }
+
+            break;
+          default:
+            break;
+        }
+        $state.go('detalle',{date:item.FECHA,id:item.IDNOTICIA,media:media,support:item.SOPORTE});
       },500);
     };
 })
@@ -573,6 +626,7 @@ angular.module('app.controllers', [])
     $scope.hasLink=false;//has a link to external web?
     $scope.loaded=false;
     $scope.errorLoading=false;
+    $scope.thumbnails=null;
 
 
     NewsService.getNew($scope.media,$scope.date,$scope.id).then(function(data) {
@@ -591,7 +645,18 @@ angular.module('app.controllers', [])
     });
     $scope.mediaLoaded=false;//to render the video, audio tag
     if ($scope.media === 'TV' || $scope.media === 'RADIO' || $scope.media ==='PRESS') {
-      NewsService.getMedia($scope.media, $scope.date, $scope.id).then(function (data) {
+      $scope.multimedia = {url: NewsService.getMediaUrl()};
+      if ($scope.multimedia.url !==null) {
+        if ($scope.media ==='PRESS') {
+          //open in google reader, to be compatible with all devices:
+          $scope.pdfurl = $sce.trustAsResourceUrl("http://docs.google.com/gview?embedded=true&url="+$scope.multimedia.url);
+        }
+        if ($scope.media ==='TV' && NewsService.getThumbNails() !==null){
+          $scope.thumbnails = NewsService.getThumbNails();
+        }
+        $scope.mediaLoaded=true;
+      }
+      /*NewsService.getMedia($scope.media, $scope.date, $scope.id).then(function (data) {
         if (data != "error") {
           $scope.multimedia = {url: data};
 
@@ -602,7 +667,7 @@ angular.module('app.controllers', [])
             $scope.pdfurl = $sce.trustAsResourceUrl("http://docs.google.com/gview?embedded=true&url="+$scope.multimedia.url);
           }
         }
-      });
+      });*/
     }
 
     $scope.openLink=function(){

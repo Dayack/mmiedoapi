@@ -15,7 +15,7 @@
       </div>
       <!--list of items-->
       <ion-list ng-show="(block.news.length >0) && loadedComplete">
-        <ion-item ng-repeat="new in block.news | unique: 'IDNOTICIA' "  ng-click="goToNew(new.FECHA ,new.IDNOTICIA, block.type, new.SOPORTE)" style=""  class="new-item"><!--ng-click="goToNew(new)"-->
+        <ion-item ng-repeat="new in block.news | unique: 'IDNOTICIA' "  ng-click="goToNew(new, block.type)" style=""  class="new-item"><!--ng-click="goToNew(new)"-->
           <div>
 
             <div class="news_abstract">
@@ -45,6 +45,7 @@
                   <i ng-show="block.type == 'SOCIAL'" class="icon icon-mmi-social media-icon"></i>
                   <i ng-show="block.type == 'TWITTER'" class="icon icon-mmi-twitter media-icon"></i>
                   <i ng-show="block.type == 'INTERNET'" class="icon icon-mmi-arroba media-icon"></i>
+                  <span class="purple-text new-support">{{new.SUPERSOPORTE | limitationText:25}}</span>
                 </div>
                 <div class="date-item">
                   <span> {{new.FECHA | DateNew}}</span>
