@@ -349,6 +349,9 @@ angular.module('app.controllers', [])
       $ionicLoading.show({
         template: '<div class="icon ion-loading-c loading-color">'
       });
+      $timeout(function(){
+        $ionicLoading.hide();
+      },10000);
       $scope.blocksLoaded = 0;//to keep the count of the blocks loaded
       $scope.filters = FilterService.getFilters();
       $scope.options = null;
@@ -637,7 +640,7 @@ angular.module('app.controllers', [])
     };
 })
 
-.controller('detalleCtrl', function(ScrollService,$location,$rootScope,$sce,$http,$timeout,$document,$ionicHistory,$cordovaInAppBrowser,$scope,$window,UserService,CategoryService,$state,$ionicNavBarDelegate,$stateParams,NewsService) {
+.controller('detalleCtrl', function($ionicLoading,ScrollService,$location,$rootScope,$sce,$http,$timeout,$document,$ionicHistory,$cordovaInAppBrowser,$scope,$window,UserService,CategoryService,$state,$ionicNavBarDelegate,$stateParams,NewsService) {
 
     $scope.media= $stateParams.media;
     $scope.date= $stateParams.date;
@@ -652,10 +655,14 @@ angular.module('app.controllers', [])
     $scope.superSupport=null;
     $scope.mediaLoaded=false;//to render the video, audio tag
     $scope.autoPlay=NewsService.getAutoPlay();
+    $ionicLoading.show({
+      template: '<div class="icon ion-loading-c loading-color">'
+    });
     if ($scope.media ==='TV' && NewsService.getThumbNails() !==null){
       $scope.thumbnails = NewsService.getThumbNails();
     }
     NewsService.getNew($scope.media,$scope.date,$scope.id).then(function(data) {
+      $ionicLoading.hide();
       $scope.dataNew = data;
       if ($scope.dataNew == "ERROR") {
         $scope.errorLoading=true;
