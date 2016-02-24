@@ -349,6 +349,9 @@ angular.module('app.controllers', [])
       $ionicLoading.show({
         template: '<div class="icon ion-loading-c loading-color">'
       });
+      $timeout(function(){
+        $ionicLoading.hide();
+      },10000);
       $scope.blocksLoaded = 0;//to keep the count of the blocks loaded
       $scope.filters = FilterService.getFilters();
       $scope.options = null;
