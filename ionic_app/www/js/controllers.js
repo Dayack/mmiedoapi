@@ -640,7 +640,7 @@ angular.module('app.controllers', [])
     };
 })
 
-.controller('detalleCtrl', function(ScrollService,$location,$rootScope,$sce,$http,$timeout,$document,$ionicHistory,$cordovaInAppBrowser,$scope,$window,UserService,CategoryService,$state,$ionicNavBarDelegate,$stateParams,NewsService) {
+.controller('detalleCtrl', function($ionicLoading,ScrollService,$location,$rootScope,$sce,$http,$timeout,$document,$ionicHistory,$cordovaInAppBrowser,$scope,$window,UserService,CategoryService,$state,$ionicNavBarDelegate,$stateParams,NewsService) {
 
     $scope.media= $stateParams.media;
     $scope.date= $stateParams.date;
