@@ -1,11 +1,11 @@
 <ion-view style="" title="{{media | mediaName}}" cache-view="true">
-    <ion-content   class="has-header" overflow-scroll="true" padding="'true'">
+    <ion-content   class="has-header padding-footer" overflow-scroll="true" padding="'true'">
       <div ng-show="loadedComplete && news.length ==0">
         No existen noticias para los filtros aplicados
       </div>
         <ion-list style="" ng-show="loadedComplete && news.length !=0">
-            <ion-item ng-repeat="new in news | unique: 'IDNOTICIA'" style="" class="new-item" ng-click="goToNew(new,media)" ><!--ng-click="goToNew(new)"-->
-                <div><!-- |  orderBy:'FECHA'-->
+            <ion-item ng-repeat="new in news | unique: 'IDNOTICIA'" style="" class="new-item" ng-click="goToNew(new,media,false)" ><!--ng-click="goToNew(new)"-->
+                <div class="content-item"><!-- |  orderBy:'FECHA'-->
                   <div class="news_abstract">
                     <div ng-if="(media !=='TV' && media !=='RADIO')">
                       <div class="icon-media-item">
@@ -22,6 +22,7 @@
                       <div class="date-item" style="clear: both;">
                         {{new.FECHA | DateNew}}
                       </div>
+                      <div><span class="purple-text new-suppoert">{{new.SUPERSOPORTE}}</span></div>
                       <div class="icon-media-item" style="clear: both;">
 
                         <span class="purple-text new-support" >{{new.SOPORTE | limitationText:80}}</span>
@@ -32,9 +33,19 @@
                   <!--<div class="tvScreenshot">
                        <img ng-show="new.media == 'TV'" src="img/chicaplay.png"></img>
                   </div>-->
-                  <div class="content-item">
+                  <div  style="    clear: both;">
                     {{new.TEMA | limitationText:80}}
                   </div>
+                    <!--htumbnail-->
+                    <div class="col" ng-if="media =='TV'">
+                      <div class="col-75 thumbnail-container"  ng-click="goToNew(new,media,true); $event.stopPropagation();">
+                        <img style="width: 100%;" ng-src="{{new.THUMB1}}" ng-if="(new.THUMB1 !=='')" >
+                        <img style="width: 100%;" src="img/back-mask.png" ng-if="(new.THUMB1 =='')" >
+                        <img class="play-mask" src="img/play.png" >
+                      </div>
+
+
+                    </div>
                   </div>
                 </div>
             </ion-item>

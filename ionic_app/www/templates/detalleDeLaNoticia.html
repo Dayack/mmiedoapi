@@ -12,6 +12,7 @@
             <i ng-show="media == 'INTERNET'" class="icon icon-mmi-arroba media-icon"></i>
 
           </div>
+          <div ng-if="superSupport!=null"><span class="purple-text new-support">{{superSupport}}</span></div>
           <span class="purple-text new-support">{{support}}</span>
 
           <p>{{dataNew.FECHA | DateNew}}</p>
@@ -21,9 +22,15 @@
           <div ng-if="mediaLoaded">
             <!--TV-->
             <div ng-show="media ==='TV'">
-              <video controls class="video-frame">
+              <!--VIDEO NORMAL-->
+              <video controls class="video-frame" id="normalVideo" poster="{{thumbnails[0]}}" ng-if="!autoPlay" preload>
                 <source ng-src="{{multimedia.url| trusted}}" type="video/mp4"/>
               </video>
+              <!--AUTOPLAYVIDEO-->
+              <video controls class="video-frame" id="autoVideo" poster="{{thumbnails[0]}}" ng-if="autoPlay" autoplay preload>
+                <source ng-src="{{multimedia.url| trusted}}" type="video/mp4"/>
+              </video>
+
             </div>
             <!--RADIO-->
             <div ng-show="media ==='RADIO'">

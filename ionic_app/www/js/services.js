@@ -36,6 +36,7 @@ angular.module('app.services', [])
   .service('ConfigService', function () {
     var zona = '1';
     var api_key = 'DFKGMKLJOIRJNG';
+    var mediaUrl='http://test.can.mmi-e.com/';
     this.getZona = function () {
       return zona;
     };
@@ -45,6 +46,9 @@ angular.module('app.services', [])
     var limitPage = 10;
     this.getLimitPage = function() {
       return limitPage;
+    };
+    this.getMediaUrl=function(){
+      return mediaUrl;
     };
 
   })
@@ -265,6 +269,20 @@ angular.module('app.services', [])
     var thumbnails=[];
     var mediaUrl=null;
     var idNew=null;
+    var autoPlay=false;
+    var superSupport=null;
+    this.setAutoPlay=function(state){
+      autoPlay=state;
+    };
+    this.getAutoPlay=function(){
+      return autoPlay;
+    };
+    this.setSuperSupport=function(newSup){
+      superSupport=newSup;
+    };
+    this.getSuperSupport=function() {
+      return superSupport;
+    };
     this.setIdNew=function(id){
       idNew=id;
     };
@@ -739,7 +757,7 @@ angular.module('app.services', [])
           break;
       }
       $http.get(url+'/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+id+'/'+date).then(function(data){
-        if (angular.isDefined(data.data) && (angular.isArray(data.data) && data.data[0] != false)) {
+        if (angular.isDefined(data.data) && (angular.isArray(data.data) && data.data[0] !== false)) {
           deferred.resolve(data.data[0]);
         } else {
           deferred.resolve("ERROR");

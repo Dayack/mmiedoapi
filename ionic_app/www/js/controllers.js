@@ -332,7 +332,7 @@ angular.module('app.controllers', [])
     };
 })
 
-  .controller('previewNoticiasCtrl', function($timeout,$ionicHistory,$window,ScrollService,$location,$scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading,$rootScope) {
+  .controller('previewNoticiasCtrl', function(ConfigService,$timeout,$ionicHistory,$window,ScrollService,$location,$scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading,$rootScope) {
   $scope.blockNews= [
     {news:[],ids:[], type:"TV"},
     {news:[],ids:[], type:"RADIO"},
@@ -357,6 +357,12 @@ angular.module('app.controllers', [])
         for (var i = 0; i < $scope.blockNews.length; i++) {
           if ($scope.blockNews[i].type === data.type) {
             $scope.blockNews[i].news = data.news;
+            angular.forEach($scope.blockNews[i].news,function(value){
+              //value.THUMB1="accesothumb_pub.php?ano=2015&mes=12&zona_id=1&fichero=201512042515_thumb1.jpg";//TEST
+              if (angular.isDefined(value.THUMB1) && value.THUMB1 !==""){
+                value.THUMB1=ConfigService.getMediaUrl()+value.THUMB1;
+              }
+            });
             $scope.blocksLoaded++;
           }
         }
@@ -453,6 +459,8 @@ angular.module('app.controllers', [])
         NewsService.setMediaUrl(null);
         NewsService.setIdNew(item.IDNOTICIA);
         NewsService.setThumbNails([]);
+        NewsService.getSuperSupport(null);
+        NewsService.setAutoPlay(false);
         var thumbs=["THUMB1","THUMB2","THUMB3","THUMB4","THUMB5"];
       ScrollService.setOffset(0);
         //in case of TV, PRESS or RADIO, save mediaUrl (mp4,mp3, pdf)
@@ -460,6 +468,9 @@ angular.module('app.controllers', [])
           case 'RADIO':
           case 'PRESS':
           case 'TV':
+            if (angular.isDefined(item.SUPERSOPORTE)){
+              NewsService.setSuperSupport(item.SUPERSOPORTE);
+            }
             //if has multimedia, thumbnails, save in the service
             if (angular.isDefined(item.MULTIMEDIA)) {
               NewsService.setMediaUrl(item.MULTIMEDIA);
@@ -481,7 +492,7 @@ angular.module('app.controllers', [])
 
 
   })
-    .controller('noticiasCtrl', function($ionicHistory,$timeout,ScrollService,$stateParams,$scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading,$rootScope,ConfigService,$location,$window) {
+    .controller('noticiasCtrl', function(ConfigService,$ionicHistory,$timeout,ScrollService,$stateParams,$scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading,$rootScope,ConfigService,$location) {
 
     //$rootScope.activeFilters = {value: false};
     $scope.noMoreItemsAvailable = false;
@@ -538,6 +549,12 @@ angular.module('app.controllers', [])
       var options = {infiniteScroll: true};
       //if ($scope.loadedComplete) {
         NewsService.getNews($scope.user, $scope.filters.media, $scope.filters, options, $scope.limit, $scope.offset).then(function (data) {
+          angular.forEach(data.news,function(value){
+           // value.THUMB1="accesothumb_pub.php?ano=2015&mes=12&zona_id=1&fichero=201512042515_thumb1.jpg";//TEST
+            if (angular.isDefined(value.THUMB1) && value.THUMB1 !==""){
+              value.THUMB1=ConfigService.getMediaUrl()+value.THUMB1;
+            }
+          });
           $scope.news = $scope.news.concat(data.news.slice());
           if ($scope.offset < ScrollService.getOffset()) {
             $scope.offset = ScrollService.getOffset();
@@ -576,7 +593,7 @@ angular.module('app.controllers', [])
       });
     });*/
 
-    $scope.goToNew=function(item,media){
+    $scope.goToNew=function(item,media,autoplay){
 
       ScrollService.setLastUrl($scope.currentState);
 
@@ -588,6 +605,7 @@ angular.module('app.controllers', [])
         NewsService.setMediaUrl(null);
         NewsService.setIdNew(item.IDNOTICIA);
         NewsService.setThumbNails([]);
+        NewsService.setAutoPlay(autoplay);
         var thumbs=["THUMB1","THUMB2","THUMB3","THUMB4","THUMB5"];
         ScrollService.setOffset(0);
         //in case of TV, PRESS or RADIO, save mediaUrl (mp4,mp3, pdf)
@@ -595,6 +613,10 @@ angular.module('app.controllers', [])
           case 'RADIO':
           case 'PRESS':
           case 'TV':
+
+            if (angular.isDefined(item.SUPERSOPORTE)){
+              NewsService.setSuperSupport(item.SUPERSOPORTE);
+            }
             //if has multimedia, thumbnails, save in the service
             if (angular.isDefined(item.MULTIMEDIA)) {
               NewsService.setMediaUrl(item.MULTIMEDIA);
@@ -626,9 +648,13 @@ angular.module('app.controllers', [])
     $scope.hasLink=false;//has a link to external web?
     $scope.loaded=false;
     $scope.errorLoading=false;
-    $scope.thumbnails=null;
-
-
+    $scope.thumbnails=[""];
+    $scope.superSupport=null;
+    $scope.mediaLoaded=false;//to render the video, audio tag
+    $scope.autoPlay=NewsService.getAutoPlay();
+    if ($scope.media ==='TV' && NewsService.getThumbNails() !==null){
+      $scope.thumbnails = NewsService.getThumbNails();
+    }
     NewsService.getNew($scope.media,$scope.date,$scope.id).then(function(data) {
       $scope.dataNew = data;
       if ($scope.dataNew == "ERROR") {
@@ -643,7 +669,9 @@ angular.module('app.controllers', [])
       }
       $scope.hasLink = ((angular.isDefined($scope.dataNew.URL) && $scope.dataNew.URL.length >0));
     });
-    $scope.mediaLoaded=false;//to render the video, audio tag
+    if (NewsService.getSuperSupport() !== null) {
+      $scope.superSupport = NewsService.getSuperSupport();
+    }
     if ($scope.media === 'TV' || $scope.media === 'RADIO' || $scope.media ==='PRESS') {
       $scope.multimedia = {url: NewsService.getMediaUrl()};
       if ($scope.multimedia.url !==null) {
@@ -651,10 +679,23 @@ angular.module('app.controllers', [])
           //open in google reader, to be compatible with all devices:
           $scope.pdfurl = $sce.trustAsResourceUrl("http://docs.google.com/gview?embedded=true&url="+$scope.multimedia.url);
         }
-        if ($scope.media ==='TV' && NewsService.getThumbNails() !==null){
-          $scope.thumbnails = NewsService.getThumbNails();
-        }
+
         $scope.mediaLoaded=true;
+        //If is a video, and the user clicked in autoplay, must be in fullscreen
+        if ($scope.autoPlay) {
+          $timeout(function () {
+            var element = document.getElementById("autoVideo");
+            if (element.requestFullscreen) {
+              element.requestFullscreen();
+            } else if (element.mozRequestFullScreen) {
+              element.mozRequestFullScreen();
+            } else if (element.webkitRequestFullscreen) {
+              element.webkitRequestFullscreen();
+            } else if (element.msRequestFullscreen) {
+              element.msRequestFullscreen();
+            }
+          }, 1000);
+        }
       }
       /*NewsService.getMedia($scope.media, $scope.date, $scope.id).then(function (data) {
         if (data != "error") {
