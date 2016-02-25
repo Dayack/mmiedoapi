@@ -351,26 +351,6 @@ angular.module('app.controllers', [])
       $ionicLoading.show({
         template: '<div class="icon ion-loading-c loading-color">'
       });
-<<<<<<< HEAD
-      $timeout(function(){
-        $ionicLoading.hide();
-      },10000);
-      $scope.blocksLoaded = 0;//to keep the count of the blocks loaded
-      $scope.filters = FilterService.getFilters();
-      $scope.options = null;
-      //load different MEDIAS
-      NewsService.getNews($scope.user, "TV", $scope.filters, $scope.options, 5, 0).then(function (data) {
-        for (var i = 0; i < $scope.blockNews.length; i++) {
-          if ($scope.blockNews[i].type === data.type) {
-            $scope.blockNews[i].news = data.news;
-            angular.forEach($scope.blockNews[i].news,function(value){
-              //value.THUMB1="accesothumb_pub.php?ano=2015&mes=12&zona_id=1&fichero=201512042515_thumb1.jpg";//TEST
-              if (angular.isDefined(value.THUMB1) && value.THUMB1 !==""){
-                value.THUMB1=ConfigService.getMediaUrl()+value.THUMB1;
-              }
-            });
-            $scope.blocksLoaded++;
-=======
       console.log("loading mask");
 
       //check if the previewData is loaded previously
@@ -403,7 +383,6 @@ angular.module('app.controllers', [])
               });
               $scope.blocksLoaded++;
             }
->>>>>>> e02af44fe56a4d41b8d4b6099214b8ede3006082
           }
 
         });
@@ -697,24 +676,14 @@ angular.module('app.controllers', [])
     $scope.superSupport=null;
     $scope.mediaLoaded=false;//to render the video, audio tag
     $scope.autoPlay=NewsService.getAutoPlay();
-<<<<<<< HEAD
-    $ionicLoading.show({
-      template: '<div class="icon ion-loading-c loading-color">'
-    });
-=======
     /*$ionicLoading.show({
       template: '<div class="icon ion-loading-c loading-color">'
     });*/
->>>>>>> e02af44fe56a4d41b8d4b6099214b8ede3006082
     if ($scope.media ==='TV' && NewsService.getThumbNails() !==null){
       $scope.thumbnails = NewsService.getThumbNails();
     }
     NewsService.getNew($scope.media,$scope.date,$scope.id).then(function(data) {
-<<<<<<< HEAD
-      $ionicLoading.hide();
-=======
       //$ionicLoading.hide();
->>>>>>> e02af44fe56a4d41b8d4b6099214b8ede3006082
       $scope.dataNew = data;
       if ($scope.dataNew == "ERROR") {
         $scope.errorLoading=true;
