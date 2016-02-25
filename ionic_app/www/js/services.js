@@ -492,7 +492,9 @@ angular.module('app.services', [])
               categories = [];
             }
             angular.forEach(data, function(value, key) {
-              categories.push(value.CONTENIDO[0]);/*data[0].CONTENIDO[1]*/
+              angular.forEach(value.CONTENIDO,function(value1,key1){
+                categories.push(value1);
+              });
               //check if the father is the only node
 
             });
