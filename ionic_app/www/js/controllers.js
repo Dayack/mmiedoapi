@@ -102,7 +102,7 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('categoriasCtrl', function($scope,UserService,CategoryService,$state,$ionicLoading,$rootScope,$stateParams,$ionicHistory) {
+.controller('categoriasCtrl', function($scope,UserService,CategoryService,$state,$ionicLoading,$rootScope,$stateParams,$ionicHistory, PreviewCacheService) {
 
     $scope.user = UserService.getUser();
     //only if come from Login, and there is previous info about categories (selected), just obviate this page, and jump to preview-nes
@@ -125,6 +125,8 @@ angular.module('app.controllers', [])
     };
     $scope.goToNews= function() {
       $rootScope.$broadcast('reload-block');
+
+      PreviewCacheService.clearCachedBlocks();
       $ionicHistory.clearCache().then(function() {
         $state.go('menu.preview-noticias');
       });
@@ -212,7 +214,7 @@ angular.module('app.controllers', [])
 })
 
 
-.controller('selectDateCtrl', function($ionicHistory,$scope,$state,FilterService,$rootScope,$ionicHistory,DateHelperService) {
+.controller('selectDateCtrl', function(PreviewCacheService,$ionicHistory,$scope,$state,FilterService,$rootScope,$ionicHistory,DateHelperService) {
     $scope.defaultDates= null;//if set false, is to activate filters, if false, are default dates the disable filters icon
     // , if null, the data has not been changed in the top options (today,yesterday..) so is changed in the datepicker
     //load from service
@@ -228,7 +230,7 @@ angular.module('app.controllers', [])
       FilterService.setFromDate($scope.data.fromDate);
       FilterService.setToDate($scope.data.toDate);
       $rootScope.$broadcast('filtersChanged');
-
+      PreviewCacheService.clearCachedBlocks();
       $ionicHistory.clearCache().then(function() {
         $state.go('menu.preview-noticias');
       });
@@ -332,7 +334,7 @@ angular.module('app.controllers', [])
     };
 })
 
-  .controller('previewNoticiasCtrl', function(ConfigService,$timeout,$ionicHistory,$window,ScrollService,$location,$scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading,$rootScope) {
+  .controller('previewNoticiasCtrl', function(PreviewCacheService,ConfigService,$timeout,$ionicHistory,$window,ScrollService,$location,$scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading,$rootScope) {
   $scope.blockNews= [
     {news:[],ids:[], type:"TV"},
     {news:[],ids:[], type:"RADIO"},
@@ -349,79 +351,93 @@ angular.module('app.controllers', [])
       $ionicLoading.show({
         template: '<div class="icon ion-loading-c loading-color">'
       });
-      $timeout(function(){
+      console.log("loading mask");
+
+      //check if the previewData is loaded previously
+      $scope.cachedBlocks=PreviewCacheService.getCachedBlocks();
+      if ($scope.cachedBlocks !==null){
+        $scope.blockNews = $scope.cachedBlocks;
         $ionicLoading.hide();
-      },10000);
-      $scope.blocksLoaded = 0;//to keep the count of the blocks loaded
-      $scope.filters = FilterService.getFilters();
-      $scope.options = null;
-      //load different MEDIAS
-      NewsService.getNews($scope.user, "TV", $scope.filters, $scope.options, 5, 0).then(function (data) {
-        for (var i = 0; i < $scope.blockNews.length; i++) {
-          if ($scope.blockNews[i].type === data.type) {
-            $scope.blockNews[i].news = data.news;
-            angular.forEach($scope.blockNews[i].news,function(value){
-              //value.THUMB1="accesothumb_pub.php?ano=2015&mes=12&zona_id=1&fichero=201512042515_thumb1.jpg";//TEST
-              if (angular.isDefined(value.THUMB1) && value.THUMB1 !==""){
-                value.THUMB1=ConfigService.getMediaUrl()+value.THUMB1;
-              }
-            });
-            $scope.blocksLoaded++;
+        $scope.loadedComplete= true;
+        console.log("hide by cache");
+      } else {
+        console.log("no cached");
+
+        $timeout(function () {
+          $ionicLoading.hide();
+          console.log("loading mask HIDE by timeout");
+        }, 10000);
+        $scope.blocksLoaded = 0;//to keep the count of the blocks loaded
+        $scope.filters = FilterService.getFilters();
+        $scope.options = null;
+        //load different MEDIAS
+        NewsService.getNews($scope.user, "TV", $scope.filters, $scope.options, 5, 0).then(function (data) {
+          for (var i = 0; i < $scope.blockNews.length; i++) {
+            if ($scope.blockNews[i].type === data.type) {
+              $scope.blockNews[i].news = data.news;
+              angular.forEach($scope.blockNews[i].news, function (value) {
+                //value.THUMB1="accesothumb_pub.php?ano=2015&mes=12&zona_id=1&fichero=201512042515_thumb1.jpg";//TEST
+                if (angular.isDefined(value.THUMB1) && value.THUMB1 !== "") {
+                  value.THUMB1 = ConfigService.getMediaUrl() + value.THUMB1;
+                }
+              });
+              $scope.blocksLoaded++;
+            }
           }
-        }
 
-      });
+        });
 
-      //RADIO
-      NewsService.getNews($scope.user, "RADIO", $scope.filters, $scope.options, 5, 0).then(function (data) {
-        for (var i = 0; i < $scope.blockNews.length; i++) {
-          if ($scope.blockNews[i].type === data.type) {
-            $scope.blockNews[i].news = data.news;
-            $scope.blocksLoaded++;
+        //RADIO
+        NewsService.getNews($scope.user, "RADIO", $scope.filters, $scope.options, 5, 0).then(function (data) {
+          for (var i = 0; i < $scope.blockNews.length; i++) {
+            if ($scope.blockNews[i].type === data.type) {
+              $scope.blockNews[i].news = data.news;
+              $scope.blocksLoaded++;
+            }
           }
-        }
 
-      });
-      //PRESS
-      NewsService.getNews($scope.user, "PRESS", $scope.filters, $scope.options, 5, 0).then(function (data) {
-        for (var i = 0; i < $scope.blockNews.length; i++) {
-          if ($scope.blockNews[i].type === data.type) {
-            $scope.blockNews[i].news = data.news;
-            $scope.blocksLoaded++;
+        });
+        //PRESS
+        NewsService.getNews($scope.user, "PRESS", $scope.filters, $scope.options, 5, 0).then(function (data) {
+          for (var i = 0; i < $scope.blockNews.length; i++) {
+            if ($scope.blockNews[i].type === data.type) {
+              $scope.blockNews[i].news = data.news;
+              $scope.blocksLoaded++;
+            }
           }
-        }
 
-      });
-      //SOCIAL
-      NewsService.getNews($scope.user, "SOCIAL", $scope.filters, $scope.options, 5, 0).then(function (data) {
-        for (var i = 0; i < $scope.blockNews.length; i++) {
-          if ($scope.blockNews[i].type === data.type) {
-            $scope.blockNews[i].news = data.news;
-            $scope.blocksLoaded++;
+        });
+        //SOCIAL
+        NewsService.getNews($scope.user, "SOCIAL", $scope.filters, $scope.options, 5, 0).then(function (data) {
+          for (var i = 0; i < $scope.blockNews.length; i++) {
+            if ($scope.blockNews[i].type === data.type) {
+              $scope.blockNews[i].news = data.news;
+              $scope.blocksLoaded++;
+            }
           }
-        }
 
-      });
-      //INTERNET
-      NewsService.getNews($scope.user, "INTERNET", $scope.filters, $scope.options, 5, 0).then(function (data) {
-        for (var i = 0; i < $scope.blockNews.length; i++) {
-          if ($scope.blockNews[i].type === data.type) {
-            $scope.blockNews[i].news = data.news;
-            $scope.blocksLoaded++;
+        });
+        //INTERNET
+        NewsService.getNews($scope.user, "INTERNET", $scope.filters, $scope.options, 5, 0).then(function (data) {
+          for (var i = 0; i < $scope.blockNews.length; i++) {
+            if ($scope.blockNews[i].type === data.type) {
+              $scope.blockNews[i].news = data.news;
+              $scope.blocksLoaded++;
+            }
           }
-        }
 
-      });
-      //TWITTER
-      NewsService.getNews($scope.user, "TWITTER", $scope.filters, $scope.options, 5, 0).then(function (data) {
-        for (var i = 0; i < $scope.blockNews.length; i++) {
-          if ($scope.blockNews[i].type === data.type) {
-            $scope.blockNews[i].news = data.news;
-            $scope.blocksLoaded++;
+        });
+        //TWITTER
+        NewsService.getNews($scope.user, "TWITTER", $scope.filters, $scope.options, 5, 0).then(function (data) {
+          for (var i = 0; i < $scope.blockNews.length; i++) {
+            if ($scope.blockNews[i].type === data.type) {
+              $scope.blockNews[i].news = data.news;
+              $scope.blocksLoaded++;
+            }
           }
-        }
 
-      });
+        });
+      }
     };
 
     //this code is executed every time that state.go is invoked
@@ -441,7 +457,9 @@ angular.module('app.controllers', [])
     $scope.$watch('blocksLoaded',function(){
       if ($scope.blocksLoaded == $scope.blockNews.length) {
         $ionicLoading.hide();
+        console.log("hide mask by load");
         $scope.loadedComplete= true;
+        PreviewCacheService.setCachedBlocks($scope.blockNews);
       }
     });
 
@@ -504,6 +522,9 @@ angular.module('app.controllers', [])
     $ionicLoading.show({
       template: '<div class="icon ion-loading-c loading-color">'
     });
+    $timeout(function(){
+      $ionicLoading.hide();
+    },10000);
     $scope.offset=0;
     $scope.limit=ConfigService.getLimitPage();
     //the Page will be pass by param so we can keep in the url the page number
@@ -655,14 +676,14 @@ angular.module('app.controllers', [])
     $scope.superSupport=null;
     $scope.mediaLoaded=false;//to render the video, audio tag
     $scope.autoPlay=NewsService.getAutoPlay();
-    $ionicLoading.show({
+    /*$ionicLoading.show({
       template: '<div class="icon ion-loading-c loading-color">'
-    });
+    });*/
     if ($scope.media ==='TV' && NewsService.getThumbNails() !==null){
       $scope.thumbnails = NewsService.getThumbNails();
     }
     NewsService.getNew($scope.media,$scope.date,$scope.id).then(function(data) {
-      $ionicLoading.hide();
+      //$ionicLoading.hide();
       $scope.dataNew = data;
       if ($scope.dataNew == "ERROR") {
         $scope.errorLoading=true;
@@ -689,20 +710,7 @@ angular.module('app.controllers', [])
 
         $scope.mediaLoaded=true;
         //If is a video, and the user clicked in autoplay, must be in fullscreen
-        if ($scope.autoPlay) {
-          $timeout(function () {
-            var element = document.getElementById("autoVideo");
-            if (element.requestFullscreen) {
-              element.requestFullscreen();
-            } else if (element.mozRequestFullScreen) {
-              element.mozRequestFullScreen();
-            } else if (element.webkitRequestFullscreen) {
-              element.webkitRequestFullscreen();
-            } else if (element.msRequestFullscreen) {
-              element.msRequestFullscreen();
-            }
-          }, 1000);
-        }
+
       }
       /*NewsService.getMedia($scope.media, $scope.date, $scope.id).then(function (data) {
         if (data != "error") {

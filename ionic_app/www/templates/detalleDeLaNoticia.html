@@ -23,11 +23,11 @@
             <!--TV-->
             <div ng-show="media ==='TV'">
               <!--VIDEO NORMAL-->
-              <video controls class="video-frame" id="normalVideo" poster="{{thumbnails[0]}}" ng-if="!autoPlay" preload>
+              <video controls class="video-frame" id="normalVideo" poster="{{thumbnails[0]}}" ng-if="!autoPlay" >
                 <source ng-src="{{multimedia.url| trusted}}" type="video/mp4"/>
               </video>
               <!--AUTOPLAYVIDEO-->
-              <video controls class="video-frame" id="autoVideo" poster="{{thumbnails[0]}}" ng-if="autoPlay" autoplay preload>
+              <video controls class="video-frame" id="autoVideo" poster="{{thumbnails[0]}}" ng-if="autoPlay" autoplay >
                 <source ng-src="{{multimedia.url| trusted}}" type="video/mp4"/>
               </video>
 

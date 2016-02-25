@@ -7,7 +7,11 @@ angular.module('app.services', [])
   .factory('timeoutHttpIntercept', function ($rootScope, $q) {
     return {
       'request': function (config) {
-        config.timeout = 20000;//20 seconds of timeout
+        if (config.url.indexOf("getusuarios_categorias") >0) {
+
+        } else {
+          config.timeout = 15000;//15 seconds of timeout
+        }
         return config;
       }
     };
@@ -257,6 +261,21 @@ angular.module('app.services', [])
       return lastScroll;
     };
   })
+
+  .service('PreviewCacheService',function(){
+    var cachedBlocks=null;
+    this.setCachedBlocks=function(blocks){
+      cachedBlocks=blocks;
+    };
+    this.getCachedBlocks=function(){
+      return cachedBlocks;
+    };
+    this.clearCachedBlocks=function(){
+      cachedBlocks=null;
+    };
+
+
+  })
 /**
  * Service to load the news
  */
@@ -469,6 +488,9 @@ angular.module('app.services', [])
             categoriesUser = user;
             //categories = data;
             //wee need merge all the trees
+            if (categories === null) {
+              categories = [];
+            }
             angular.forEach(data, function(value, key) {
               categories.push(value.CONTENIDO[0]);/*data[0].CONTENIDO[1]*/
               //check if the father is the only node
@@ -772,10 +794,13 @@ angular.module('app.services', [])
       //---DELETE THIS WHEN THE REQUEST IS WORKING
       var deferred = $q.defer();
 
-
+      var canceller = $q.defer();
       // REAL REQUEST
       //alert('/getusuarios_categorias/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+user.IDUSUARIO);
-    $http.get('/getusuarios_categorias/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+user.IDUSUARIO).success(function(data,status){
+      var config = {
+        timeout: canceller.promise
+      };
+    $http.get('/getusuarios_categorias/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+user.IDUSUARIO,config).success(function(data,status){
        if (data instanceof Array && data.length >0) {
        deferred.resolve(data);
        } else {
@@ -784,6 +809,7 @@ angular.module('app.services', [])
 
        }).error(function(data,status){
        deferred.resolve("error");
+        console.log("status="+status);
        });
       return deferred.promise;
     };
