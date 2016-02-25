@@ -12,7 +12,7 @@
             <i ng-show="media == 'INTERNET'" class="icon icon-mmi-arroba media-icon"></i>
 
           </div>
-          <div ng-if="superSupport!=null"><span class="purple-text new-support">{{superSupport}}</span></div>
+          <div ng-if="superSupport!=null  && (media == 'TV' || media == 'RADIO' )"><span class="purple-text new-support">{{superSupport}}</span></div>
           <span class="purple-text new-support">{{support}}</span>
 
           <p>{{dataNew.FECHA | DateNew}}</p>
