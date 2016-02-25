@@ -7,7 +7,7 @@ angular.module('app.services', [])
   .factory('timeoutHttpIntercept', function ($rootScope, $q) {
     return {
       'request': function (config) {
-        config.timeout = 20000;//20 seconds of timeout
+        config.timeout = 15000;//20 seconds of timeout
         return config;
       }
     };
@@ -256,6 +256,21 @@ angular.module('app.services', [])
     this.getScroll=function(){
       return lastScroll;
     };
+  })
+
+  .service('PreviewCacheService',function(){
+    var cachedBlocks=null;
+    this.setCachedBlocks=function(blocks){
+      cachedBlocks=blocks;
+    };
+    this.getCachedBlocks=function(){
+      return cachedBlocks;
+    };
+    this.clearCachedBlocks=function(){
+      cachedBlocks=null;
+    };
+
+
   })
 /**
  * Service to load the news
