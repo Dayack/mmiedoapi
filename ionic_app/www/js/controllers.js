@@ -710,20 +710,7 @@ angular.module('app.controllers', [])
 
         $scope.mediaLoaded=true;
         //If is a video, and the user clicked in autoplay, must be in fullscreen
-        if ($scope.autoPlay) {
-          $timeout(function () {
-            var element = document.getElementById("autoVideo");
-            if (element.requestFullscreen) {
-              element.requestFullscreen();
-            } else if (element.mozRequestFullScreen) {
-              element.mozRequestFullScreen();
-            } else if (element.webkitRequestFullscreen) {
-              element.webkitRequestFullscreen();
-            } else if (element.msRequestFullscreen) {
-              element.msRequestFullscreen();
-            }
-          }, 1000);
-        }
+
       }
       /*NewsService.getMedia($scope.media, $scope.date, $scope.id).then(function (data) {
         if (data != "error") {
