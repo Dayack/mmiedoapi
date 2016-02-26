@@ -54,6 +54,7 @@ angular.module('app.controllers', [])
  * Login View Controller
  */
 .controller('loginCtrl', function($scope,UserService,$state,CategoryService,$ionicHistory) {
+    $scope.canLogin=false;//to render the inputlogin
     $scope.user = {username : '',
     password : ''};
     $scope.successfulLogin = null; //will be set to TRUE or FALSE after the login request
@@ -81,6 +82,8 @@ angular.module('app.controllers', [])
         } else {
           $state.go('menu.categorias');
         }
+    } else {
+      $scope.canLogin=true;
     }
 
 })
