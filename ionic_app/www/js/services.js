@@ -373,12 +373,12 @@ angular.module('app.services', [])
         HttpService.getNews(user,type, filters,   offset  ,
            limit  ,categories).then(function (data) {
           //the answer from the HTTP was ok, not error and if user/password is ok
-            result.news = data;
+
           if (data !== null && data != "error" && (data !== false)) {
-            news = data;
+            result.news = data;
             defer.resolve(result);
           } else {
-            news = [];
+            result.news = [];
             defer.resolve(result);
           }
         });
