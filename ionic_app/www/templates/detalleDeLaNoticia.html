@@ -1,6 +1,6 @@
 <ion-view style="" title="Detalle de la noticia" cache-view="false">
   <ion-content class="has-header" overflow-scroll="true" padding="'true'">
-    <div ng-if="!errorLoading && loaded">
+    <!--<div ng-if="!errorLoading && loaded">-->
       <div style="" class="list card">
         <div class="item item-avatar detail-header">
           <div class="icon-media-item">
@@ -71,7 +71,7 @@
               </button>
             </div>
           </div>
-
+<div ng-if="loaded && !errorLoading">
           <div>
 
             <h3 class="purple-text">{{dataNew.TEMA}}</h3>
@@ -81,14 +81,20 @@
             <!--ROLLO-->
             <p>{{dataNew.ROLLO}}</p>
           </div>
+</div>
+          <!--loading-->
+          <div ng-show="!loaded" style="text-align: center;">
+            <ion-spinner></ion-spinner>
+          </div>
           <!--PDF-->
 
 
         </div>
-      </div>
+     <!-- </div>-->
       <!--PDF PREVIEW-->
       <div ng-if="media=='PRESS' && mediaLoaded">
-        <button class="button button-purple col" browse-to="{{pdfurl}}">ENLACE A PDF</button>
+        <!--<button class="button button-purple col" browse-to="{{pdfurl}}">ENLACE A PDF</button>-->
+        <button class="button button-purple col" ng-click="goToPdf()">ENLACE A PDF</button>
         <iframe ng-src="{{pdfurl}}" style="width:100%;height:460px;"></iframe>
       </div>
 
