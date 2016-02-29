@@ -158,7 +158,7 @@ angular.module('app.services', [])
         date: null,
         text:null
       },
-      dateSelected:null,
+      dateSelected:'5y',
       support_zones: [],
       new_zones: []
     };
@@ -239,7 +239,7 @@ angular.module('app.services', [])
         },
         support_zones: [],
         new_zones: [],
-        dateSelected: null
+        dateSelected: '5y'
       };
       filteredByDate=false;
       filteredByOrigin=false;
