@@ -221,15 +221,22 @@ angular.module('app.controllers', [])
     $scope.defaultDates= null;//if set false, is to activate filters, if false, are default dates the disable filters icon
     // , if null, the data has not been changed in the top options (today,yesterday..) so is changed in the datepicker
     //load from service
+    $scope.optionSelected=FilterService.getDateSelected();
+    $scope.directOption=false;
     $scope.data = {
       fromDate: new Date(),
       toDate: new Date()
     };
     $scope.showFrom = {value:null};
     $scope.showTo = {value:false};
+    $scope.$on('$ionicView.afterEnter',
+      function() {
+        $scope.directOption=false;
+      });
 
     //save the dates in the filter service and exit to the news blocks
     $scope.saveAndExit=function(){
+      FilterService.setDateSelected($scope.optionSelected);
       FilterService.setFromDate($scope.data.fromDate);
       FilterService.setToDate($scope.data.toDate);
       $rootScope.$broadcast('filtersChanged');
@@ -241,6 +248,8 @@ angular.module('app.controllers', [])
 
 
     $scope.selectTime = function(time) {
+      $scope.optionSelected=time;
+      $scope.directOption=true;
       switch (time) {
         case 'Today':
           $scope.data.toDate = DateHelperService.getToday();
@@ -299,6 +308,9 @@ angular.module('app.controllers', [])
            $scope.defaultDates=false;
          }
          FilterService.setFilterByDate(!$scope.defaultDates);
+         if (!$scope.directOption) {
+           $scope.optionSelected = null;
+         }
          $scope.saveAndExit();
        }
     });
