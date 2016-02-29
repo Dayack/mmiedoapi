@@ -10,7 +10,8 @@ angular.module('app.directives', [])
       link: function ($scope, $element, $attrs) {
         var handleTap = function (e) {
           // todo: capture Google Analytics here
-          var inAppBrowser = window.open(encodeURI($attrs.browseTo), '_system');
+          var newUrl = $attrs.browseTo.replace("embedded=true","embedded=false");
+          var inAppBrowser = window.open(encodeURI(newUrl), '_system');
         };
         var tapGesture = $ionicGesture.on('tap', handleTap, $element);
         $scope.$on('$destroy', function () {

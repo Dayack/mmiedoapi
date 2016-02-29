@@ -138,6 +138,11 @@ angular.module('app.routes', [])
         }
       }
     })
+    .state('pdf',{
+      url:'/pdf',
+      templateUrl:'templates/pdf-detail.html',
+      controller:'pdfCtrl'
+    })
 
 
     ;
