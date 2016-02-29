@@ -93,7 +93,8 @@
      <!-- </div>-->
       <!--PDF PREVIEW-->
       <div ng-if="media=='PRESS' && mediaLoaded">
-        <button class="button button-purple col" browse-to="{{pdfurl}}">ENLACE A PDF</button>
+        <!--<button class="button button-purple col" browse-to="{{pdfurl}}">ENLACE A PDF</button>-->
+        <button class="button button-purple col" ng-click="goToPdf()">ENLACE A PDF</button>
         <iframe ng-src="{{pdfurl}}" style="width:100%;height:460px;"></iframe>
       </div>
 

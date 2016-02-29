@@ -290,6 +290,13 @@ angular.module('app.services', [])
     var idNew=null;
     var autoPlay=false;
     var superSupport=null;
+    var pdfUrl=null;
+    this.setPdfUrl=function(url){
+      pdfUrl=url;
+    };
+    this.getPdfUrl=function(){
+      return pdfUrl;
+    };
     this.setAutoPlay=function(state){
       autoPlay=state;
     };

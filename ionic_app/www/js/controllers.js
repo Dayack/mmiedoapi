@@ -351,25 +351,25 @@ angular.module('app.controllers', [])
     $scope.loadedComplete= false;
     //Start loading
     $scope.loadBlocks = function() {
-      $ionicLoading.show({
+     /* $ionicLoading.show({
         template: '<div class="icon ion-loading-c loading-color">'
       });
-      console.log("loading mask");
+      console.log("loading mask");*/
 
       //check if the previewData is loaded previously
       $scope.cachedBlocks=PreviewCacheService.getCachedBlocks();
       if ($scope.cachedBlocks !==null){
         $scope.blockNews = $scope.cachedBlocks;
-        $ionicLoading.hide();
+       // $ionicLoading.hide();
         $scope.loadedComplete= true;
         console.log("hide by cache");
       } else {
         console.log("no cached");
 
-        $timeout(function () {
+        /*$timeout(function () {
           $ionicLoading.hide();
           console.log("loading mask HIDE by timeout");
-        }, 10000);
+        }, 10000);*/
         $scope.blocksLoaded = 0;//to keep the count of the blocks loaded
         $scope.filters = FilterService.getFilters();
         $scope.options = null;
@@ -465,8 +465,8 @@ angular.module('app.controllers', [])
     //disable loading mask when all blocks are loaded
     $scope.$watch('blocksLoaded',function(){
       if ($scope.blocksLoaded == $scope.blockNews.length) {
-        $ionicLoading.hide();
-        console.log("hide mask by load");
+        /*$ionicLoading.hide();
+        console.log("hide mask by load");*/
         $scope.loadedComplete= true;
         PreviewCacheService.setCachedBlocks($scope.blockNews);
       }
@@ -527,13 +527,13 @@ angular.module('app.controllers', [])
     //$rootScope.activeFilters = {value: false};
     $scope.noMoreItemsAvailable = false;
 
-    console.log();
+    /*console.log();
     $ionicLoading.show({
       template: '<div class="icon ion-loading-c loading-color">'
     });
     $timeout(function(){
       $ionicLoading.hide();
-    },10000);
+    },10000);*/
     $scope.offset=0;
     $scope.limit=ConfigService.getLimitPage();
     //the Page will be pass by param so we can keep in the url the page number
@@ -597,7 +597,7 @@ angular.module('app.controllers', [])
 
             $scope.offset += $scope.limit;
           }
-          $ionicLoading.hide();
+          //$ionicLoading.hide();
           $scope.loadedComplete = true;
 
           //$state.go('menu.noticias', {media: $scope.media, pag: $scope.offset}, {notify: false});
@@ -685,6 +685,7 @@ angular.module('app.controllers', [])
     $scope.superSupport=null;
     $scope.mediaLoaded=false;//to render the video, audio tag
     $scope.autoPlay=NewsService.getAutoPlay();
+    NewsService.setPdfUrl(null);
     /*$ionicLoading.show({
       template: '<div class="icon ion-loading-c loading-color">'
     });*/
@@ -715,6 +716,7 @@ angular.module('app.controllers', [])
         if ($scope.media ==='PRESS') {
           //open in google reader, to be compatible with all devices:
           $scope.pdfurl = $sce.trustAsResourceUrl("http://docs.google.com/gview?embedded=true&url="+$scope.multimedia.url);
+          NewsService.setPdfUrl($scope.pdfurl);
         }
 
         $scope.mediaLoaded=true;
@@ -760,7 +762,9 @@ angular.module('app.controllers', [])
     };
 
     $ionicNavBarDelegate.showBackButton(true);//disable the back button
-
+    $scope.goToPdf = function () {
+      $state.go('pdf');
+    };
     $scope.goBack = function(){
       $ionicHistory.goBack();
       /*
@@ -788,18 +792,9 @@ angular.module('app.controllers', [])
     };*/
 })
 
-.controller('multimediaCtrl', function($scope, $http) {
-
-    $scope.getData = function() {
-      $http.get("http://api.mmi-e.com/mmiapi.php/get_url_multimedia_tv/DFKGMKLJOIRJNG/1/02/2016/161")
-        .success(function(data) {
-          $scope.URL = data[0].URL;
-        })
-        .error(function(data) {
-          alert("ERROR");
-        });
-      };
-
-})
-
-;
+.controller('pdfCtrl', function($scope, NewsService,$ionicHistory) {
+   $scope.url=NewsService.getPdfUrl();
+    $scope.goBack = function() {
+      $ionicHistory.goBack();
+    }
+});
