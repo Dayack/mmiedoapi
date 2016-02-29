@@ -339,12 +339,12 @@ angular.module('app.controllers', [])
 
   .controller('previewNoticiasCtrl', function(PreviewCacheService,ConfigService,$timeout,$ionicHistory,$window,ScrollService,$location,$scope,$ionicNavBarDelegate,FilterService,UserService,NewsService,$state,$ionicLoading,$rootScope) {
   $scope.blockNews= [
-    {news:[],ids:[], type:"TV"},
-    {news:[],ids:[], type:"RADIO"},
-    {news:[],ids:[], type:"PRESS"},
-    {news:[],ids:[], type:"INTERNET"},
-    {news:[],ids:[], type:"SOCIAL"},
-    {news:[],ids:[], type:"TWITTER"}
+    {news:[],ids:[], type:"TV", loading:true},
+    {news:[],ids:[], type:"RADIO", loading:true},
+    {news:[],ids:[], type:"PRESS", loading:true},
+    {news:[],ids:[], type:"INTERNET", loading:true},
+    {news:[],ids:[], type:"SOCIAL", loading:true},
+    {news:[],ids:[], type:"TWITTER", loading:true}
 
   ];
     $ionicNavBarDelegate.showBackButton(false);//disable the back button
@@ -377,6 +377,7 @@ angular.module('app.controllers', [])
         NewsService.getNews($scope.user, "TV", $scope.filters, $scope.options, 5, 0).then(function (data) {
           for (var i = 0; i < $scope.blockNews.length; i++) {
             if ($scope.blockNews[i].type === data.type) {
+              $scope.blockNews[i].loading=false;
               $scope.blockNews[i].news = data.news;
               angular.forEach($scope.blockNews[i].news, function (value) {
                 //value.THUMB1="accesothumb_pub.php?ano=2015&mes=12&zona_id=1&fichero=201512042515_thumb1.jpg";//TEST
@@ -393,6 +394,7 @@ angular.module('app.controllers', [])
         //RADIO
         NewsService.getNews($scope.user, "RADIO", $scope.filters, $scope.options, 5, 0).then(function (data) {
           for (var i = 0; i < $scope.blockNews.length; i++) {
+            $scope.blockNews[i].loading=false;
             if ($scope.blockNews[i].type === data.type) {
               $scope.blockNews[i].news = data.news;
               $scope.blocksLoaded++;
@@ -403,6 +405,7 @@ angular.module('app.controllers', [])
         //PRESS
         NewsService.getNews($scope.user, "PRESS", $scope.filters, $scope.options, 5, 0).then(function (data) {
           for (var i = 0; i < $scope.blockNews.length; i++) {
+            $scope.blockNews[i].loading=false;
             if ($scope.blockNews[i].type === data.type) {
               $scope.blockNews[i].news = data.news;
               $scope.blocksLoaded++;
@@ -413,6 +416,7 @@ angular.module('app.controllers', [])
         //SOCIAL
         NewsService.getNews($scope.user, "SOCIAL", $scope.filters, $scope.options, 5, 0).then(function (data) {
           for (var i = 0; i < $scope.blockNews.length; i++) {
+            $scope.blockNews[i].loading=false;
             if ($scope.blockNews[i].type === data.type) {
               $scope.blockNews[i].news = data.news;
               $scope.blocksLoaded++;
@@ -423,6 +427,7 @@ angular.module('app.controllers', [])
         //INTERNET
         NewsService.getNews($scope.user, "INTERNET", $scope.filters, $scope.options, 5, 0).then(function (data) {
           for (var i = 0; i < $scope.blockNews.length; i++) {
+            $scope.blockNews[i].loading=false;
             if ($scope.blockNews[i].type === data.type) {
               $scope.blockNews[i].news = data.news;
               $scope.blocksLoaded++;
@@ -433,6 +438,7 @@ angular.module('app.controllers', [])
         //TWITTER
         NewsService.getNews($scope.user, "TWITTER", $scope.filters, $scope.options, 5, 0).then(function (data) {
           for (var i = 0; i < $scope.blockNews.length; i++) {
+            $scope.blockNews[i].loading=false;
             if ($scope.blockNews[i].type === data.type) {
               $scope.blockNews[i].news = data.news;
               $scope.blocksLoaded++;

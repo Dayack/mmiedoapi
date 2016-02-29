@@ -9,12 +9,18 @@
           <h3 class="title title-color">{{block.type | mediaName}}</h3>
         </div>
       </div>
-      <!--warning of no news-->
+      <!--warning of no news
       <div ng-show="loadedComplete && block.news.length == 0" class="no-new-content">
         No hay noticias
+      </div>-->
+      <div ng-show="!block.loading && block.news.length ==0">
+        No se han encontrado noticias
+      </div>
+      <div ng-show="block.loading" style="text-align:center;">
+        <ion-spinner></ion-spinner>
       </div>
       <!--list of items-->
-      <ion-list ng-show="(block.news.length >0) && loadedComplete">
+      <ion-list ng-show="(block.news.length >0) && !block.loading "><!--loadedComplete-->
         <ion-item ng-repeat="new in block.news | unique: 'IDNOTICIA' "  ng-click="goToNew(new, block.type)" style=""  class="new-item"><!--ng-click="goToNew(new)"-->
           <div>
 

@@ -780,13 +780,15 @@ angular.module('app.services', [])
           url="/getnoticiassocialmedia_detalle";
           break;
       }
-      $http.get(url+'/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+id+'/'+date).then(function(data){
-        if (angular.isDefined(data.data) && (angular.isArray(data.data) && data.data[0] !== false)) {
-          deferred.resolve(data.data[0]);
+      $http.get(url+'/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+id+'/'+date).success(function(data){
+        if (angular.isDefined(data) && (angular.isArray(data) && data !== false)) {
+          deferred.resolve(data[0]);
         } else {
           deferred.resolve("ERROR");
         }
         //alert(data);
+      }).error(function(data){
+        deferred.resolve("ERROR");
       });
       return deferred.promise;
     };
