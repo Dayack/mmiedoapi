@@ -297,7 +297,7 @@ angular.module('app.controllers', [])
       if ($scope.defaultDates === null) {
         $scope.defaultDates=false;
       }
-      FilterService.setFilterByDate(!$scope.defaultDates);
+      FilterService.setFilterByDate(/*!$scope.defaultDates*/);
     });
 
     $scope.$watch('data.toDate', function() {
@@ -307,10 +307,10 @@ angular.module('app.controllers', [])
          if ($scope.defaultDates === null) {
            $scope.defaultDates=false;
          }
-         FilterService.setFilterByDate(!$scope.defaultDates);
          if (!$scope.directOption) {
            $scope.optionSelected = null;
          }
+         FilterService.setFilterByDate(/*!$scope.defaultDates*/ $scope.optionSelected !== '5y');
          $scope.saveAndExit();
        }
     });
