@@ -158,12 +158,19 @@ angular.module('app.services', [])
         date: null,
         text:null
       },
+      dateSelected:null,
       support_zones: [],
       new_zones: []
     };
     var filteredByDate = false;
     var filteredByOrigin = false;
     var filteredByPlace=false;
+    this.setDateSelected=function(date) {
+      filters.dateSelected=date;
+    };
+    this.getDateSelected=function(){
+      return filters.dateSelected;
+    };
 
     //restart dates the filter set the date from 1 month ago to now
     this.setMedia=function(media) {
@@ -175,6 +182,7 @@ angular.module('app.services', [])
       filters.endDate.text = DateHelperService.formatDate(filters.endDate.date);
       filters.startDate.date =DateHelperService.addDays(filters.endDate.date,-1865);
       filters.startDate.text = DateHelperService.formatDate(filters.startDate.date);
+      filters.dateSelected=null;
       //to end Date -30 days
     };
 
@@ -230,7 +238,8 @@ angular.module('app.services', [])
           text:null
         },
         support_zones: [],
-        new_zones: []
+        new_zones: [],
+        dateSelected: null
       };
       filteredByDate=false;
       filteredByOrigin=false;
