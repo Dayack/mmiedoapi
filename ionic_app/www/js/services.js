@@ -182,7 +182,7 @@ angular.module('app.services', [])
       filters.endDate.text = DateHelperService.formatDate(filters.endDate.date);
       filters.startDate.date =DateHelperService.addDays(filters.endDate.date,-1865);
       filters.startDate.text = DateHelperService.formatDate(filters.startDate.date);
-      filters.dateSelected=null;
+      filters.dateSelected='5y';
       //to end Date -30 days
     };
 
