@@ -396,12 +396,6 @@ angular.module('app.controllers', [])
             if ($scope.blockNews[i].type === data.type) {
               $scope.blockNews[i].loading=false;
               $scope.blockNews[i].news = data.news;
-              angular.forEach($scope.blockNews[i].news, function (value) {
-                //value.THUMB1="accesothumb_pub.php?ano=2015&mes=12&zona_id=1&fichero=201512042515_thumb1.jpg";//TEST
-                if (angular.isDefined(value.THUMB1) && value.THUMB1 !== "") {
-                  value.THUMB1 = /*ConfigService.getMediaUrl() +*/ value.THUMB1;
-                }
-              });
               $scope.blocksLoaded++;
             }
           }
@@ -599,12 +593,6 @@ angular.module('app.controllers', [])
       var options = {infiniteScroll: true};
       //if ($scope.loadedComplete) {
         NewsService.getNews($scope.user, $scope.filters.media, $scope.filters, options, $scope.limit, $scope.offset).then(function (data) {
-          angular.forEach(data.news,function(value){
-           // value.THUMB1="accesothumb_pub.php?ano=2015&mes=12&zona_id=1&fichero=201512042515_thumb1.jpg";//TEST
-            if (angular.isDefined(value.THUMB1) && value.THUMB1 !==""){
-              value.THUMB1=/*ConfigService.getMediaUrl()+*/value.THUMB1;
-            }
-          });
           $scope.news = $scope.news.concat(data.news.slice());
           if ($scope.offset < ScrollService.getOffset()) {
             $scope.offset = ScrollService.getOffset();
