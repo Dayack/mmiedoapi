@@ -602,7 +602,7 @@ angular.module('app.controllers', [])
           angular.forEach(data.news,function(value){
            // value.THUMB1="accesothumb_pub.php?ano=2015&mes=12&zona_id=1&fichero=201512042515_thumb1.jpg";//TEST
             if (angular.isDefined(value.THUMB1) && value.THUMB1 !==""){
-              value.THUMB1=ConfigService.getMediaUrl()+value.THUMB1;
+              value.THUMB1=/*ConfigService.getMediaUrl()+*/value.THUMB1;
             }
           });
           $scope.news = $scope.news.concat(data.news.slice());
