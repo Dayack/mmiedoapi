@@ -40,7 +40,7 @@ angular.module('app.services', [])
   .service('ConfigService', function () {
     var zona = '5';
     var api_key = 'DFKGMKLJOIRJNG';
-    var mediaUrl='http://test.can.mmi-e.com/';
+    var mediaUrl='http://can.mmi-e.com/';
     this.getZona = function () {
       return zona;
     };

@@ -236,9 +236,14 @@ angular.module('app.controllers', [])
 
     //save the dates in the filter service and exit to the news blocks
     $scope.saveAndExit=function(){
+      if ($scope.data.fromDate.getTime() > $scope.data.toDate.getTime()) {
+        FilterService.setFromDate($scope.data.toDate);
+        FilterService.setToDate($scope.data.fromDate);
+      } else {
+        FilterService.setFromDate($scope.data.fromDate);
+        FilterService.setToDate($scope.data.toDate);
+      }
       FilterService.setDateSelected($scope.optionSelected);
-      FilterService.setFromDate($scope.data.fromDate);
-      FilterService.setToDate($scope.data.toDate);
       $rootScope.$broadcast('filtersChanged');
       PreviewCacheService.clearCachedBlocks();
       $ionicHistory.clearCache().then(function() {
@@ -394,7 +399,7 @@ angular.module('app.controllers', [])
               angular.forEach($scope.blockNews[i].news, function (value) {
                 //value.THUMB1="accesothumb_pub.php?ano=2015&mes=12&zona_id=1&fichero=201512042515_thumb1.jpg";//TEST
                 if (angular.isDefined(value.THUMB1) && value.THUMB1 !== "") {
-                  value.THUMB1 = ConfigService.getMediaUrl() + value.THUMB1;
+                  value.THUMB1 = /*ConfigService.getMediaUrl() +*/ value.THUMB1;
                 }
               });
               $scope.blocksLoaded++;
@@ -597,7 +602,7 @@ angular.module('app.controllers', [])
           angular.forEach(data.news,function(value){
            // value.THUMB1="accesothumb_pub.php?ano=2015&mes=12&zona_id=1&fichero=201512042515_thumb1.jpg";//TEST
             if (angular.isDefined(value.THUMB1) && value.THUMB1 !==""){
-              value.THUMB1=ConfigService.getMediaUrl()+value.THUMB1;
+              value.THUMB1=/*ConfigService.getMediaUrl()+*/value.THUMB1;
             }
           });
           $scope.news = $scope.news.concat(data.news.slice());
