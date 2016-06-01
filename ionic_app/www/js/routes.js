@@ -138,14 +138,21 @@ angular.module('app.routes', [])
         }
       }
     })
+
     .state('pdf',{
       url:'/pdf',
       templateUrl:'templates/pdf-detail.html',
       controller:'pdfCtrl'
     })
-
-
-    ;
+    .state('menu.dossier',{
+      url:'/dossier',
+      views: {
+        'side-menu21': {
+          templateUrl: 'templates/dossier.html',
+          controller: 'dossierCtrl'
+        }
+      }
+    });
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/login');

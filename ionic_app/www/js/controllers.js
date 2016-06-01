@@ -217,7 +217,7 @@ angular.module('app.controllers', [])
 })
 
 
-.controller('selectDateCtrl', function(PreviewCacheService,$ionicHistory,$scope,$state,FilterService,$rootScope,$ionicHistory,DateHelperService) {
+.controller('selectDateCtrl', function(PreviewCacheService,$ionicHistory,$scope,$state,FilterService,$rootScope,DateHelperService) {
     $scope.defaultDates= null;//if set false, is to activate filters, if false, are default dates the disable filters icon
     // , if null, the data has not been changed in the top options (today,yesterday..) so is changed in the datepicker
     //load from service
@@ -720,7 +720,10 @@ angular.module('app.controllers', [])
       if ($scope.multimedia.url !==null) {
         if ($scope.media ==='PRESS') {
           //open in google reader, to be compatible with all devices:
-          $scope.pdfurl = $sce.trustAsResourceUrl("http://docs.google.com/gview?embedded=true&url="+$scope.multimedia.url);
+         // $scope.pdfurl = $sce.trustAsResourceUrl("http://docs.google.com/gview?embedded=true&url="+$scope.multimedia.url);//<----OK
+
+           $scope.pdfurl = $sce.trustAsResourceUrl("https://drive.google.com/viewerng/viewer?pid=explorer&efh=false&a=v&chrome=false&embedded=true&url="+$scope.multimedia.url);
+
           NewsService.setPdfUrl($scope.pdfurl);
         }
 
@@ -802,4 +805,53 @@ angular.module('app.controllers', [])
     $scope.goBack = function() {
       $ionicHistory.goBack();
     }
-});
+})
+  .controller('dossierCtrl',function($scope,$ionicHistory,$cordovaDevice) {
+    $scope.url="http://can.mmi-e.com/accesopdf.php?RUTA=VOLSNFS/disk11/zona_1/pdf/2016/6/20160601C7038.PDF";
+    $scope.goBack = function() {
+      $ionicHistory.goBack();
+    }
+
+//open PDF url
+    $scope.devicePlatform = $cordovaDevice.getPlatform();
+    $scope.openPDF = function(url){
+      switch($scope.devicePlatform){
+        case 'Android':
+
+          /**
+           * Android devices cannot open up PDFs in a sub web view (inAppBrowser) so the PDF needs to be downloaded and then opened with whatever
+           * native PDF viewer is installed on the app.
+           */
+
+          var fileURL = cordova.file.externalApplicationStorageDirectory+"local.pdf";
+
+          var fileTransfer = new FileTransfer();
+          var uri = encodeURI( url );
+
+          fileTransfer.download(
+            uri,
+            fileURL,
+            function(entry) {
+              $scope.data.localFileUri = entry.toURL();
+              window.plugins.fileOpener.open(entry.toURL());
+            },
+            function(error) {
+
+            },
+            false
+          );
+
+
+          break;
+        default:
+
+          /**
+           * IOS and browser apps are able to open a PDF in a new sub web view window. This uses the inAppBrowser plugin
+           */
+          var ref = window.open(url, '_blank', 'location=no,toolbar=yes,closebuttoncaption=Close PDF,enableViewportScale=yes');
+          break;
+      }
+    }
+
+    $scope.openPDF($scope.url);
+  });
