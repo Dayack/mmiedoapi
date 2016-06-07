@@ -805,9 +805,6 @@ angular.module('app.services', [])
 
     this.getArbolesPDF=function(userId){
 
-      //testing
-
-      userId = 1;
       if (arboles !==null) {
         return arboles;
       }
@@ -852,8 +849,6 @@ angular.module('app.services', [])
     //get the url data
     this.getDossierPDFUrl=function(dossier,userId,day){
 
-      //testing
-      userId=1;
       var deffered= $q.defer();
       if (dossier === null || userId === null || day ===null) {
         deffered.resolve(null);
