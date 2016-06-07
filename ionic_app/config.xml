@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--com.ionicframework.mmi574937 ANDROID-->
+<!--com.mmi.mmi IOS-->
 <widget id="com.mmi.mmi" version="1.0.4" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-  <name> MMI Analytics</name>
+  <name> MMIAnalytics</name>
   <description>
         MMI Analytics
     </description>
