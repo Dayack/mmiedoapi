@@ -5,6 +5,8 @@ $light-blue: #63BFB8;
 $text-grey: #686868;
 $icon-grey: #BEBEBD;
 $backGrey: #BFBFBE;
+$light-purple: rgba(198, 49, 228, 0.27);
+$grey-transparent: rgba(0, 0, 0, 0.35);
 
 .red-text{
   color: $dark-red;
@@ -392,4 +394,71 @@ table.media td{
   background-color: $purple;
   font-size: 22px;
   z-index: 999;
+}
+
+.download-pdf-icon{
+  color: rgba(255, 255, 255, 0.87);
+  cursor: default;
+  font-size: 11px;
+  font-weight: bold;
+  text-align: center;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.8);
+  vertical-align: middle;
+  height: 27px;
+  line-height: 27px;
+  margin-right: 2px;
+  min-width: 50px;
+  padding: 10px 0;
+  position: absolute;
+  /* float: right; */
+  right: 0px;
+  width: 63px;
+  height: 47px;
+  background-color: $purple;
+  font-size: 22px;
+  z-index: 999;
+  top:50px;
+}
+/*dossiers css*/
+.day_dossier{
+
+  text-align: center;
+  color: $purple;
+  background-color: $backGrey;
+  border-top-width: 0;
+  border-bottom-width: 1px;
+}
+
+.downloaded-dossier{
+  background-color: $light-purple;
+}
+.already-downloaded{
+  font-size: 13px;
+  margin-right: 5px;
+}
+.downloaded_message{
+  background-color: #4c494c ;
+  font-size: 16px;
+  color:white;
+  position: absolute;
+  width: 50%;
+  height: 36px;
+  top: 3px;
+  z-index: 99;
+  margin: auto;
+  padding: 8px;
+  text-align: center;
+  -webkit-border-radius: 12px;
+  border-radius: 12px;
+  -webkit-box-shadow: 0 10px 12px 5px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 12px 5px rgba(0,0,0,0.2);
+  font-weight: bolder;
+  margin: 10px;
+}
+.loading_pdf{
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  position: absolute;
+  padding-top: 50px;
 }

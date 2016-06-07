@@ -144,14 +144,19 @@ angular.module('app.routes', [])
       templateUrl:'templates/pdf-detail.html',
       controller:'pdfCtrl'
     })
-    .state('menu.dossier',{
-      url:'/dossier',
+    .state('menu.dossiers',{
+      url:'/dossiers',
       views: {
         'side-menu21': {
-          templateUrl: 'templates/dossier.html',
-          controller: 'dossierCtrl'
+          templateUrl: 'templates/dossierList.html',
+          controller: 'dossierListCtrl'
         }
       }
+    })
+    .state('dossier',{
+      url:'/dossier/:dossierId/:type/:day',
+          templateUrl: 'templates/dossier.html',
+          controller: 'dossierCtrl'
     });
 
   // if none of the above states are matched, use this as the fallback

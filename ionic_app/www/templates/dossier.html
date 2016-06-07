@@ -1,10 +1,56 @@
-<ion-view style="" title="Dossier">
-  <ion-content class="has-header" scroll="false" overflow-scroll="true" padding="'true'">
-    <div class="row row-50 overflow">
-      DOSSIER
+<ion-view style="" title="{{dossier.NOMBRE}}" cache-view="false"><!----><!--hide-nav-bar="true" -->
+  <ion-content overflow-scroll="true"><!--class="has-header" -->
+    <div ng-if="ready" style="height: 100%;">
+      <!--downloaded-->
+<div ng-if="loaded" class="downloaded_message">
+  Descargado
+</div>
 
+
+      <div ng-if="downloaded">
+        <!--DOWNLOADED PDF-->
+      </div>
+      <div ng-if="!downloaded" style="height: 100%;">
+        <!--ONLINE PDF-->
+        <div ng-if="url != null" class="pdf-full-container" style="height: 100%; position: relative;">
+          <!-- background loading-->
+          <div class="loading_pdf">
+            Cargando..
+          </div>
+
+
+          <div ng-if="loaded" class="message-alert">
+            PDF descargado
+          </div>
+
+
+          <div id="open" class="open-pdf-icon" browse-to="{{url}}" >
+            <i class="icon ion-android-open"></i>
+          </div>
+          <div id="download" ng-if="canDownload" class="download-pdf-icon" ng-click="downloadPDF();" >
+            <i class="icon icon-download"></i>
+          </div>
+          <div id="downloading" ng-if="downloading" class="download-pdf-icon"   >
+            <ion-spinner icon="spiral"></ion-spinner>
+          </div>
+
+          <iframe ng-src="{{url}}" class="pdf-full-container" style="height: 100%;"></iframe>
+        </div>
+        <div ng-if="url == null">
+          No se ha podido cargar el PDF
+        </div>
+      </div>
     </div>
-
-
   </ion-content>
+
+  <ion-footer-bar align-title="center" class="invisible-footer">
+    <!--
+  <div class="fixed-outside">
+    <div class="row">
+      <div class="col">-->
+    <button ng-click="goBack();" class="button button-circle button-purple icon ion-checkmark-round"></button>
+    <!-- </div>
+   </div>
+ </div>-->
+  </ion-footer-bar>
 </ion-view>
