@@ -56,6 +56,20 @@ angular.module('app.directives', [])
       }
     };
   })
+  .filter('DateDossier',function(){
+    return function(n){
+      if (!angular.isDefined(n)) {
+        return null;
+      }
+      today = new moment();
+      if (today.diff(n,'days')){
+        //1 or more days of difference
+        return n.format("DD/MM/YYYY");
+      } else {
+        return "HOY";
+      }
+    };
+  })
 //disable repated items from the keyname
   .filter('unique', function() {
     return function (collection, keyname) {

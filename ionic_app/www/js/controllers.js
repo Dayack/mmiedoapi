@@ -217,7 +217,7 @@ angular.module('app.controllers', [])
 })
 
 
-.controller('selectDateCtrl', function(PreviewCacheService,$ionicHistory,$scope,$state,FilterService,$rootScope,$ionicHistory,DateHelperService) {
+.controller('selectDateCtrl', function(PreviewCacheService,$ionicHistory,$scope,$state,FilterService,$rootScope,DateHelperService) {
     $scope.defaultDates= null;//if set false, is to activate filters, if false, are default dates the disable filters icon
     // , if null, the data has not been changed in the top options (today,yesterday..) so is changed in the datepicker
     //load from service
@@ -720,7 +720,10 @@ angular.module('app.controllers', [])
       if ($scope.multimedia.url !==null) {
         if ($scope.media ==='PRESS') {
           //open in google reader, to be compatible with all devices:
-          $scope.pdfurl = $sce.trustAsResourceUrl("http://docs.google.com/gview?embedded=true&url="+$scope.multimedia.url);
+         // $scope.pdfurl = $sce.trustAsResourceUrl("http://docs.google.com/gview?embedded=true&url="+$scope.multimedia.url);//<----OK
+
+           $scope.pdfurl = $sce.trustAsResourceUrl("https://drive.google.com/viewerng/viewer?pid=explorer&efh=false&a=v&chrome=false&embedded=true&url="+$scope.multimedia.url);
+
           NewsService.setPdfUrl($scope.pdfurl);
         }
 
@@ -802,4 +805,261 @@ angular.module('app.controllers', [])
     $scope.goBack = function() {
       $ionicHistory.goBack();
     }
-});
+})
+  .controller('dossierListCtrl',function($scope,$ionicLoading,$ionicHistory,$cordovaDevice,$ionicHistory, DossierService,UserService,$state,$cordovaNetwork){
+    $ionicLoading.show({
+      template: '<div class="icon ion-loading-c loading-color">'
+    });
+
+
+    $scope.loadedData = function (data) {
+      for (var i = 0; i < 7; i++) {
+        var pdf_list = [];
+        pdf_list.push({
+          "IDARBOL": null,
+          "TIPO": "PDF_PORTADA",
+          "NOMBRE": "Portadas del día"
+        });
+        pdf_list = pdf_list.concat(angular.copy(data));
+
+        $scope.days[i].dossiers = pdf_list;
+        //now check if some dossiers are downloaded
+        var day_to_verify = $scope.days[i].day.format("YYYYMMDD");
+        if ($scope.offlineList !== null) {
+           if (angular.isDefined($scope.offlineList[day_to_verify])) {
+            for (var j = 0; j < $scope.offlineList[day_to_verify].length; j++) {
+              for (var k = 0; k < pdf_list.length; k++) {
+                 if (pdf_list[k].type === $scope.offlineList[day_to_verify][j].type) {
+                   if (pdf_list[k].IDARBOL === $scope.offlineList[day_to_verify][j].IDARBOL) {
+                    pdf_list[k] = angular.copy($scope.offlineList[day_to_verify][j]);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      $ionicLoading.hide();
+
+    };
+
+    if ($cordovaNetwork.isOnline()) {//TESTING
+      $scope.offline=false;
+      console.log("online!!");
+    } else {
+      $scope.offline=true;
+      console.log("offline!!");
+    }
+    //create list of 7 days
+    $scope.cachedList= DossierService.getCachedDossier();
+    $scope.days = [];
+    $scope.user = UserService.getUser()
+    $scope.offlineList = DossierService.getSavedPdfs();
+    //load days
+    for (var i = 0; i < 7; i++) {
+
+      $scope.days.push({
+        day: new moment().subtract(i, 'days'),
+        dossiers: []
+      });
+
+    }
+    if ($scope.offline) {
+      //just offline saved PDF list
+      if ($scope.offlineList !== null) {
+        for (var i = 0; i < 7; i++) {
+          var day_to_verify = $scope.days[i].day.format("YYYYMMDD");
+          if (angular.isDefined($scope.offlineList[day_to_verify])) {
+            $scope.days[i].dossiers = angular.copy($scope.offlineList[day_to_verify]);
+          }
+        }
+      }
+      $ionicLoading.hide();
+    }
+    else {
+      //the App is online, load online PDF list
+      if ($scope.cachedList !==null){
+//loadeding Cached List
+        $scope.loadedData($scope.cachedList);
+      }
+      else {
+      //downloading list
+        DossierService.getArbolesPDF($scope.user.IDUSUARIO).then($scope.loadedData);
+      }
+    }
+//callback
+
+
+    /**go to dossier or open downloaded Dossier*/
+    $scope.goToDossier=function(dossier,day){
+      console.log("select Dossier" + JSON.stringify(dossier));
+      DossierService.setDossier(dossier);
+      if (dossier.downloaded){
+        //downlaoded dossier in the storage
+          switch ($cordovaDevice.getPlatform()) {
+            case "Android":
+              cordova.plugins.fileOpener2.open(dossier.local_url, 'application/pdf', { //open external system
+                error: function (e) {
+                  console.log('Error status: ' + e.status + ' - Error message: ' + e.message);
+                },
+                success: function () {
+                  console.log('file opened successfully');
+                }
+              });
+              break;
+            default:
+              window.open(dossier.local_url, '_blank', 'location=no,closebuttoncaption=Close,enableViewportScale=yes');
+              break;
+
+          }
+      } else {
+        var dayFormated = day.format('YYYYMMDD');
+        $ionicHistory.clearCache().then(function() {
+          $state.go('dossier', {dossierId: dossier.IDARBOL, type: dossier.TIPO, day: dayFormated,cache:false});
+        });
+      }
+    };
+
+    $scope.goNews=function(){
+      $ionicHistory.clearCache().then(function() {
+        $state.go('menu.preview-noticias');
+      });
+    };
+
+
+  })
+  .controller('dossierCtrl',function($scope,$ionicLoading,$timeout,$sce,$ionicHistory,$cordovaDevice,PDFViewerService,$state,DossierService,$stateParams,UserService) {
+     $scope.goBack = function () {
+     // $ionicHistory.goBack();
+       $ionicHistory.clearCache().then(function() {
+         $state.go('menu.dossiers');
+       });
+    }
+    $ionicLoading.show({
+      template: '<div class="icon ion-loading-c loading-color">'
+    });
+    $scope.downloaded = false;
+    $scope.ready=false;
+    $scope.dossier = DossierService.getDossier();
+    $scope.user = UserService.getUser();
+    $scope.day= $stateParams.day;
+    //extract the dossier file if is downloaded, if not return null
+    if (DossierService.getDownloadedDossier($scope.dossier)) {
+      //open downloaded PDF
+      $scope.downloaded = true;
+      $scope.ready=true;
+
+    } else {
+      //get URL and open ONLINE
+      if ($stateParams.type ==='PDF') {
+        DossierService.getDossierPDFUrl($scope.dossier, $scope.user.IDUSUARIO, $scope.day).then(function (data) {
+          $ionicLoading.hide();
+
+          $scope.pdf_url = data;
+          console.log("loading :"+data);
+          $scope.url = $sce.trustAsResourceUrl(DossierService.getUrlVisor()+data);
+          $scope.downloaded = false;
+          $scope.ready = true;
+        });
+      } else if ($stateParams.type ==='PDF_PORTADA'){
+        //PDF OF COVERS
+        DossierService.getDossierPDFCoverUrl($scope.day).then(function (data) {
+          $ionicLoading.hide();
+          console.log("loading :"+data);
+          $scope.pdf_url = data;
+          $scope.url = $sce.trustAsResourceUrl(DossierService.getUrlVisor()+data);
+          $scope.downloaded = false;
+          $scope.ready = true;
+        });
+      }
+    }
+
+
+    //open PDF url
+
+    $scope.canDownload=true;
+    $scope.downloading=false;
+    $scope.downloadPDF = function () {
+      console.log("DOWNLOADING PDF");
+      var fileURL = "";
+      $scope.devicePlatform = $cordovaDevice.getPlatform();
+
+      var downloaded_dossier_info = {
+        IDARBOL:null,
+        TIPO:null,
+        NOMBRE:null
+      };
+      var fileName = $scope.day+ "_"+($scope.dossier.TIPO ==="PDF" ? $scope.dossier.IDARBOL : "PORTADA")+".pdf";
+
+      switch ($scope.devicePlatform) {
+        case 'Android':
+          fileURL = cordova.file.externalApplicationStorageDirectory + fileName;
+          break;
+        default:
+          fileURL = cordova.file.documentsDirectory + fileName;
+          break;
+      }
+      // Android devices cannot open up PDFs in a sub web view (inAppBrowser) so the PDF needs to be downloaded and then opened with whatever
+      // native PDF viewer is installed on the app.
+
+
+      $scope.canDownload=false;
+      $scope.downloading=true;
+      var fileTransfer = new FileTransfer();
+      var uri = encodeURI($scope.pdf_url);
+      fileTransfer.download(//donwload
+        uri,
+        fileURL,
+        function (entry) {
+          $scope.localFileUri = entry.toURL();
+          // window.plugins.fileOpener.open(entry.toURL());
+          console.log("downloaded file:"+entry.toURL());
+          $scope.loaded = true;
+          downloaded_dossier_info.TIPO = $scope.dossier.TIPO;
+          downloaded_dossier_info.IDARBOL = $scope.dossier.IDARBOL;
+          downloaded_dossier_info.NOMBRE = $scope.dossier.NOMBRE;
+          downloaded_dossier_info.local_url = entry.toURL(); //url local
+          downloaded_dossier_info.downloaded=true;
+          $scope.downloading=false;
+          $timeout(function(){
+            $scope.loaded=false;
+          },2000);
+         /* $scope.offlineList = DossierService.getSavedPdfs();
+          if ($scope.offlineList === null) {
+            $scope.offlineList = {};
+          }
+          if (!angular.isDefined($scope.offlineList[$scope.day])) {
+            $scope.offlineList[$scope.day] = [];
+          }
+          $scope.offlineList[$scope.day].push(downloaded_dossier_info);*/
+          DossierService.savePdf($scope.day, downloaded_dossier_info);
+
+          /////////OPEN DOWNLOADED PDF
+
+          /////////////////
+
+
+        },
+        function (error) {
+          $scope.downloading=false;
+          $scope.canDownload=true;
+        },
+        false
+      );
+
+
+      /*  break;
+       default:
+
+
+       // IOS and browser apps are able to open a PDF in a new sub web view window. This uses the inAppBrowser plugin
+
+       var ref = window.open(url, '_blank', 'location=no,toolbar=yes,closebuttoncaption=Close PDF,enableViewportScale=yes');
+       break;
+       }*/
+    };
+
+
+
+  });

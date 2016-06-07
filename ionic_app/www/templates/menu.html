@@ -45,6 +45,11 @@
                 Origen Fuente
               </ion-item>-->
 
+              <ion-item ng-if="actualState!=='menu.dossiers'" style="" menu-close="" ui-sref="menu.dossiers">
+                <ion-item ng-if="actualState=='menu.dossiers'"  style="" menu-close="" >Dossier</ion-item>
+
+                Dossier
+              </ion-item>
 
               <ion-item style="" menu-close="" ng-click="logout()">Logout</ion-item>
             </ion-list>
