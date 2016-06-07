@@ -743,7 +743,132 @@ angular.module('app.services', [])
 
   })
 
+.service('DossierService',function($http,$q,ConfigService,$window){
 
+
+    var urlVisor="https://drive.google.com/viewerng/viewer?pid=explorer&efh=false&a=v&chrome=false&embedded=true&url=";
+
+    local_dir = "mmi_pdf_dossiers";
+    var dossier=null;
+    var arboles=null;
+    var pdf_url=null;
+    var saved_pdf=null;//structure saved in localStorage
+    var dossiers_cache=null;
+
+    this.setCachedDossier=function(dossiers){
+      dossiers_cache= dossiers;
+    };
+
+    this.getCachedDossier=function(){
+      return dossiers_cache;
+    };
+
+    //save the actual Dossier in the localStorage
+
+    this.getUrlVisor=function(){
+      return urlVisor;
+    };
+    this.savePdf=function(day,dossier){
+      saved_pdf = JSON.parse($window.localStorage.getItem(local_dir));
+      console.log("previously saved "+saved_pdf);
+      if (!angular.isDefined(saved_pdf) || saved_pdf === null){
+        saved_pdf = {};
+      }
+      if (!angular.isDefined(saved_pdf[day])){
+        saved_pdf[day]=[];
+      }
+
+      console.log("saving in "+ JSON.stringify(saved_pdf[day]) + " -> "+ JSON.stringify(dossier));
+      saved_pdf[day] = saved_pdf[day].concat([dossier]);
+
+      console.log("saving"+ JSON.stringify(saved_pdf));
+      $window.localStorage.setItem(local_dir,JSON.stringify(saved_pdf));
+      console.log("saved!");
+    };
+
+    this.getSavedPdfs=function() {
+      saved_pdf = JSON.parse($window.localStorage.getItem(local_dir));
+      console.log("loading "+ JSON.stringify(saved_pdf));
+      if (!angular.isDefined(saved_pdf) || saved_pdf === null) {
+        saved_pdf = {};
+      }
+      return saved_pdf;
+    };
+
+    /**
+     * extract tree categories for the actual user
+     * @param userId
+     * @returns {*}
+     */
+
+
+
+    this.getArbolesPDF=function(userId){
+
+      //testing
+
+      userId = 1;
+      if (arboles !==null) {
+        return arboles;
+      }
+      var deffered = $q.defer();
+      $http.get('/getperfiles_arboles/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+userId).then(function(data){
+        if (data.status !==200) {
+          deffered.resolve([]);
+        } else {
+          var dossiers=[];
+          angular.forEach(data.data,function(arbol){
+            if (arbol.TIPO ==="PDF"){
+              dossiers.push(arbol);
+            }
+          });
+          deffered.resolve(dossiers);
+        }
+      });
+      return deffered.promise;
+    };
+    this.setDossier=function(d){
+      dossier = d;
+    };
+    this.getDossier=function(){
+      return dossier;
+    };
+
+    ///extract file url if the dossier is downloaded
+    //if not return null
+    this.getDownloadedDossier=function(dossier){
+      return null;
+    };
+
+    this.getDossierPDFCoverUrl=function(day){
+      var deffered= $q.defer();
+      $http.get('/get_url_portadas/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+day).then(function(data){
+
+        deffered.resolve(data.data[0].URL);
+      });
+      return deffered.promise;
+    };
+
+    //get the url data
+    this.getDossierPDFUrl=function(dossier,userId,day){
+
+      //testing
+      userId=1;
+      var deffered= $q.defer();
+      if (dossier === null || userId === null || day ===null) {
+        deffered.resolve(null);
+      } else {
+        $http.get('//get_url_dossier/' + ConfigService.getApiKey() + '/' + ConfigService.getZona() + '/' + userId + '/' + dossier.IDARBOL + '/' + day).then(function (data) {
+          deffered.resolve(data.data[0].URL);
+        });
+      }
+      return deffered.promise;
+
+    };
+
+    this.getDossier
+
+  })
 
 /**
  * HTTP Service, this service will centralize all API calls
