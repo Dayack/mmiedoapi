@@ -844,7 +844,7 @@ angular.module('app.controllers', [])
 
     };
 
-    if ($cordovaNetwork.isOnline()) {//TESTING
+    if (true/*$cordovaNetwork.isOnline()*/) {//TESTING
       $scope.offline=false;
       console.log("online!!");
     } else {
