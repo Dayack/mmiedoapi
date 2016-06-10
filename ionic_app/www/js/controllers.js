@@ -844,12 +844,17 @@ angular.module('app.controllers', [])
 
     };
 
-    if ($cordovaNetwork.isOnline()) {//TESTING
-      $scope.offline=false;
-      console.log("online!!");
-    } else {
-      $scope.offline=true;
-      console.log("offline!!");
+    try {
+      if ($cordovaNetwork.isOnline()) {//TESTING
+        $scope.offline = false;
+        console.log("online!!");
+      } else {
+        $scope.offline = true;
+        console.log("offline!!");
+      }
+    } catch(err){
+      console.log("error"+ err.message);
+      $scope.offline = false;
     }
     //create list of 7 days
     $scope.cachedList= DossierService.getCachedDossier();
@@ -897,6 +902,7 @@ angular.module('app.controllers', [])
       DossierService.setDossier(dossier);
       if (dossier.downloaded){
         //downlaoded dossier in the storage
+        console.log("opening downloaded");
           switch ($cordovaDevice.getPlatform()) {
             case "Android":
               cordova.plugins.fileOpener2.open(dossier.local_url, 'application/pdf', { //open external system
