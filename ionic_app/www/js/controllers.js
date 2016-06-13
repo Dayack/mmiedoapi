@@ -973,6 +973,7 @@ angular.module('app.controllers', [])
     $scope.canDownload=true;
     $scope.downloading=false;
     $scope.downloadPDF = function () {
+      $scope.downloadedPDF=false;
       console.log("DOWNLOADING PDF");
       var fileURL = "";
       $scope.devicePlatform = $cordovaDevice.getPlatform();
@@ -1007,16 +1008,15 @@ angular.module('app.controllers', [])
           $scope.localFileUri = entry.toURL();
           // window.plugins.fileOpener.open(entry.toURL());
           console.log("downloaded file:"+entry.toURL());
-          $scope.loaded = true;
           downloaded_dossier_info.TIPO = $scope.dossier.TIPO;
           downloaded_dossier_info.IDARBOL = $scope.dossier.IDARBOL;
           downloaded_dossier_info.NOMBRE = $scope.dossier.NOMBRE;
           downloaded_dossier_info.local_url = entry.toURL(); //url local
           downloaded_dossier_info.downloaded=true;
-          $scope.downloading=false;
           $timeout(function(){
-            $scope.loaded=false;
-          },2000);
+            $scope.downloading=false;
+            $scope.downloadedPDF=true;
+          });
          /* $scope.offlineList = DossierService.getSavedPdfs();
           if ($scope.offlineList === null) {
             $scope.offlineList = {};
