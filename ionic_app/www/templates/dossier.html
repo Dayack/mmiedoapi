@@ -30,8 +30,12 @@
           <div id="download" ng-if="canDownload" class="download-pdf-icon" ng-click="downloadPDF();" >
             <i class="icon icon-download"></i>
           </div>
-          <div id="downloading" ng-if="downloading" class="download-pdf-icon"   >
+           <div id="downloading" ng-if="downloading" class="download-pdf-icon"   >
             <ion-spinner icon="spiral"></ion-spinner>
+          </div>
+          <div id="downloaded" ng-if="downloadedPDF" class="download-pdf-icon "   >
+            <img src="img/ok.png" style="height: 90%;">
+
           </div>
 
           <iframe ng-src="{{url}}" class="pdf-full-container" style="height: 100%;"></iframe>
