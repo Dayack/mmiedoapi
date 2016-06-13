@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--android: com.ionicframework.mmiColombia574937-->
 <!--ios: com.mmi.siglodata-->
-<widget id="com.mmi.siglodata" version="1.0.6" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.mmi.siglodata" version="1.0.8" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>Siglo Data MMI</name>
   <description>
         Siglo Data MMI.

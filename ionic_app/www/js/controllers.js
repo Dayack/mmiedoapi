@@ -844,18 +844,8 @@ angular.module('app.controllers', [])
 
     };
 
-    try {
-      if ($cordovaNetwork.isOnline()) {//TESTING
-        $scope.offline = false;
-        console.log("online!!");
-      } else {
-        $scope.offline = true;
-        console.log("offline!!");
-      }
-    } catch(err){
-      console.log("error"+ err.message);
-      $scope.offline = false;
-    }
+    //first load offline list, and then load the online list
+
     //create list of 7 days
     $scope.cachedList= DossierService.getCachedDossier();
     $scope.days = [];
@@ -870,28 +860,27 @@ angular.module('app.controllers', [])
       });
 
     }
-    if ($scope.offline) {
-      //just offline saved PDF list
-      if ($scope.offlineList !== null) {
-        for (var i = 0; i < 7; i++) {
-          var day_to_verify = $scope.days[i].day.format("YYYYMMDD");
-          if (angular.isDefined($scope.offlineList[day_to_verify])) {
-            $scope.days[i].dossiers = angular.copy($scope.offlineList[day_to_verify]);
-          }
+    //OFFLINE LIST
+    //just offline saved PDF list
+    if ($scope.offlineList !== null) {
+      for (var i = 0; i < 7; i++) {
+        var day_to_verify = $scope.days[i].day.format("YYYYMMDD");
+        if (angular.isDefined($scope.offlineList[day_to_verify])) {
+          $scope.days[i].dossiers = angular.copy($scope.offlineList[day_to_verify]);
         }
       }
-      $ionicLoading.hide();
+    }
+    $ionicLoading.hide();
+
+    //ONLINE LIST
+    //the App is online, load online PDF list
+    if ($scope.cachedList !== null) {
+//loadeding Cached List
+      $scope.loadedData($scope.cachedList);
     }
     else {
-      //the App is online, load online PDF list
-      if ($scope.cachedList !==null){
-//loadeding Cached List
-        $scope.loadedData($scope.cachedList);
-      }
-      else {
       //downloading list
-        DossierService.getArbolesPDF($scope.user.IDUSUARIO).then($scope.loadedData);
-      }
+      DossierService.getArbolesPDF($scope.user.IDUSUARIO).then($scope.loadedData);
     }
 //callback
 
@@ -963,7 +952,6 @@ angular.module('app.controllers', [])
           $ionicLoading.hide();
 
           $scope.pdf_url = data;
-          console.log("loading :"+data);
           $scope.url = $sce.trustAsResourceUrl(DossierService.getUrlVisor()+data);
           $scope.downloaded = false;
           $scope.ready = true;
@@ -972,7 +960,6 @@ angular.module('app.controllers', [])
         //PDF OF COVERS
         DossierService.getDossierPDFCoverUrl($scope.day).then(function (data) {
           $ionicLoading.hide();
-          console.log("loading :"+data);
           $scope.pdf_url = data;
           $scope.url = $sce.trustAsResourceUrl(DossierService.getUrlVisor()+data);
           $scope.downloaded = false;
@@ -987,6 +974,7 @@ angular.module('app.controllers', [])
     $scope.canDownload=true;
     $scope.downloading=false;
     $scope.downloadPDF = function () {
+      $scope.downloadedPDF=false;
       console.log("DOWNLOADING PDF");
       var fileURL = "";
       $scope.devicePlatform = $cordovaDevice.getPlatform();
@@ -1021,16 +1009,15 @@ angular.module('app.controllers', [])
           $scope.localFileUri = entry.toURL();
           // window.plugins.fileOpener.open(entry.toURL());
           console.log("downloaded file:"+entry.toURL());
-          $scope.loaded = true;
           downloaded_dossier_info.TIPO = $scope.dossier.TIPO;
           downloaded_dossier_info.IDARBOL = $scope.dossier.IDARBOL;
           downloaded_dossier_info.NOMBRE = $scope.dossier.NOMBRE;
           downloaded_dossier_info.local_url = entry.toURL(); //url local
           downloaded_dossier_info.downloaded=true;
-          $scope.downloading=false;
           $timeout(function(){
-            $scope.loaded=false;
-          },2000);
+            $scope.downloading=false;
+            $scope.downloadedPDF=true;
+          });
          /* $scope.offlineList = DossierService.getSavedPdfs();
           if ($scope.offlineList === null) {
             $scope.offlineList = {};
