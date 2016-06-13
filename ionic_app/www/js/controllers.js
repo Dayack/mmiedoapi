@@ -844,13 +844,8 @@ angular.module('app.controllers', [])
 
     };
 
-    if ($cordovaNetwork.isOnline()) {//TESTING
-      $scope.offline=false;
-      console.log("online!!");
-    } else {
-      $scope.offline=true;
-      console.log("offline!!");
-    }
+    //first load offline list, and then load the online list
+
     //create list of 7 days
     $scope.cachedList= DossierService.getCachedDossier();
     $scope.days = [];
@@ -865,28 +860,27 @@ angular.module('app.controllers', [])
       });
 
     }
-    if ($scope.offline) {
-      //just offline saved PDF list
-      if ($scope.offlineList !== null) {
-        for (var i = 0; i < 7; i++) {
-          var day_to_verify = $scope.days[i].day.format("YYYYMMDD");
-          if (angular.isDefined($scope.offlineList[day_to_verify])) {
-            $scope.days[i].dossiers = angular.copy($scope.offlineList[day_to_verify]);
-          }
+    //OFFLINE LIST
+    //just offline saved PDF list
+    if ($scope.offlineList !== null) {
+      for (var i = 0; i < 7; i++) {
+        var day_to_verify = $scope.days[i].day.format("YYYYMMDD");
+        if (angular.isDefined($scope.offlineList[day_to_verify])) {
+          $scope.days[i].dossiers = angular.copy($scope.offlineList[day_to_verify]);
         }
       }
-      $ionicLoading.hide();
+    }
+    $ionicLoading.hide();
+
+    //ONLINE LIST
+    //the App is online, load online PDF list
+    if ($scope.cachedList !== null) {
+//loadeding Cached List
+      $scope.loadedData($scope.cachedList);
     }
     else {
-      //the App is online, load online PDF list
-      if ($scope.cachedList !==null){
-//loadeding Cached List
-        $scope.loadedData($scope.cachedList);
-      }
-      else {
       //downloading list
-        DossierService.getArbolesPDF($scope.user.IDUSUARIO).then($scope.loadedData);
-      }
+      DossierService.getArbolesPDF($scope.user.IDUSUARIO).then($scope.loadedData);
     }
 //callback
 
