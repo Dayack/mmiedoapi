@@ -804,7 +804,6 @@ angular.module('app.services', [])
 
 
     this.getArbolesPDF=function(userId){
-
       if (arboles !==null) {
         return arboles;
       }
