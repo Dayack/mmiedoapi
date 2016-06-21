@@ -1,17 +1,42 @@
 <ion-view style="" title="Dossiers">
-  <ion-content class="has-header  padding-footer"  overflow-scroll="true" padding="'true'">
-      <ion-list style="">
-        <ion-item ng-repeat="day in days " style="" class="new-item"
-                  ><!--ng-click="goToNew(new)"-->
-          <div class=" day_dossier col">
-<h2>{{day.day | DateDossier}}</h2>
+  <ion-content class="has-header  padding-footer" overflow-scroll="true" padding="'true'">
+    <ion-list style="">
 
+      <ion-item ng-repeat="day in days " style="" class="new-item">
+        <!--<div ng-repeat="day in days " style="" class="new-item">
+          ><!--ng-click="goToNew(new)"-->
+        <div class=" day_dossier col">
+          <h2>{{day.day | DateDossier}}</h2>
+
+        </div>
+        <div ng-repeat="dossier in day.dossiers" ng-class="{'downloaded-dossier': dossier.downloaded}"
+             class="dossier-preview item">
+          <div ng-show="!dossier.downloaded">
+            <div class="item_pdf" ng-click="goToDossier(dossier,day.day,false)">
+              <i ng-show="dossier.downloaded" class="icon icon-download "></i><span>{{dossier.NOMBRE}}</span>
+
+            </div>
+            <div class="download_item" ng-show="!dossier.loadingDossier"
+                 ng-click="goToDossier(dossier,day.day,true)"
+              >
+
+              <i class="icon icon-download already-downloaded"></i></div>
+
+
+            <div class="loading_pdf" ng-show="dossier.loadingDossier">
+              <ion-spinner icon="spiral"></ion-spinner>
+              <span>{{dossier.percent}} %</span>
+            </div>
           </div>
-          <div ng-repeat="dossier in day.dossiers" ng-class="{'downloaded-dossier': dossier.downloaded}" class="dossier-preview item" ng-click="goToDossier(dossier,day.day)">
-            <i ng-show="dossier.downloaded" class="icon icon-download already-downloaded"></i><span>{{dossier.NOMBRE}}</span>
+          <div ng-show="dossier.downloaded">
+            <div class="item_pdf" ng-click="goToDossier(dossier,day.day,false)">
+              <i ng-show="dossier.downloaded" class="icon icon-download "></i><span>{{dossier.NOMBRE}}</span>
+            </div>
           </div>
-        </ion-item>
-      </ion-list>
+        </div>
+      </ion-item>
+    </ion-list>
+    </div>
 
   </ion-content>
   <ion-footer-bar align-title="center" class="invisible-footer">

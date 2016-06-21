@@ -806,32 +806,36 @@ angular.module('app.controllers', [])
       $ionicHistory.goBack();
     }
 })
-  .controller('dossierListCtrl',function($scope,$ionicLoading,$ionicHistory,$cordovaDevice,$ionicHistory, DossierService,UserService,$state,$cordovaNetwork){
+  .controller('dossierListCtrl',function($scope,$timeout,$ionicLoading,$ionicHistory,$cordovaDevice,$ionicHistory, DossierService,UserService,$state,$cordovaNetwork){
     $ionicLoading.show({
       template: '<div class="icon ion-loading-c loading-color">'
     });
 
-
+    console.log("loading list");
     $scope.loadedData = function (data) {
       for (var i = 0; i < 7; i++) {
         var pdf_list = [];
         pdf_list.push({
           "IDARBOL": null,
           "TIPO": "PDF_PORTADA",
-          "NOMBRE": "Portadas del día"
+          "NOMBRE": "Portadas del día",
+          loadingDossier: false
         });
         pdf_list = pdf_list.concat(angular.copy(data));
-
+        angular.forEach(data,function(item){
+          item.loadingDossier= false;
+        });
         $scope.days[i].dossiers = pdf_list;
         //now check if some dossiers are downloaded
         var day_to_verify = $scope.days[i].day.format("YYYYMMDD");
         if ($scope.offlineList !== null) {
            if (angular.isDefined($scope.offlineList[day_to_verify])) {
             for (var j = 0; j < $scope.offlineList[day_to_verify].length; j++) {
-              for (var k = 0; k < pdf_list.length; k++) {
-                 if (pdf_list[k].type === $scope.offlineList[day_to_verify][j].type) {
-                   if (pdf_list[k].IDARBOL === $scope.offlineList[day_to_verify][j].IDARBOL) {
-                    pdf_list[k] = angular.copy($scope.offlineList[day_to_verify][j]);
+              for (var k = 0; k <  $scope.days[i].dossiers.length; k++) {
+                 if ( $scope.days[i].dossiers[k].type === $scope.offlineList[day_to_verify][j].type) {
+                   if ( $scope.days[i].dossiers[k].IDARBOL === $scope.offlineList[day_to_verify][j].IDARBOL) {
+                     $scope.days[i].dossiers[k] = angular.copy($scope.offlineList[day_to_verify][j]);
+                     console.log("copied " + $scope.days[i].dossiers[k]);
                   }
                 }
               }
@@ -851,6 +855,8 @@ angular.module('app.controllers', [])
     $scope.days = [];
     $scope.user = UserService.getUser()
     $scope.offlineList = DossierService.getSavedPdfs();
+    console.log("offline List:"+JSON.stringify($scope.offlineList));
+    console.log("cached List:"+JSON.stringify($scope.cachedList));
     //load days
     for (var i = 0; i < 7; i++) {
 
@@ -866,6 +872,7 @@ angular.module('app.controllers', [])
       for (var i = 0; i < 7; i++) {
         var day_to_verify = $scope.days[i].day.format("YYYYMMDD");
         if (angular.isDefined($scope.offlineList[day_to_verify])) {
+          console.log("day "+ day_to_verify + " copied");
           $scope.days[i].dossiers = angular.copy($scope.offlineList[day_to_verify]);
         }
       }
@@ -880,17 +887,134 @@ angular.module('app.controllers', [])
     }
     else {
       //downloading list
-      DossierService.getArbolesPDF($scope.user.IDUSUARIO).then($scope.loadedData);
+      DossierService.getArbolesPDF(1/*$scope.user.IDUSUARIO*/).then($scope.loadedData);
     }
 //callback
 
 
     /**go to dossier or open downloaded Dossier*/
-    $scope.goToDossier=function(dossier,day){
+    $scope.goToDossier=function(dossier,day,save){
+      console.log("download mode "+save);
+      dossier.loadingDossier= true;
       console.log("select Dossier" + JSON.stringify(dossier));
       DossierService.setDossier(dossier);
       if (dossier.downloaded){
         //downlaoded dossier in the storage
+        switch ($cordovaDevice.getPlatform()) {
+          case "Android":
+            cordova.plugins.fileOpener2.open(dossier.local_url, 'application/pdf', { //open external system
+              error: function (e) {
+                console.log('Error status: ' + e.status + ' - Error message: ' + e.message);
+              },
+              success: function () {
+                console.log('file opened successfully');
+              }
+            });
+            break;
+          default:
+            window.open(dossier.local_url, '_blank', 'location=no,closebuttoncaption=Close,enableViewportScale=yes');
+            break;
+
+        }
+      } else {
+        var dayFormated = day.format('YYYYMMDD');
+        /*$ionicHistory.clearCache().then(function() {
+          $state.go('dossier', {dossierId: dossier.IDARBOL, type: dossier.TIPO, day: dayFormated,cache:false});
+        });*/
+        $scope.day = dayFormated;
+        $scope.dossier = {
+          TIPO: dossier.TIPO,
+          dossier: dossier.IDARBOL,
+          day: dayFormated
+        };
+        $scope.downloadedPDF=false;
+
+        ///_______________
+        if ($scope.dossier.TIPO ==='PDF') {
+          DossierService.getDossierPDFUrl($scope.dossier, $scope.user.IDUSUARIO, $scope.day).then(function (data) {
+            $ionicLoading.hide();
+
+            $scope.pdf_url = data;
+         //   $scope.url = $sce.trustAsResourceUrl(DossierService.getUrlVisor()+data);
+            $scope.downloaded = false;
+            $scope.ready = true;
+            $scope.downloadAndOpen(save,dossier,dayFormated);
+          });
+        } else if ($scope.dossier.TIPO ==='PDF_PORTADA'){
+          //PDF OF COVERS
+          DossierService.getDossierPDFCoverUrl($scope.day).then(function (data) {
+            $ionicLoading.hide();
+            $scope.pdf_url = data;
+            console.log("opening pdf");
+         //   $scope.url = $sce.trustAsResourceUrl(DossierService.getUrlVisor()+data);
+            $scope.downloaded = false;
+            $scope.ready = true;
+            $scope.downloadAndOpen(save,dossier,dayFormated);
+          });
+        }
+
+
+
+
+      }
+    };
+
+    $scope.downloadAndOpen=function(save,dossier,day){
+      var fileURL = "";
+      $scope.devicePlatform = $cordovaDevice.getPlatform();
+
+      var downloaded_dossier_info = {
+        IDARBOL:null,
+        TIPO:null,
+        NOMBRE:null
+      };
+      var fileName = day+ "_"+(dossier.TIPO ==="PDF" ? dossier.IDARBOL : "PORTADA")+".pdf";
+
+
+      switch ($scope.devicePlatform) {
+        case 'Android':
+          fileURL = cordova.file.externalApplicationStorageDirectory + fileName;
+          break;
+        default:
+          fileURL = cordova.file.documentsDirectory + fileName;
+          break;
+      }
+      // Android devices cannot open up PDFs in a sub web view (inAppBrowser) so the PDF needs to be downloaded and then opened with whatever
+      // native PDF viewer is installed on the app.
+
+
+      $scope.canDownload=false;
+      $scope.downloading=true;
+      var fileTransfer = new FileTransfer();
+
+      var uri = encodeURI($scope.pdf_url);
+      fileTransfer.download(//donwload
+        uri,
+        fileURL,
+        function (entry) {
+          $scope.localFileUri = entry.toURL();
+          // window.plugins.fileOpener.open(entry.toURL());
+          console.log("downloaded file:"+entry.toURL());
+          dossier.loadingDossier=false;
+          if (save){
+            $scope.localFileUri = entry.toURL();
+            // window.plugins.fileOpener.open(entry.toURL());
+            console.log("saving "+entry.toURL() + " dossier:"+JSON.stringify(dossier));
+            downloaded_dossier_info.TIPO = dossier.TIPO;
+            downloaded_dossier_info.IDARBOL = dossier.IDARBOL;
+            downloaded_dossier_info.NOMBRE = dossier.NOMBRE;
+            downloaded_dossier_info.local_url = entry.toURL(); //url local
+            downloaded_dossier_info.downloaded=true;
+
+            DossierService.savePdf($scope.day, downloaded_dossier_info);
+            dossier.downloaded=true;
+            dossier.local_url = entry.toURL();
+          }
+          $timeout(function(){
+            $scope.downloading=false;
+            $scope.downloadedPDF=true;
+          });
+          //window.open(entry.toURL(), '_blank', 'location=no,closebuttoncaption=Close,enableViewportScale=yes');/*
           switch ($cordovaDevice.getPlatform()) {
             case "Android":
               cordova.plugins.fileOpener2.open(dossier.local_url, 'application/pdf', { //open external system
@@ -907,14 +1031,21 @@ angular.module('app.controllers', [])
               break;
 
           }
-      } else {
-        var dayFormated = day.format('YYYYMMDD');
-        $ionicHistory.clearCache().then(function() {
-          $state.go('dossier', {dossierId: dossier.IDARBOL, type: dossier.TIPO, day: dayFormated,cache:false});
-        });
-      }
-    };
 
+
+          /////////OPEN DOWNLOADED PDF
+
+          /////////////////
+
+
+        },
+        function (error) {
+          $scope.downloading=false;
+          $scope.canDownload=true;
+        },
+        false
+      );
+    };
     $scope.goNews=function(){
       $ionicHistory.clearCache().then(function() {
         $state.go('menu.preview-noticias');

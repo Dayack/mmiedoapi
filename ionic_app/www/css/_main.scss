@@ -432,6 +432,30 @@ table.media td{
 .downloaded-dossier{
   background-color: $light-purple;
 }
+
+.download_item{
+  background-color: $purple ;
+  color:white;
+  float: left;
+  text-align: center;
+  width: 20%;
+  padding:16px;
+  font-size: 15px;
+  z-index: 1000;
+}
+.item_pdf{
+  float:left;
+  width: 80%;
+  padding: 16px;
+  z-index: 1000;
+}
+.loading_pdf{
+
+  float: left;
+  padding: 5px;
+  width: 20%;
+  text-align: center;
+}
 .already-downloaded{
   font-size: 13px;
   margin-right: 5px;
