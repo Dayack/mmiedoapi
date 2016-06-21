@@ -1,8 +1,8 @@
 <ion-view style="" title="Dossiers">
   <ion-content class="has-header  padding-footer" overflow-scroll="true" padding="'true'">
-    <div ng-show="emptyPDF" style="position: absolute; top:0px; width: 100%; background-color:white;">
+    <div style="text-align:center; z-index:1000; position: fixed; top:0px; width: 100%; background-color:white;">
       No se encuenta disponible
-      </div>
+    </div>
     <ion-list style="">
 
       <ion-item ng-repeat="day in days " style="" class="new-item">
@@ -14,27 +14,35 @@
         </div>
         <div ng-repeat="dossier in day.dossiers" ng-class="{'downloaded-dossier': dossier.downloaded}"
              class="dossier-preview item">
-          <div ng-show="!dossier.downloaded">
-            <div class="item_pdf" ng-click="goToDossier(dossier,day.day,false)">
-              <i ng-show="dossier.downloaded" class="icon icon-download "></i><span>{{dossier.NOMBRE}}</span>
+          <!--ITEM-->
+          <div ng-show="!dossier.notAvailable">
+            <div ng-show="!dossier.downloaded">
+              <div class="item_pdf" ng-click="goToDossier(dossier,day.day,false)">
+                <i ng-show="dossier.downloaded" class="icon icon-download "></i><span>{{dossier.NOMBRE}}</span>
 
+              </div>
+              <div class="download_item" ng-show="!dossier.loadingDossier"
+                   ng-click="goToDossier(dossier,day.day,true)"
+                >
+
+                <i class="icon icon-download already-downloaded"></i></div>
+
+
+              <div class="loading_pdf" ng-show="dossier.loadingDossier">
+                <ion-spinner icon="spiral"></ion-spinner>
+                <span>{{dossier.percent}} %</span>
+              </div>
             </div>
-            <div class="download_item" ng-show="!dossier.loadingDossier"
-                 ng-click="goToDossier(dossier,day.day,true)"
-              >
-
-              <i class="icon icon-download already-downloaded"></i></div>
-
-
-            <div class="loading_pdf" ng-show="dossier.loadingDossier">
-              <ion-spinner icon="spiral"></ion-spinner>
-              <span>{{dossier.percent}} %</span>
+            <!--DOWNLOADED-->
+            <div ng-show="dossier.downloaded">
+              <div class="item_pdf" ng-click="goToDossier(dossier,day.day,false)">
+                <i ng-show="dossier.downloaded" class="icon icon-download "></i><span>{{dossier.NOMBRE}}</span>
+              </div>
             </div>
           </div>
-          <div ng-show="dossier.downloaded">
-            <div class="item_pdf" ng-click="goToDossier(dossier,day.day,false)">
-              <i ng-show="dossier.downloaded" class="icon icon-download "></i><span>{{dossier.NOMBRE}}</span>
-            </div>
+          <!--NOT AVAILABLE-->
+          <div class="item_pdf" ng-show="dossier.notAvailable">
+            En estos momentos el fichero se está generando
           </div>
         </div>
       </ion-item>

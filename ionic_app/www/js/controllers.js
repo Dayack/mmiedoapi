@@ -1058,11 +1058,18 @@ angular.module('app.controllers', [])
                   /////////////////
 
                 } else {
-                  console.log("no size pdf");
+                  console.log("no size pdf " + JSON.stringify(dossier));
                   //not pdf loaded, so dont save or open
                   $scope.emptyPDF=true;
-                  $timeout(function(){$scope.emptyPDF = false;},3);
-                  dossier.loadingDossier=false;
+                  $timeout(function(){
+                    dossier.notAvailable=true;
+                    $timeout(function(){
+                      $scope.setAvailableDossier(dossier);
+
+                    },5000);
+                    dossier.loadingDossier=false;
+                  });
+
                 }
 
               },
@@ -1077,6 +1084,12 @@ angular.module('app.controllers', [])
         }, function () {
           console.log("error");
         });
+    };
+
+    $scope.setAvailableDossier=function(dossier){
+
+      dossier.notAvailable=false;
+      console.log("size pdf " +JSON.stringify(dossier));
     };
     $scope.goNews = function () {
       $ionicHistory.clearCache().then(function () {
