@@ -959,6 +959,12 @@ angular.module('app.controllers', [])
       }
     };
 
+    $scope.ref
+    $scope.loadErrorCallBack=function(){
+      console.log("error PDF not loaded");
+      $scope.ref.close();
+      $scope.ref=null;
+    };
     $scope.downloadAndOpen=function(save,dossier,day){
       var fileURL = "";
       $scope.devicePlatform = $cordovaDevice.getPlatform();
@@ -992,6 +998,7 @@ angular.module('app.controllers', [])
         uri,
         fileURL,
         function (entry) {
+          console.log("entry: "+JSON.stringify(entry));
           $scope.localFileUri = entry.toURL();
           // window.plugins.fileOpener.open(entry.toURL());
           console.log("downloaded file:"+entry.toURL());
@@ -1017,7 +1024,7 @@ angular.module('app.controllers', [])
           //window.open(entry.toURL(), '_blank', 'location=no,closebuttoncaption=Close,enableViewportScale=yes');/*
           switch ($cordovaDevice.getPlatform()) {
             case "Android":
-              cordova.plugins.fileOpener2.open(dossier.local_url, 'application/pdf', { //open external system
+              cordova.plugins.fileOpener2.open(entry.toURL(), 'application/pdf', { //open external system
                 error: function (e) {
                   console.log('Error status: ' + e.status + ' - Error message: ' + e.message);
                 },
@@ -1027,7 +1034,11 @@ angular.module('app.controllers', [])
               });
               break;
             default:
-              window.open(dossier.local_url, '_blank', 'location=no,closebuttoncaption=Close,enableViewportScale=yes');
+              console.log("opening "+ entry.toURL());
+              $scope.ref = window.open( entry.toURL(), '_blank', 'location=no,closebuttoncaption=Close,enableViewportScale=yes');
+              /*if ( $scope.ref){
+                $scope.ref.addEventListener('loaderror',$scope.loadErrorCallback);
+              }*/
               break;
 
           }
@@ -1040,6 +1051,7 @@ angular.module('app.controllers', [])
 
         },
         function (error) {
+          console.log("error downloading");
           $scope.downloading=false;
           $scope.canDownload=true;
         },
