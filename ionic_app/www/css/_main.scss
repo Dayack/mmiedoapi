@@ -444,12 +444,29 @@ table.media td{
   z-index: 1000;
 }
 .item_pdf{
+  font-size: 80%;
   float:left;
   width: 80%;
   padding: 16px;
   z-index: 1000;
+  overflow:hidden;
+  text-overflow: ellipsis;
+
 }
-.loading_pdf{
+
+.item_not_available{
+  display: block !important;
+  font-size: 90%;
+  width: 100%;
+  overflow: visible;
+  text-align: center;
+  padding: 16px 8px 16px 8px;
+}
+.item_not_available span {
+  word-break: break-word;
+  white-space: normal;
+}
+.loading_pdf_item{
 
   float: left;
   padding: 5px;

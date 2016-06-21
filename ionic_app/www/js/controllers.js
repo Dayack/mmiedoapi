@@ -887,7 +887,7 @@ angular.module('app.controllers', [])
     }
     else {
       //downloading list
-      DossierService.getArbolesPDF(1/*$scope.user.IDUSUARIO*/).then($scope.loadedData);
+      DossierService.getArbolesPDF( $scope.user.IDUSUARIO ).then($scope.loadedData);
     }
 //callback
 
@@ -978,15 +978,19 @@ angular.module('app.controllers', [])
       };
       var fileName = day+ "_"+(dossier.TIPO ==="PDF" ? dossier.IDARBOL : "PORTADA")+".pdf";
 
-
-      switch ($scope.devicePlatform) {
-        case 'Android':
-          fileURL = cordova.file.externalApplicationStorageDirectory + fileName;
-          break;
-        default:
-          fileURL = cordova.file.documentsDirectory + fileName;
-          break;
+      if (save) {
+        switch ($scope.devicePlatform) {
+          case 'Android':
+            fileURL = cordova.file.externalApplicationStorageDirectory + fileName;
+            break;
+          default:
+            fileURL = cordova.file.documentsDirectory + fileName;
+            break;
+        }
+      } else {
+        fileURL = cordova.file.cacheDirectory +fileName;
       }
+      console.log("saving at "+ fileURL);
       // Android devices cannot open up PDFs in a sub web view (inAppBrowser) so the PDF needs to be downloaded and then opened with whatever
       // native PDF viewer is installed on the app.
 
@@ -1161,13 +1165,17 @@ angular.module('app.controllers', [])
       };
       var fileName = $scope.day+ "_"+($scope.dossier.TIPO ==="PDF" ? $scope.dossier.IDARBOL : "PORTADA")+".pdf";
 
-      switch ($scope.devicePlatform) {
-        case 'Android':
-          fileURL = cordova.file.externalApplicationStorageDirectory + fileName;
-          break;
-        default:
-          fileURL = cordova.file.documentsDirectory + fileName;
-          break;
+      if (save) {
+        switch ($scope.devicePlatform) {
+          case 'Android':
+            fileURL = cordova.file.externalApplicationStorageDirectory + fileName;
+            break;
+          default:
+            fileURL = cordova.file.documentsDirectory + fileName;
+            break;
+        }
+      } else {//save in cache folder
+        fileURL = cordova.file.cacheDirectory +fileName;
       }
       // Android devices cannot open up PDFs in a sub web view (inAppBrowser) so the PDF needs to be downloaded and then opened with whatever
       // native PDF viewer is installed on the app.

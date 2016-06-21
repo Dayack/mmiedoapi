@@ -10,7 +10,6 @@
     "angular-bootstrap-datetimepicker": "~0.4.0",
     "moment": "~2.10.6",
     "ionic-audio": "https://github.com/arielfaur/ionic-audio.git#feature-track-observable",
-    "ng-pdfviewer": "^0.2.1",
     "ngCordova": "^0.1.26-alpha"
   }
 }

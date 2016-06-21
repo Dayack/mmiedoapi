@@ -1,8 +1,6 @@
 <ion-view style="" title="Dossiers">
   <ion-content class="has-header  padding-footer" overflow-scroll="true" padding="'true'">
-    <div style="text-align:center; z-index:1000; position: fixed; top:0px; width: 100%; background-color:white;">
-      No se encuenta disponible
-    </div>
+
     <ion-list style="">
 
       <ion-item ng-repeat="day in days " style="" class="new-item">
@@ -18,7 +16,7 @@
           <div ng-show="!dossier.notAvailable">
             <div ng-show="!dossier.downloaded">
               <div class="item_pdf" ng-click="goToDossier(dossier,day.day,false)">
-                <i ng-show="dossier.downloaded" class="icon icon-download "></i><span>{{dossier.NOMBRE}}</span>
+                <i ng-show="dossier.downloaded" class="icon icon-download " style="margin:8px;"></i><span>{{dossier.NOMBRE}}</span>
 
               </div>
               <div class="download_item" ng-show="!dossier.loadingDossier"
@@ -28,9 +26,8 @@
                 <i class="icon icon-download already-downloaded"></i></div>
 
 
-              <div class="loading_pdf" ng-show="dossier.loadingDossier">
+              <div class="loading_pdf_item" ng-show="dossier.loadingDossier">
                 <ion-spinner icon="spiral"></ion-spinner>
-                <span>{{dossier.percent}} %</span>
               </div>
             </div>
             <!--DOWNLOADED-->
@@ -41,8 +38,8 @@
             </div>
           </div>
           <!--NOT AVAILABLE-->
-          <div class="item_pdf" ng-show="dossier.notAvailable">
-            En estos momentos el fichero se está generando
+          <div class=" item_not_available" ng-show="dossier.notAvailable">
+            <span>En estos momentos el fichero se está generando</span>
           </div>
         </div>
       </ion-item>
