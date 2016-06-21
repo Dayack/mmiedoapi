@@ -959,7 +959,9 @@ angular.module('app.controllers', [])
       }
     };
 
-    $scope.ref
+    $scope.ref=null;
+
+    $scope.emptyPDF=false;
     $scope.loadErrorCallBack=function(){
       console.log("error PDF not loaded");
       $scope.ref.close();
@@ -998,68 +1000,86 @@ angular.module('app.controllers', [])
         uri,
         fileURL,
         function (entry) {
-          console.log("entry: "+JSON.stringify(entry));
+          console.log("entry: " + JSON.stringify(entry));
           $scope.localFileUri = entry.toURL();
           // window.plugins.fileOpener.open(entry.toURL());
-          console.log("downloaded file:"+entry.toURL());
-          dossier.loadingDossier=false;
-          if (save){
-            $scope.localFileUri = entry.toURL();
-            // window.plugins.fileOpener.open(entry.toURL());
-            console.log("saving "+entry.toURL() + " dossier:"+JSON.stringify(dossier));
-            downloaded_dossier_info.TIPO = dossier.TIPO;
-            downloaded_dossier_info.IDARBOL = dossier.IDARBOL;
-            downloaded_dossier_info.NOMBRE = dossier.NOMBRE;
-            downloaded_dossier_info.local_url = entry.toURL(); //url local
-            downloaded_dossier_info.downloaded=true;
+          console.log("downloaded file:" + entry.toURL());
+          dossier.loadingDossier = false;
 
-            DossierService.savePdf($scope.day, downloaded_dossier_info);
-            dossier.downloaded=true;
-            dossier.local_url = entry.toURL();
-          }
-          $timeout(function(){
-            $scope.downloading=false;
-            $scope.downloadedPDF=true;
-          });
-          //window.open(entry.toURL(), '_blank', 'location=no,closebuttoncaption=Close,enableViewportScale=yes');/*
-          switch ($cordovaDevice.getPlatform()) {
-            case "Android":
-              cordova.plugins.fileOpener2.open(entry.toURL(), 'application/pdf', { //open external system
-                error: function (e) {
-                  console.log('Error status: ' + e.status + ' - Error message: ' + e.message);
-                },
-                success: function () {
-                  console.log('file opened successfully');
+          //--check the file
+          window.resolveLocalFileSystemURL(entry.toURL(), function (fileEntry) {
+            fileEntry.file(function (file) {
+                console.log("FILE DATA: " + JSON.stringify(file));
+                if (file.size > 100) {
+                //size of file is correct
+                  if (save) {
+                    $scope.localFileUri = entry.toURL();
+                    // window.plugins.fileOpener.open(entry.toURL());
+                    console.log("saving " + entry.toURL() + " dossier:" + JSON.stringify(dossier));
+                    downloaded_dossier_info.TIPO = dossier.TIPO;
+                    downloaded_dossier_info.IDARBOL = dossier.IDARBOL;
+                    downloaded_dossier_info.NOMBRE = dossier.NOMBRE;
+                    downloaded_dossier_info.local_url = entry.toURL(); //url local
+                    downloaded_dossier_info.downloaded = true;
+
+                    DossierService.savePdf($scope.day, downloaded_dossier_info);
+                    dossier.downloaded = true;
+                    dossier.local_url = entry.toURL();
+                  }
+                  $timeout(function () {
+                    $scope.downloading = false;
+                    $scope.downloadedPDF = true;
+                  });
+                  //window.open(entry.toURL(), '_blank', 'location=no,closebuttoncaption=Close,enableViewportScale=yes');/*
+                  switch ($cordovaDevice.getPlatform()) {
+                    case "Android":
+                      cordova.plugins.fileOpener2.open(entry.toURL(), 'application/pdf', { //open external system
+                        error: function (e) {
+                          console.log('Error status: ' + e.status + ' - Error message: ' + e.message);
+                        },
+                        success: function () {
+                          console.log('file opened successfully');
+                        }
+                      });
+                      break;
+                    default:
+                      console.log("opening " + entry.toURL());
+                      $scope.ref = window.open(entry.toURL(), '_blank', 'location=no,closebuttoncaption=Close,enableViewportScale=yes');
+                      /*if ( $scope.ref){
+                       $scope.ref.addEventListener('loaderror',$scope.loadErrorCallback);
+                       }*/
+                      break;
+
+                  }
+
+
+                  /////////OPEN DOWNLOADED PDF
+
+                  /////////////////
+
+                } else {
+                  console.log("no size pdf");
+                  //not pdf loaded, so dont save or open
+                  $scope.emptyPDF=true;
+                  $timeout(function(){$scope.emptyPDF = false;},3);
+                  dossier.loadingDossier=false;
                 }
-              });
-              break;
-            default:
-              console.log("opening "+ entry.toURL());
-              $scope.ref = window.open( entry.toURL(), '_blank', 'location=no,closebuttoncaption=Close,enableViewportScale=yes');
-              /*if ( $scope.ref){
-                $scope.ref.addEventListener('loaderror',$scope.loadErrorCallback);
-              }*/
-              break;
 
-          }
-
-
-          /////////OPEN DOWNLOADED PDF
-
-          /////////////////
-
-
-        },
-        function (error) {
-          console.log("error downloading");
-          $scope.downloading=false;
-          $scope.canDownload=true;
-        },
-        false
-      );
+              },
+              function (error) {
+                console.log("error downloading");
+                $scope.downloading = false;
+                $scope.canDownload = true;
+              },
+              false
+            );
+          });
+        }, function () {
+          console.log("error");
+        });
     };
-    $scope.goNews=function(){
-      $ionicHistory.clearCache().then(function() {
+    $scope.goNews = function () {
+      $ionicHistory.clearCache().then(function () {
         $state.go('menu.preview-noticias');
       });
     };
