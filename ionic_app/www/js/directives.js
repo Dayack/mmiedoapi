@@ -3,7 +3,17 @@ angular.module('app.directives', [])
 .directive('blankDirective', [function(){
 
 }])
-
+  .directive('loadedData', function () {
+    return function ($scope, $element) {
+      $element[0].addEventListener("loadeddata", function (data) {
+        console.log(JSON.stringify(data.srcElement.duration)); // never calls
+      });
+      $element[0].addEventListener("error", function (data) {
+        console.log("ERROR"+JSON.stringify(data.srcElement.duration)); // never calls
+        $scope.$emit("ERRORMEDIA");
+      });
+    }
+  })
   .directive('browseTo', function ($ionicGesture) {
     return {
       restrict: 'A',
