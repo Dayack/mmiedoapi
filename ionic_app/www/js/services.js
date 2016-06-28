@@ -856,7 +856,7 @@ angular.module('app.services', [])
       if (dossier === null || userId === null || day ===null) {
         deffered.resolve(null);
       } else {
-        $http.get('//get_url_dossier/' + ConfigService.getApiKey() + '/' + ConfigService.getZona() + '/' + userId + '/' + dossier.IDARBOL + '/' + day).then(function (data) {
+        $http.get('/get_url_dossier/' + ConfigService.getApiKey() + '/' + ConfigService.getZona() + '/' + userId + '/' + dossier.dossier/*IDARBOL*/ + '/' + day).then(function (data) {
           deffered.resolve(data.data[0].URL);
         });
       }

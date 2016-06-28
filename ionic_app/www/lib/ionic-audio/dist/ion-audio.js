@@ -261,6 +261,7 @@ function ionAudioTrack(MediaManager, $rootScope) {
             if (MediaManager) {
                 MediaManager.add(newTrack, playbackSuccess, null, statusChange, progressChange);
             }
+          console.log(JSON.stringify(newTrack));
         };
 
         var playbackSuccess = function() {

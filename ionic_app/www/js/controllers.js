@@ -675,16 +675,17 @@ angular.module('app.controllers', [])
     };
 })
 
-.controller('detalleCtrl', function($ionicLoading,ScrollService,$location,$rootScope,$sce,$http,$timeout,$document,$ionicHistory,$cordovaInAppBrowser,$scope,$window,UserService,CategoryService,$state,$ionicNavBarDelegate,$stateParams,NewsService) {
+.controller('detalleCtrl', function(MediaManager,$ionicLoading,ScrollService,$location,$rootScope,$sce,$http,$timeout,$document,$ionicHistory,$cordovaInAppBrowser,$scope,$window,UserService,CategoryService,$state,$ionicNavBarDelegate,$stateParams,NewsService) {
 
 
-    $scope.mediaOK=true;
+    //video control
+  /*  $scope.mediaOK=true;
 
     $scope.$on("ERRORMEDIA",function(){
       $scope.mediaOK=false;
       $scope.iframeUrl = $sce.trustAsResourceUrl($scope.multimedia.url);
       console.log("MEDIA CHANGED");
-    });
+    });*/
 
 
     $scope.media= $stateParams.media;
@@ -728,12 +729,12 @@ angular.module('app.controllers', [])
     if ($scope.media === 'TV' || $scope.media === 'RADIO' || $scope.media ==='PRESS') {
       $scope.multimedia = {url: NewsService.getMediaUrl()};
       if ($scope.multimedia.url !==null) {
-        var url = window.location.href;
+        var url = $scope.multimedia.url;
         var xhttp = new XMLHttpRequest();
         xhttp.open('HEAD', url);
         xhttp.onreadystatechange = function () {
           if (this.readyState == this.DONE) {
-            console.log(this.status);
+            console.log(this.status + " " + this.getResponseHeader("Content-Type"));//check answer type
 
             //load contentType
 
@@ -954,10 +955,11 @@ angular.module('app.controllers', [])
 
         ///_______________
         if ($scope.dossier.TIPO ==='PDF') {
-          DossierService.getDossierPDFUrl($scope.dossier, $scope.user.IDUSUARIO, $scope.day).then(function (data) {
+          DossierService.getDossierPDFUrl($scope.dossier, $scope.user.IDPERFIL, $scope.day).then(function (data) {
             $ionicLoading.hide();
 
             $scope.pdf_url = data;
+            console.log("opening PDF at " +data);
          //   $scope.url = $sce.trustAsResourceUrl(DossierService.getUrlVisor()+data);
             $scope.downloaded = false;
             $scope.ready = true;
@@ -968,7 +970,7 @@ angular.module('app.controllers', [])
           DossierService.getDossierPDFCoverUrl($scope.day).then(function (data) {
             $ionicLoading.hide();
             $scope.pdf_url = data;
-            console.log("opening pdf");
+            console.log("opening pdf at " + data);
          //   $scope.url = $sce.trustAsResourceUrl(DossierService.getUrlVisor()+data);
             $scope.downloaded = false;
             $scope.ready = true;

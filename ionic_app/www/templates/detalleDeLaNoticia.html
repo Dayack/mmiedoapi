@@ -23,7 +23,7 @@
             <!--TV-->
             <div ng-show="media ==='TV'">
               <!--VIDEO NORMAL-->
-              <div ng-if="mediaOK">
+              <div><!-- ng-if="mediaOK"-->
               <video controls class="video-frame" id="normalVideo" poster="{{thumbnails[0]}}" ng-if="!autoPlay" loaded-data  >
                 <source ng-src="{{multimedia.url| trusted}}" type="video/mp4"/>
               </video>
@@ -34,8 +34,9 @@
                 <source ng-src="{{multimedia.url| trusted}}" type="video/mp4"/>
               </video>
               </div>
+             <!-- Video not loaded
               <div ng-if="!mediaOK">
-              <iframe ng-src="{{iframeUrl}}"></iframe></div>
+              <iframe ng-src="{{iframeUrl}}"></iframe></div>-->
 
             </div>
             <!--RADIO-->
