@@ -677,6 +677,16 @@ angular.module('app.controllers', [])
 
 .controller('detalleCtrl', function($ionicLoading,ScrollService,$location,$rootScope,$sce,$http,$timeout,$document,$ionicHistory,$cordovaInAppBrowser,$scope,$window,UserService,CategoryService,$state,$ionicNavBarDelegate,$stateParams,NewsService) {
 
+
+    $scope.mediaOK=true;
+
+    $scope.$on("ERRORMEDIA",function(){
+      $scope.mediaOK=false;
+      $scope.iframeUrl = $sce.trustAsResourceUrl($scope.multimedia.url);
+      console.log("MEDIA CHANGED");
+    });
+
+
     $scope.media= $stateParams.media;
     $scope.date= $stateParams.date;
     $scope.id = $stateParams.id;
@@ -718,6 +728,16 @@ angular.module('app.controllers', [])
     if ($scope.media === 'TV' || $scope.media === 'RADIO' || $scope.media ==='PRESS') {
       $scope.multimedia = {url: NewsService.getMediaUrl()};
       if ($scope.multimedia.url !==null) {
+        var url = window.location.href;
+        var xhttp = new XMLHttpRequest();
+        xhttp.open('HEAD', url);
+        xhttp.onreadystatechange = function () {
+          if (this.readyState == this.DONE) {
+            console.log(this.status);
+
+            //load contentType
+
+
         if ($scope.media ==='PRESS') {
           //open in google reader, to be compatible with all devices:
          // $scope.pdfurl = $sce.trustAsResourceUrl("http://docs.google.com/gview?embedded=true&url="+$scope.multimedia.url);//<----OK
@@ -729,7 +749,10 @@ angular.module('app.controllers', [])
 
         $scope.mediaLoaded=true;
         //If is a video, and the user clicked in autoplay, must be in fullscreen
+          }
+        };
 
+        xhttp.send();
       }
       /*NewsService.getMedia($scope.media, $scope.date, $scope.id).then(function (data) {
         if (data != "error") {
@@ -887,7 +910,7 @@ angular.module('app.controllers', [])
     }
     else {
       //downloading list
-      DossierService.getArbolesPDF($scope.user.IDUSUARIO).then($scope.loadedData);
+      DossierService.getArbolesPDF($scope.user.IDPERFIL).then($scope.loadedData);
     }
 //callback
 
