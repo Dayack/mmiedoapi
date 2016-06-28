@@ -730,13 +730,14 @@ angular.module('app.controllers', [])
       $scope.multimedia = {url: NewsService.getMediaUrl()};
       if ($scope.multimedia.url !==null) {
         var url = $scope.multimedia.url;
-        var xhttp = new XMLHttpRequest();
+       /* var xhttp = new XMLHttpRequest();
         xhttp.open('HEAD', url);
         xhttp.onreadystatechange = function () {
           if (this.readyState == this.DONE) {
             console.log(this.status + " " + this.getResponseHeader("Content-Type"));//check answer type
 
             //load contentType
+            */
 
 
         if ($scope.media ==='PRESS') {
@@ -750,10 +751,10 @@ angular.module('app.controllers', [])
 
         $scope.mediaLoaded=true;
         //If is a video, and the user clicked in autoplay, must be in fullscreen
-          }
+         /* }
         };
 
-        xhttp.send();
+        xhttp.send();*/
       }
       /*NewsService.getMedia($scope.media, $scope.date, $scope.id).then(function (data) {
         if (data != "error") {
