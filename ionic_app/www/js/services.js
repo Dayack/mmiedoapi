@@ -109,10 +109,13 @@ angular.module('app.services', [])
         //the answer from the HTTP was ok, not error and if user/password is ok
         if ((data !== null && data != "error" && (data !== false)) && angular.isDefined(data.IDUSUARIO)) {
           user = data;
-          //MOCKED TEST DATA
-         //user.IDUSUARIO=17640;//1445;
-          $window.localStorage.setItem('user',JSON.stringify(data));
-          defer.resolve("OK");
+          HttpService.getPerfil(user.IDUSUARIO).then(function(perfil){
+            //MOCKED TEST DATA
+           //user.IDUSUARIO=17640;//1445;
+            user.IDPERFIL = perfil;
+            $window.localStorage.setItem('user',JSON.stringify(data));
+            defer.resolve("OK");
+          });
         } else {
           user = null;
           defer.resolve("ERROR");
@@ -483,6 +486,7 @@ angular.module('app.services', [])
       $window.localStorage.removeItem("categories");
       categories = [];
       selectedCategory=[];
+      selectedCategories=[];
       categoriesUser=[];
       allSelected=true;
     };
@@ -839,7 +843,6 @@ angular.module('app.services', [])
 
     this.getDossierPDFCoverUrl=function(day){
       var deffered= $q.defer();
-      console.log("loading url - "+'/get_url_portadas/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+day);
       $http.get('/get_url_portadas/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+day).then(function(data){
 
         deffered.resolve(data.data[0].URL);
@@ -854,8 +857,7 @@ angular.module('app.services', [])
       if (dossier === null || userId === null || day ===null) {
         deffered.resolve(null);
       } else {
-        console.log(" loading url - " + '/get_url_dossier/' + ConfigService.getApiKey() + '/' + ConfigService.getZona() + '/' + userId + '/' + dossier.IDARBOL + '/' + day);
-        $http.get('/get_url_dossier/' + ConfigService.getApiKey() + '/' + ConfigService.getZona() + '/' + userId + '/' + dossier.IDARBOL + '/' + day).then(function (data) {
+        $http.get('/get_url_dossier/' + ConfigService.getApiKey() + '/' + ConfigService.getZona() + '/' + userId + '/' + dossier.dossier/*IDARBOL*/ + '/' + day).then(function (data) {
           deffered.resolve(data.data[0].URL);
         });
       }
@@ -894,6 +896,25 @@ angular.module('app.services', [])
        }).error(function(data,status){
        deferred.resolve("error");
        });
+      return deferred.promise;
+    };
+
+    this.getPerfil=function(id){
+      var deferred = $q.defer();
+
+
+      //REAL REQUEST
+      $http.get('/getusuarios_perfil/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+id).success(function(data,status){
+        if (data instanceof Array && data.length >0) {
+          deferred.resolve(data[0].IDPERFIL);
+        } else {
+          deferred.resolve(null);
+        }
+
+      }).error(function(data,status){
+        deferred.resolve("error");
+      });
+
       return deferred.promise;
     };
 

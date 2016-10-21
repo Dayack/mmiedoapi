@@ -465,6 +465,47 @@ table.media td{
 .downloaded-dossier{
   background-color: $light-purple;
 }
+
+.download_item{
+  background-color: $purple ;
+  color:white;
+  float: left;
+  text-align: center;
+  width: 20%;
+  padding:16px;
+  font-size: 15px;
+  z-index: 1000;
+}
+.item_pdf{
+  font-size: 80%;
+  float:left;
+  width: 80%;
+  padding: 16px;
+  z-index: 1000;
+  overflow:hidden;
+  text-overflow: ellipsis;
+
+}
+
+.item_not_available{
+  display: block !important;
+  font-size: 90%;
+  width: 100%;
+  overflow: visible;
+  text-align: center;
+  padding: 16px 8px 16px 8px;
+}
+.item_not_available span {
+  word-break: break-word;
+  white-space: normal;
+}
+.loading_pdf_item{
+
+  float: left;
+  padding: 5px;
+  width: 20%;
+  text-align: center;
+}
 .already-downloaded{
   font-size: 13px;
   margin-right: 5px;
