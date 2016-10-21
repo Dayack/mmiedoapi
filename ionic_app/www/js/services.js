@@ -486,6 +486,7 @@ angular.module('app.services', [])
       $window.localStorage.removeItem("categories");
       categories = [];
       selectedCategory=[];
+      selectedCategories=[];
       categoriesUser=[];
       allSelected=true;
     };
