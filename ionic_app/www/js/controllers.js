@@ -364,6 +364,7 @@ angular.module('app.controllers', [])
     {news:[],ids:[], type:"TWITTER", loading:true}
 
   ];
+    $scope.user = UserService.getUser();
     $ionicNavBarDelegate.showBackButton(false);//disable the back button
     $scope.loadedComplete= false;
     //Start loading
