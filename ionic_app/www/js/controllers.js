@@ -280,12 +280,12 @@ angular.module('app.controllers', [])
           $rootScope.activeFilters.value=true;
           $scope.defaultDates=false;
           break;
-        case '5y':
+        /*case '5y': --disabled for BD requeriments
           $scope.data.toDate = DateHelperService.getToday();
           $scope.data.fromDate = DateHelperService.addDays($scope.data.toDate,-1865);
 
           $rootScope.activeFilters.value=false;
-          $scope.defaultDates=true;
+          $scope.defaultDates=true;*/
 
       }
       $scope.saveAndExit();
@@ -315,7 +315,7 @@ angular.module('app.controllers', [])
          if (!$scope.directOption) {
            $scope.optionSelected = null;
          }
-         FilterService.setFilterByDate(/*!$scope.defaultDates*/ $scope.optionSelected !== '5y');
+         FilterService.setFilterByDate(/*!$scope.defaultDates*/ $scope.optionSelected !== '30d'/*'5y'*/);
          $scope.saveAndExit();
        }
     });
