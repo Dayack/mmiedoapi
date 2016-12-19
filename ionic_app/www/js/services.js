@@ -10,7 +10,7 @@ angular.module('app.services', [])
         if (config.url.indexOf("getusuarios_categorias") >0) {
 
         } else {
-          config.timeout = 15000;//15 seconds of timeout
+          config.timeout = 50000;//40 seconds of timeout
         }
         return config;
       }
@@ -161,7 +161,7 @@ angular.module('app.services', [])
         date: null,
         text:null
       },
-      dateSelected:'5y',
+      dateSelected:'30d',//'5y',
       support_zones: [],
       new_zones: []
     };
@@ -183,9 +183,9 @@ angular.module('app.services', [])
     this.restartDates = function() {
       filters.endDate.date  = DateHelperService.getToday();
       filters.endDate.text = DateHelperService.formatDate(filters.endDate.date);
-      filters.startDate.date =DateHelperService.addDays(filters.endDate.date,-1865);
+      filters.startDate.date =DateHelperService.addDays(filters.endDate.date,-30/*-1865*/);
       filters.startDate.text = DateHelperService.formatDate(filters.startDate.date);
-      filters.dateSelected='5y';
+      filters.dateSelected='30d'//'5y';
       //to end Date -30 days
     };
 
@@ -242,7 +242,7 @@ angular.module('app.services', [])
         },
         support_zones: [],
         new_zones: [],
-        dateSelected: '5y'
+        dateSelected: '30d'//'5y'
       };
       filteredByDate=false;
       filteredByOrigin=false;
@@ -485,6 +485,7 @@ angular.module('app.services', [])
     this.clearStatus = function() {
       $window.localStorage.removeItem("categories");
       categories = [];
+      selectedCategories=[];
       selectedCategory=[];
       selectedCategories=[];
       categoriesUser=[];
