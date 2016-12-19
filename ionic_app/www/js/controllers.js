@@ -280,12 +280,12 @@ angular.module('app.controllers', [])
           $rootScope.activeFilters.value=true;
           $scope.defaultDates=false;
           break;
-        case '5y':
+        /*case '5y': --disabled for BD requeriments
           $scope.data.toDate = DateHelperService.getToday();
           $scope.data.fromDate = DateHelperService.addDays($scope.data.toDate,-1865);
 
           $rootScope.activeFilters.value=false;
-          $scope.defaultDates=true;
+          $scope.defaultDates=true;*/
 
       }
       $scope.saveAndExit();
@@ -315,7 +315,7 @@ angular.module('app.controllers', [])
          if (!$scope.directOption) {
            $scope.optionSelected = null;
          }
-         FilterService.setFilterByDate(/*!$scope.defaultDates*/ $scope.optionSelected !== '5y');
+         FilterService.setFilterByDate(/*!$scope.defaultDates*/ $scope.optionSelected !== '30d'/*'5y'*/);
          $scope.saveAndExit();
        }
     });
@@ -364,7 +364,6 @@ angular.module('app.controllers', [])
     {news:[],ids:[], type:"TWITTER", loading:true}
 
   ];
-    $scope.user = UserService.getUser();
     $ionicNavBarDelegate.showBackButton(false);//disable the back button
     $scope.loadedComplete= false;
     //Start loading
@@ -731,14 +730,14 @@ angular.module('app.controllers', [])
       $scope.multimedia = {url: NewsService.getMediaUrl()};
       if ($scope.multimedia.url !==null) {
         var url = $scope.multimedia.url;
-        /*var xhttp = new XMLHttpRequest();
+       /* var xhttp = new XMLHttpRequest();
         xhttp.open('HEAD', url);
         xhttp.onreadystatechange = function () {
           if (this.readyState == this.DONE) {
             console.log(this.status + " " + this.getResponseHeader("Content-Type"));//check answer type
 
             //load contentType
-*/
+            */
 
         if ($scope.media ==='PRESS') {
           //open in google reader, to be compatible with all devices:
