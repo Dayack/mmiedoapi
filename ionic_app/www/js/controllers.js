@@ -280,12 +280,12 @@ angular.module('app.controllers', ['ionic'])
           $rootScope.activeFilters.value=true;
           $scope.defaultDates=false;
           break;
-        /*case '5y': --disabled for BD requeriments
+        case '5y':
           $scope.data.toDate = DateHelperService.getToday();
           $scope.data.fromDate = DateHelperService.addDays($scope.data.toDate,-1865);
 
           $rootScope.activeFilters.value=false;
-          $scope.defaultDates=true;*/
+          $scope.defaultDates=true;
 
       }
       $scope.saveAndExit();
@@ -315,7 +315,7 @@ angular.module('app.controllers', ['ionic'])
          if (!$scope.directOption) {
            $scope.optionSelected = null;
          }
-         FilterService.setFilterByDate(/*!$scope.defaultDates*/ $scope.optionSelected !== '30d'/*'5y'*/);
+         FilterService.setFilterByDate(/*!$scope.defaultDates*/ $scope.optionSelected !== '5y');
          $scope.saveAndExit();
        }
     });
@@ -675,7 +675,7 @@ angular.module('app.controllers', ['ionic'])
     };
 })
 
-.controller('detalleCtrl', function(MediaManager,$ionicLoading,ScrollService,$location,$rootScope,$sce,$http,$timeout,$document,$ionicHistory,$cordovaInAppBrowser,$scope,$window,UserService,CategoryService,$state,$ionicNavBarDelegate,$stateParams,NewsService) {
+.controller('detalleCtrl', function(MediaManager,$ionicLoading,UserService,ScrollService,$location,$rootScope,$sce,$http,$timeout,$document,$ionicHistory,$cordovaInAppBrowser,$scope,$window,UserService,CategoryService,$state,$ionicNavBarDelegate,$stateParams,NewsService) {
 
 
     //video control
@@ -708,7 +708,7 @@ angular.module('app.controllers', ['ionic'])
     if ($scope.media ==='TV' && NewsService.getThumbNails() !==null){
       $scope.thumbnails = NewsService.getThumbNails();
     }
-    NewsService.getNew($scope.media,$scope.date,$scope.id).then(function(data) {
+    NewsService.getNew($scope.media,$scope.date,$scope.id,UserService.getUser().IDUSUARIO).then(function(data) {
       //$ionicLoading.hide();
       $scope.dataNew = data;
       if ($scope.dataNew == "ERROR") {
@@ -878,7 +878,7 @@ angular.module('app.controllers', ['ionic'])
       //create list of 7 days
       $scope.cachedList = DossierService.getCachedDossier();
       $scope.days = [];
-      $scope.user = UserService.getUser()
+      $scope.user = UserService.getUser();
       $scope.offlineList = DossierService.getSavedPdfs();
       console.log("offline List:" + JSON.stringify($scope.offlineList));
       console.log("cached List:" + JSON.stringify($scope.cachedList));
@@ -912,7 +912,7 @@ angular.module('app.controllers', ['ionic'])
       }
       else {
         //downloading list
-        DossierService.getArbolesPDF($scope.user.IDPERFIL).then($scope.loadedData);
+        DossierService.getArbolesPDF($scope.user.IDPERFIL,$scope.user.IDUSUARIO).then($scope.loadedData);
       }
 //callback
 
@@ -958,7 +958,7 @@ angular.module('app.controllers', ['ionic'])
           ///_______________
           $scope.statusLoad = "LOADING_2";
           if ($scope.dossier.TIPO === 'PDF') {
-            DossierService.getDossierPDFUrl($scope.dossier, $scope.user.IDPERFIL, $scope.day).then(function (data) {
+            DossierService.getDossierPDFUrl($scope.dossier, $scope.user.IDPERFIL, $scope.day,$scope.user.IDUSUARIO).then(function (data) {
               $scope.statusLoad = "LOADED! at " + data;
               $ionicLoading.hide();
 
@@ -971,7 +971,7 @@ angular.module('app.controllers', ['ionic'])
             });
           } else if ($scope.dossier.TIPO === 'PDF_PORTADA') {
             //PDF OF COVERS
-            DossierService.getDossierPDFCoverUrl($scope.day).then(function (data) {
+            DossierService.getDossierPDFCoverUrl($scope.day,$scope.user.IDUSUARIO).then(function (data) {
               $ionicLoading.hide();
               $scope.statusLoad = "LOADED! at" + data;
               $scope.pdf_url = data;
@@ -1174,7 +1174,7 @@ angular.module('app.controllers', ['ionic'])
     } else {
       //get URL and open ONLINE
       if ($stateParams.type ==='PDF') {
-        DossierService.getDossierPDFUrl($scope.dossier, $scope.user.IDUSUARIO, $scope.day).then(function (data) {
+        DossierService.getDossierPDFUrl($scope.dossier, $scope.user.IDUSUARIO, $scope.day,$scope.user.IDUSUARIO).then(function (data) {
           $ionicLoading.hide();
 
           $scope.pdf_url = data;
@@ -1184,7 +1184,7 @@ angular.module('app.controllers', ['ionic'])
         });
       } else if ($stateParams.type ==='PDF_PORTADA'){
         //PDF OF COVERS
-        DossierService.getDossierPDFCoverUrl($scope.day).then(function (data) {
+        DossierService.getDossierPDFCoverUrl($scope.day,$scope.user.IDUSUARIO).then(function (data) {
           $ionicLoading.hide();
           $scope.pdf_url = data;
           $scope.url = $sce.trustAsResourceUrl(DossierService.getUrlVisor()+data);
