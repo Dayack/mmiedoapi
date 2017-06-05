@@ -563,6 +563,10 @@ angular.module('app.services', [])
       return selectedCategory.NOMBRE;
     };
 
+    this.getSelectedCategory = function () {
+      return selectedCategory;
+    };
+
     this.getSubCategories = function () {
       return subCategories;
     };
@@ -572,16 +576,36 @@ angular.module('app.services', [])
       subCategoryId = subCategory.IDCATEGORIA;
 
       if (!selectedCategories.hasOwnProperty(categoryId)) {
-		subCategory.selected = true;
+		    subCategory.selected = true;
         selectedCategory.selected = true;
-        selectedCategories[categoryId] = [subCategoryId, ];
-      } else if (selectedCategories[categoryId].indexOf(subCategoryId) == -1) {
-        selectedCategories[categoryId].push(subCategoryId);
-        selectedCategory.selected = true;
-        subCategory.selected = true;
+
+        selectedCategories[categoryId] = [];
+        if (subCategory.CHILDREN.length > 0) {
+          angular.forEach(subCategory.CHILDREN,function(value,key){
+            selectedCategories[categoryId].push(value.IDCATEGORIA);
+          });
+        } else {
+          selectedCategories[categoryId].push(subCategoryId);
+        }
+      } else if (subCategory.selected) {//else if (selectedCategories[categoryId].indexOf(subCategoryId) == -1) {
+        if (subCategory.CHILDREN.length > 0) {
+          angular.forEach(subCategory.CHILDREN,function(value,key){
+            selectedCategories[categoryId].push(value.IDCATEGORIA);
+          });
+        } else {
+          selectedCategories[categoryId].push(subCategoryId);
+          selectedCategory.selected = true;
+          subCategory.selected = true;
+        }
       } else {
-        subCategory.selected = false;
-        selectedCategories[categoryId].splice(selectedCategories[categoryId].indexOf(subCategoryId), 1);
+        //subCategory.selected = false;
+        if (subCategory.CHILDREN.length > 0) {
+          angular.forEach(subCategory.CHILDREN,function(value,key){
+            selectedCategories[categoryId].splice(selectedCategories[categoryId].indexOf(value.IDCATEGORIA),1);
+          });
+        } else {
+          selectedCategories[categoryId].splice(selectedCategories[categoryId].indexOf(subCategoryId), 1);
+        }
         if (selectedCategories[categoryId].length === 0) {
           selectedCategory.selected = false;
         } else {
@@ -590,6 +614,26 @@ angular.module('app.services', [])
       }
       that.saveStatus();
     };
+
+    this.selectFatherCategory=function(category) {
+      categoryId = selectedCategory.IDCATEGORIA;
+      if (selectedCategories.hasOwnProperty(categoryId)) {
+        if (selectedCategories[categoryId].indexOf(category.IDCATEGORIA)==-1) {
+          selectedCategories[categoryId].push(category.IDCATEGORIA);
+        }
+      }
+    };
+
+    //delete the father category
+    this.deleteCategory = function () {
+      var idFather = selectedCategory.IDCATEGORIA;
+      if (selectedCategories.hasOwnProperty(idFather)) {
+        if (selectedCategories[idFather].indexOf(idFather)>-1) {
+          selectedCategories[idFather].splice(selectedCategories[idFather].indexOf(idFather), 1);
+        }
+      }
+    };
+
 
     this.setCurrentCategories = function (category) {
       selectedCategories = category;
@@ -615,10 +659,16 @@ angular.module('app.services', [])
         var allCat = {};
         angular.forEach(categories,function(value,key) {
           if (!allCat.hasOwnProperty(value.IDCATEGORIA)) {
-            allCat[value.IDCATEGORIA] = [];
+            allCat[value.IDCATEGORIA] = [value.IDCATEGORIA];//add the category father
           }
           angular.forEach(value.CHILDREN, function (subvalue, subkey) {
-            allCat[value.IDCATEGORIA].push(subvalue.IDCATEGORIA);
+            if (subvalue.CHILDREN.length>0) {
+              angular.forEach(subvalue.CHILDREN, function (subsubvalue, subkey) {
+                allCat[value.IDCATEGORIA].push(subsubvalue.IDCATEGORIA);
+              });
+            } else {
+              allCat[value.IDCATEGORIA].push(subvalue.IDCATEGORIA);
+            }
           });
         });
             return allCat;
@@ -1138,6 +1188,12 @@ angular.module('app.services', [])
       //the API doesnt allow array of 1 category, so we must transform into an object
       if (params.length===1) {
         params = params[0];
+
+        params = JSON.stringify(params);
+      } else{
+        //pass the array to string without []
+        params = JSON.stringify(params);
+        params=params.substr(1,params.length-2);
       }
 
        $http.post('/'+url_get+'/'+ConfigService.getApiKey()+(angular.isDefined(user) ? "_"+user.IDUSUARIO : "")+'/'+ConfigService.getZona()+'/'+filters.startDate.text+
