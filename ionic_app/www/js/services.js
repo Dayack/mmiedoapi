@@ -661,15 +661,9 @@ angular.module('app.services', [])
             allCat[value.IDCATEGORIA] = [value.IDCATEGORIA];//add the category father
           }
           angular.forEach(value.CHILDREN, function (subvalue, subkey) {
-            if (subvalue.CHILDREN.length>0) {
-              angular.forEach(subvalue.CHILDREN, function (subsubvalue, subkey) {
-               // allCat[value.IDCATEGORIA].push(subsubvalue.IDCATEGORIA);
-                allCat[value.IDCATEGORIA] = allCat[value.IDCATEGORIA].concat(this.getAllSubIds(subvalue));
-              }.bind(this));
-            } else {
-              allCat[value.IDCATEGORIA].push(subvalue.IDCATEGORIA);
-            }
-          });
+            allCat[value.IDCATEGORIA] = allCat[value.IDCATEGORIA].concat(this.getAllSubIds(subvalue));
+            //allCat[value.IDCATEGORIA].push(subvalue.IDCATEGORIA);
+          }.bind(this));
         }.bind(this));
             return allCat;
       } else {
