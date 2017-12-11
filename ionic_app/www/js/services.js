@@ -593,31 +593,18 @@ angular.module('app.services', [])
       subCategoryId = subCategory.IDCATEGORIA;
 
       if (!selectedCategories.hasOwnProperty(categoryId)) {
-		    subCategory.selected = true;
+		subCategory.selected = true;
         selectedCategory.selected = true;
-
-        selectedCategories[categoryId] = [];
-        if (subCategory.CHILDREN.length > 0) {
-          angular.forEach(subCategory.CHILDREN,function(value,key){
-            selectedCategories[categoryId] = selectedCategories[categoryId].concat(this.getAllSubIds(value));
-          });
-        } else {
-          selectedCategories[categoryId].push(subCategoryId);
-        }
-      } else if (subCategory.selected) {//else if (selectedCategories[categoryId].indexOf(subCategoryId) == -1) {
-          selectedCategories[categoryId] = this.difference(selectedCategories[categoryId], this.getAllSubIds(subCategory));
-          selectedCategory.selected = true;
-          subCategory.selected = true;
-
+        selectedCategories[categoryId] = this.getAllSubIds(subCategory);//[subCategoryId, ];
+      } else if (selectedCategories[categoryId].indexOf(subCategoryId) == -1) {
+        //selectedCategories[categoryId].push(subCategoryId);
+        selectedCategories[categoryId] = selectedCategories[categoryId].concat(this.getAllSubIds(subCategory));
+        selectedCategory.selected = true;
+        subCategory.selected = true;
       } else {
-        //subCategory.selected = false;
-        if (subCategory.CHILDREN.length > 0) {
-          angular.forEach(subCategory.CHILDREN,function(value,key){
-            selectedCategories[categoryId].splice(selectedCategories[categoryId].indexOf(value.IDCATEGORIA),1);
-          });
-        } else {
-          selectedCategories[categoryId].splice(selectedCategories[categoryId].indexOf(subCategoryId), 1);
-        }
+        subCategory.selected = false;
+       // selectedCategories[categoryId].splice(selectedCategories[categoryId].indexOf(subCategoryId), 1);
+        selectedCategories[categoryId] = this.difference(selectedCategories[categoryId], this.getAllSubIds(subCategory));
         if (selectedCategories[categoryId].length === 0) {
           selectedCategory.selected = false;
         } else {

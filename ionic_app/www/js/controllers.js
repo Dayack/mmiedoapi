@@ -157,6 +157,7 @@ angular.module('app.controllers', ['ionic'])
       return CategoryService.getSubCategories();
     };
     $scope.selectedCategoryTitle = CategoryService.getSelectedCategoryNombre();
+
     $scope.selectedSubCategories = function(subCategory){
       CategoryService.selectSubCategory(subCategory);
       //cheack if all subCategories are Selected
