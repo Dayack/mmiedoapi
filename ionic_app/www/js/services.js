@@ -487,6 +487,7 @@ angular.module('app.services', [])
       categories = [];
       selectedCategories=[];
       selectedCategory=[];
+      selectedCategories=[];
       categoriesUser=[];
       allSelected=true;
     };
@@ -563,6 +564,23 @@ angular.module('app.services', [])
       return subCategories;
     };
 
+    //extrac the toRemove Array items from source array
+    this.difference = function(source, toRemove) {
+      return source.filter(function(value){
+        return toRemove.indexOf(value) == -1;
+      });
+    };
+
+    this.getAllSubIds= function(subCategory) {
+        ids= [];
+        if (subCategory.hasOwnProperty("CHILDREN") && subCategory.CHILDREN.length > 0) {
+          for (var i = 0; i< subCategory.CHILDREN.length; i++) {
+            ids = ids.concat(this.getAllSubIds(subCategory.CHILDREN[i]));
+          }
+        }
+        return ids.concat([subCategory.IDCATEGORIA]);
+    };
+
     this.selectSubCategory = function (subCategory) {
       categoryId = selectedCategory.IDCATEGORIA;
       subCategoryId = subCategory.IDCATEGORIA;
@@ -570,14 +588,16 @@ angular.module('app.services', [])
       if (!selectedCategories.hasOwnProperty(categoryId)) {
 		subCategory.selected = true;
         selectedCategory.selected = true;
-        selectedCategories[categoryId] = [subCategoryId, ];
+        selectedCategories[categoryId] = this.getAllSubIds(subCategory);//[subCategoryId, ];
       } else if (selectedCategories[categoryId].indexOf(subCategoryId) == -1) {
-        selectedCategories[categoryId].push(subCategoryId);
+        //selectedCategories[categoryId].push(subCategoryId);
+        selectedCategories[categoryId] = selectedCategories[categoryId].concat(this.getAllSubIds(subCategory));
         selectedCategory.selected = true;
         subCategory.selected = true;
       } else {
         subCategory.selected = false;
-        selectedCategories[categoryId].splice(selectedCategories[categoryId].indexOf(subCategoryId), 1);
+       // selectedCategories[categoryId].splice(selectedCategories[categoryId].indexOf(subCategoryId), 1);
+        selectedCategories[categoryId] = this.difference(selectedCategories[categoryId], this.getAllSubIds(subCategory));
         if (selectedCategories[categoryId].length === 0) {
           selectedCategory.selected = false;
         } else {
@@ -614,9 +634,10 @@ angular.module('app.services', [])
             allCat[value.IDCATEGORIA] = [];
           }
           angular.forEach(value.CHILDREN, function (subvalue, subkey) {
-            allCat[value.IDCATEGORIA].push(subvalue.IDCATEGORIA);
-          });
-        });
+            allCat[value.IDCATEGORIA] = allCat[value.IDCATEGORIA].concat(this.getAllSubIds(subvalue));
+            //allCat[value.IDCATEGORIA].push(subvalue.IDCATEGORIA);
+          }.bind(this));
+        }.bind(this));
             return allCat;
       } else {
         return selectedCategories;
