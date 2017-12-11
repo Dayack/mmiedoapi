@@ -1,6 +1,6 @@
 {
   "name": "mmi",
-  "app_id": "11ed6667",
+  "app_id": "874e4feb",
   "gulpStartupTasks": [
     "sass",
     "watch"
@@ -9,6 +9,5 @@
     "www/**/*",
     "!www/lib/**/*"
   ],
-  "integrations": {},
   "type": "ionic1"
 }
