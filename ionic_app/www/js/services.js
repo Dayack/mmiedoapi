@@ -571,41 +571,40 @@ angular.module('app.services', [])
       return subCategories;
     };
 
+    //extrac the toRemove Array items from source array
+    this.difference = function(source, toRemove) {
+      return source.filter(function(value){
+        return toRemove.indexOf(value) == -1;
+      });
+    };
+
+    this.getAllSubIds= function(subCategory) {
+        ids= [];
+        if (subCategory.hasOwnProperty("CHILDREN") && subCategory.CHILDREN.length > 0) {
+          for (var i = 0; i< subCategory.CHILDREN.length; i++) {
+            ids = ids.concat(this.getAllSubIds(subCategory.CHILDREN[i]));
+          }
+        }
+        return ids.concat([subCategory.IDCATEGORIA]);
+    };
+
     this.selectSubCategory = function (subCategory) {
       categoryId = selectedCategory.IDCATEGORIA;
       subCategoryId = subCategory.IDCATEGORIA;
 
       if (!selectedCategories.hasOwnProperty(categoryId)) {
-		    subCategory.selected = true;
+		subCategory.selected = true;
         selectedCategory.selected = true;
-
-        selectedCategories[categoryId] = [];
-        if (subCategory.CHILDREN.length > 0) {
-          angular.forEach(subCategory.CHILDREN,function(value,key){
-            selectedCategories[categoryId].push(value.IDCATEGORIA);
-          });
-        } else {
-          selectedCategories[categoryId].push(subCategoryId);
-        }
-      } else if (subCategory.selected) {//else if (selectedCategories[categoryId].indexOf(subCategoryId) == -1) {
-        if (subCategory.CHILDREN.length > 0) {
-          angular.forEach(subCategory.CHILDREN,function(value,key){
-            selectedCategories[categoryId].push(value.IDCATEGORIA);
-          });
-        } else {
-          selectedCategories[categoryId].push(subCategoryId);
-          selectedCategory.selected = true;
-          subCategory.selected = true;
-        }
+        selectedCategories[categoryId] = this.getAllSubIds(subCategory);//[subCategoryId, ];
+      } else if (selectedCategories[categoryId].indexOf(subCategoryId) == -1) {
+        //selectedCategories[categoryId].push(subCategoryId);
+        selectedCategories[categoryId] = selectedCategories[categoryId].concat(this.getAllSubIds(subCategory));
+        selectedCategory.selected = true;
+        subCategory.selected = true;
       } else {
-        //subCategory.selected = false;
-        if (subCategory.CHILDREN.length > 0) {
-          angular.forEach(subCategory.CHILDREN,function(value,key){
-            selectedCategories[categoryId].splice(selectedCategories[categoryId].indexOf(value.IDCATEGORIA),1);
-          });
-        } else {
-          selectedCategories[categoryId].splice(selectedCategories[categoryId].indexOf(subCategoryId), 1);
-        }
+        subCategory.selected = false;
+       // selectedCategories[categoryId].splice(selectedCategories[categoryId].indexOf(subCategoryId), 1);
+        selectedCategories[categoryId] = this.difference(selectedCategories[categoryId], this.getAllSubIds(subCategory));
         if (selectedCategories[categoryId].length === 0) {
           selectedCategory.selected = false;
         } else {
@@ -664,13 +663,14 @@ angular.module('app.services', [])
           angular.forEach(value.CHILDREN, function (subvalue, subkey) {
             if (subvalue.CHILDREN.length>0) {
               angular.forEach(subvalue.CHILDREN, function (subsubvalue, subkey) {
-                allCat[value.IDCATEGORIA].push(subsubvalue.IDCATEGORIA);
-              });
+               // allCat[value.IDCATEGORIA].push(subsubvalue.IDCATEGORIA);
+                allCat[value.IDCATEGORIA] = allCat[value.IDCATEGORIA].concat(this.getAllSubIds(subvalue));
+              }.bind(this));
             } else {
               allCat[value.IDCATEGORIA].push(subvalue.IDCATEGORIA);
             }
           });
-        });
+        }.bind(this));
             return allCat;
       } else {
         return selectedCategories;

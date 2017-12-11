@@ -157,22 +157,8 @@ angular.module('app.controllers', ['ionic'])
       return CategoryService.getSubCategories();
     };
     $scope.selectedCategoryTitle = CategoryService.getSelectedCategoryNombre();
-
     $scope.selectedSubCategories = function(subCategory){
       CategoryService.selectSubCategory(subCategory);
-      //cheack if all subCategories are Selected
-      var allSelected=true;
-      $scope.subCat= $scope.subCategories();
-      for (var i = 0; i< $scope.subCat.length; i++) {
-        if (!$scope.subCat[i].selected) {
-          allSelected=false;
-        }
-      }
-      if (allSelected) {
-        CategoryService.selectFatherCategory(CategoryService.getSelectedCategory());
-      } else {
-        CategoryService.deleteCategory();//check and delete from Category
-      }
     };
     $scope.goToNews= function() {
       $state.go('menu.categorias');
