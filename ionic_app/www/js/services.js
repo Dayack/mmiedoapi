@@ -291,7 +291,7 @@ angular.module('app.services', [])
 /**
  * Service to load the news
  */
-  .service('NewsService', function (HttpService,CategoryService, $q,DateHelperService) {
+  .service('NewsService', function (HttpService,CategoryService, $q,DateHelperService,UserService) {
 
     var limit = 10;
     var news = [];
@@ -366,6 +366,9 @@ angular.module('app.services', [])
       if (new_offset!==null) {
         offset = new_offset;
       }
+      if (!angular.isDefined(user)) {
+        user = UserService.getUser();
+      }
       var categories = CategoryService.getSelectedCategories();
       var searchHash ="type="+type+ JSON.stringify(user) + JSON.stringify(filters)+"offset="+offset+"limit="+limit;
       var defer = $q.defer();
@@ -408,9 +411,9 @@ angular.module('app.services', [])
       return result;*/
     };
 
-    this.getNew=function(media,date,id) {
+    this.getNew=function(media,date,id,userId) {
       var defer = $q.defer();
-      HttpService.getDetailNew(media,DateHelperService.formatStringDate(date),id).then(function(data){
+      HttpService.getDetailNew(media,DateHelperService.formatStringDate(date),id,userId).then(function(data){
          defer.resolve(data);
 
      });
@@ -418,7 +421,7 @@ angular.module('app.services', [])
     };
 
 
-    this.getMedia=function(media, date, id) {
+    this.getMedia=function(media, date, id,user) {
       var defer = $q.defer();
 
       var pos= date.indexOf("-");
@@ -427,7 +430,7 @@ angular.module('app.services', [])
       var pos2= date.indexOf("-", pos+1);
       var month = date.substring(pos+1, pos2);
 
-      HttpService.getDetailMedia(media,month, year, id).then(function(data){
+      HttpService.getDetailMedia(media,month, year, id,user).then(function(data){
         //alert(data);
          defer.resolve(data);
       });
@@ -564,6 +567,23 @@ angular.module('app.services', [])
       return subCategories;
     };
 
+    //extrac the toRemove Array items from source array
+    this.difference = function(source, toRemove) {
+      return source.filter(function(value){
+        return toRemove.indexOf(value) == -1;
+      });
+    };
+
+    this.getAllSubIds= function(subCategory) {
+        ids= [];
+        if (subCategory.hasOwnProperty("CHILDREN") && subCategory.CHILDREN.length > 0) {
+          for (var i = 0; i< subCategory.CHILDREN.length; i++) {
+            ids = ids.concat(this.getAllSubIds(subCategory.CHILDREN[i]));
+          }
+        }
+        return ids.concat([subCategory.IDCATEGORIA]);
+    };
+
     this.selectSubCategory = function (subCategory) {
       categoryId = selectedCategory.IDCATEGORIA;
       subCategoryId = subCategory.IDCATEGORIA;
@@ -571,14 +591,16 @@ angular.module('app.services', [])
       if (!selectedCategories.hasOwnProperty(categoryId)) {
 		subCategory.selected = true;
         selectedCategory.selected = true;
-        selectedCategories[categoryId] = [subCategoryId, ];
+        selectedCategories[categoryId] = this.getAllSubIds(subCategory);//[subCategoryId, ];
       } else if (selectedCategories[categoryId].indexOf(subCategoryId) == -1) {
-        selectedCategories[categoryId].push(subCategoryId);
+        //selectedCategories[categoryId].push(subCategoryId);
+        selectedCategories[categoryId] = selectedCategories[categoryId].concat(this.getAllSubIds(subCategory));
         selectedCategory.selected = true;
         subCategory.selected = true;
       } else {
         subCategory.selected = false;
-        selectedCategories[categoryId].splice(selectedCategories[categoryId].indexOf(subCategoryId), 1);
+       // selectedCategories[categoryId].splice(selectedCategories[categoryId].indexOf(subCategoryId), 1);
+        selectedCategories[categoryId] = this.difference(selectedCategories[categoryId], this.getAllSubIds(subCategory));
         if (selectedCategories[categoryId].length === 0) {
           selectedCategory.selected = false;
         } else {
@@ -615,9 +637,10 @@ angular.module('app.services', [])
             allCat[value.IDCATEGORIA] = [];
           }
           angular.forEach(value.CHILDREN, function (subvalue, subkey) {
-            allCat[value.IDCATEGORIA].push(subvalue.IDCATEGORIA);
-          });
-        });
+            allCat[value.IDCATEGORIA] = allCat[value.IDCATEGORIA].concat(this.getAllSubIds(subvalue));
+            //allCat[value.IDCATEGORIA].push(subvalue.IDCATEGORIA);
+          }.bind(this));
+        }.bind(this));
             return allCat;
       } else {
         return selectedCategories;
@@ -748,7 +771,7 @@ angular.module('app.services', [])
 
   })
 
-.service('DossierService',function($http,$q,ConfigService,$window){
+.service('DossierService',function($http,$q,ConfigService,$window,UserService){
 
 
     var urlVisor="https://drive.google.com/viewerng/viewer?pid=explorer&efh=false&a=v&chrome=false&embedded=true&url=";
@@ -808,12 +831,12 @@ angular.module('app.services', [])
 
 
 
-    this.getArbolesPDF=function(userId){
+    this.getArbolesPDF=function(profileId,userId){
       if (arboles !==null) {
         return arboles;
       }
       var deffered = $q.defer();
-      $http.get('/getperfiles_arboles/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+userId).then(function(data){
+      $http.get('/getperfiles_arboles/'+ConfigService.getApiKey()+"_"+userId+'/'+ConfigService.getZona()+'/'+profileId).then(function(data){
         if (data.status !==200) {
           deffered.resolve([]);
         } else {
@@ -841,9 +864,9 @@ angular.module('app.services', [])
       return null;
     };
 
-    this.getDossierPDFCoverUrl=function(day){
+    this.getDossierPDFCoverUrl=function(day,userId){
       var deffered= $q.defer();
-      $http.get('/get_url_portadas/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+day).then(function(data){
+      $http.get('/get_url_portadas/'+ConfigService.getApiKey()+"_"+userId+'/'+ConfigService.getZona()+'/'+day).then(function(data){
 
         deffered.resolve(data.data[0].URL);
       });
@@ -851,13 +874,13 @@ angular.module('app.services', [])
     };
 
     //get the url data
-    this.getDossierPDFUrl=function(dossier,userId,day){
+    this.getDossierPDFUrl=function(dossier,profileId,day,userId){
 
       var deffered= $q.defer();
       if (dossier === null || userId === null || day ===null) {
         deffered.resolve(null);
       } else {
-        $http.get('/get_url_dossier/' + ConfigService.getApiKey() + '/' + ConfigService.getZona() + '/' + userId + '/' + dossier.dossier/*IDARBOL*/ + '/' + day).then(function (data) {
+        $http.get('/get_url_dossier/' + ConfigService.getApiKey()+"_"+userId + '/' + ConfigService.getZona() + '/' + profileId + '/' + dossier.dossier/*IDARBOL*/ + '/' + day).then(function (data) {
           deffered.resolve(data.data[0].URL);
         });
       }
@@ -904,7 +927,7 @@ angular.module('app.services', [])
 
 
       //REAL REQUEST
-      $http.get('/getusuarios_perfil/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+id).success(function(data,status){
+      $http.get('/getusuarios_perfil/'+ConfigService.getApiKey()+"_"+id+'/'+ConfigService.getZona()+'/'+id).success(function(data,status){
         if (data instanceof Array && data.length >0) {
           deferred.resolve(data[0].IDPERFIL);
         } else {
@@ -918,7 +941,7 @@ angular.module('app.services', [])
       return deferred.promise;
     };
 
-    this.getDetailNew = function(media,date,id){
+    this.getDetailNew = function(media,date,id,userId){
       var deferred = $q.defer();
       var url="";
       switch (media) {
@@ -939,7 +962,7 @@ angular.module('app.services', [])
           url="/getnoticiassocialmedia_detalle";
           break;
       }
-      $http.get(url+'/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+id+'/'+date).success(function(data){
+      $http.get(url+'/'+ConfigService.getApiKey()+"_"+userId+'/'+ConfigService.getZona()+'/'+id+'/'+date).success(function(data){
         if (angular.isDefined(data) && (angular.isArray(data) && data !== false)) {
           deferred.resolve(data[0]);
         } else {
@@ -963,7 +986,7 @@ angular.module('app.services', [])
       var config = {
         timeout: canceller.promise
       };
-    $http.get('/getusuarios_categorias/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+user.IDUSUARIO,config).success(function(data,status){
+    $http.get('/getusuarios_categorias/'+ConfigService.getApiKey()+"_"+user.IDUSUARIO+'/'+ConfigService.getZona()+'/'+user.IDUSUARIO,config).success(function(data,status){
        if (data instanceof Array && data.length >0) {
        deferred.resolve(data);
        } else {
@@ -978,7 +1001,7 @@ angular.module('app.services', [])
     };
 
 
-    this.getDetailMedia = function (media,month, year, id) {
+    this.getDetailMedia = function (media,month, year, id, user) {
       var deferred = $q.defer();
 
       var url_tv = "/get_url_multimedia_tv";
@@ -1002,7 +1025,7 @@ angular.module('app.services', [])
 
       //$http.get("http://api.mmi-e.com/mmiapi.php/get_url_multimedia_tv/DFKGMKLJOIRJNG/1/02/2016/161")
       //alert('http://api.mmi-e.com/mmiapi.php/'+ url_get + '/' + ConfigService.getApiKey() + '/' + ConfigService.getZona() + '/' + month + '/' + year + '/' + id);
-      $http.get(url_get + '/' +  ConfigService.getApiKey() + '/' + ConfigService.getZona() + '/' + month + '/' + year + '/' + id)
+      $http.get(url_get + '/' +  ConfigService.getApiKey() +(angular.isDefined(user) ? "_"+user.IDUSUARIO : "")+ '/' + ConfigService.getZona() + '/' + month + '/' + year + '/' + id)
       .success(function(data) {
           //alert(data[0].URL);
           var final_url = "";
@@ -1137,7 +1160,7 @@ angular.module('app.services', [])
         params = params[0];
       }
 
-       $http.post('/'+url_get+'/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+filters.startDate.text+
+       $http.post('/'+url_get+'/'+ConfigService.getApiKey()+(angular.isDefined(user) ? "_"+user.IDUSUARIO : "")+'/'+ConfigService.getZona()+'/'+filters.startDate.text+
        '/'+filters.endDate.text+'/'+offset+'/'+limit+
          (using_social ? ('/'+social_type ) : ""),params).success(function(data,status){
        if (data instanceof Array && data.length >0) {
