@@ -10,5 +10,7 @@
     "!www/lib/**/*"
   ],
   "type": "ionic1",
-  "integrations": {}
+  "integrations": {
+    "cordova": {}
+  }
 }
