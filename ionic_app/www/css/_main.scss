@@ -309,3 +309,6 @@ table.media td{
   background-color: $light-blue;
   color: white;
 }
+.item-complex .item-content, .item-radio .item-content{
+  padding: 1px 49px 1px 16px !important;
+}

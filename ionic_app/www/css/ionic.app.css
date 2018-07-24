@@ -9369,6 +9369,9 @@ table.media td {
   background-color: #63BFB8;
   color: white; }
 
+.item-complex .item-content, .item-radio .item-content {
+  padding: 1px 49px 1px 16px !important; }
+
 @font-face {
   font-family: 'icomoon';
   src: url("fonts/icomoon.eot?lddfsr");
@@ -9486,3 +9489,6 @@ table.media td {
 /*detail css*/
 .video-frame {
   width: 100%; }
+
+.item-content {
+  padding: 6px 49px 6px 16px; }
