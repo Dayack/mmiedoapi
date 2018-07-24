@@ -9,8 +9,8 @@
                   <div class="news_abstract">
                     <div ng-if="(media !=='TV' && media !=='RADIO')">
                       <div class="icon-media-item">
-
-                        <span class="purple-text new-support">{{new.SOPORTE | limitationText:25}}</span>
+                        <span ng-if="!new.TWITTERAUTHOR" class="purple-text new-support">{{new.SOPORTE | limitationText:25}}</span>
+                        <span ng-if="new.TWITTERAUTHOR" class="purple-text new-support">{{new.TWITTERAUTHOR | twitterClear}}</span>
                       </div>
                       <div class="date-item">
                         {{new.FECHA | DateNew}}
@@ -34,7 +34,7 @@
                        <img ng-show="new.media == 'TV'" src="img/chicaplay.png"></img>
                   </div>-->
                   <div  style="    clear: both;">
-                    {{new.TEMA | limitationText:80}}
+                    {{new.TEMA | limitationText:160}}
                   </div>
                     <!--htumbnail-->
                     <div class="col" ng-if="media =='TV'">
