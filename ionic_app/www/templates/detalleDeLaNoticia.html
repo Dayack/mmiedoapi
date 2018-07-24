@@ -13,8 +13,8 @@
 
           </div>
           <div ng-if="superSupport!=null  && (media == 'TV' || media == 'RADIO' )"><span class="purple-text new-support">{{superSupport}}</span></div>
-          <span class="purple-text new-support">{{support}}</span>
-
+          <span ng-if="!dataNew.TWITTERAUTHOR"class="purple-text new-support">{{support}}</span>
+          <span ng-if="dataNew.TWITTERAUTHOR" class="purple-text new-support">{{dataNew.TWITTERAUTHOR | twitterClear}}</span>
           <p>{{dataNew.FECHA | DateNew}}</p>
         </div>
         <div class="item item-body">

@@ -35,7 +35,8 @@
                   <i ng-show="block.type == 'SOCIAL'" class="icon icon-mmi-social media-icon"></i>
                   <i ng-show="block.type == 'TWITTER'" class="icon icon-mmi-twitter media-icon"></i>
                   <i ng-show="block.type == 'INTERNET'" class="icon icon-mmi-arroba media-icon"></i>
-                  <span class="purple-text new-support">{{new.SOPORTE | limitationText:25}}</span>
+                  <span ng-if="!new.TWITTERAUTHOR" class="purple-text new-support">{{new.SOPORTE | limitationText:25}}</span>
+                  <span ng-if="new.TWITTERAUTHOR" class="purple-text new-support">{{new.TWITTERAUTHOR | twitterClear}}</span>
                 </div>
                 <div class="date-item">
                   {{new.FECHA | DateNew}}
