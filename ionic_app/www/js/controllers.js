@@ -406,6 +406,7 @@ angular.module('app.controllers', ['ionic'])
         $scope.options = null;
         //load different MEDIAS
         NewsService.getNews($scope.user, "TV", $scope.filters, $scope.options, 5, 0).then(function (data) {
+          console.log($scope.blockNews);
           for (var i = 0; i < $scope.blockNews.length; i++) {
             if ($scope.blockNews[i].type === data.type) {
               $scope.blockNews[i].loading=false;
