@@ -132,5 +132,18 @@ angular.module('app.directives', [])
       }
 
     };
-  });
+    })
+    .filter('twitterClear',function() {
+      return function(text) {
+        if (!angular.isDefined(text)) {
+          return "";
+        }
+        if (text.length >0) {
+          return text = text.slice(text.indexOf("(")+1,text.indexOf(")"));
 
+        } else {
+          return text;
+        }
+
+      };
+  });
