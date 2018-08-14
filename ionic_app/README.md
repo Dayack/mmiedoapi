@@ -23,4 +23,8 @@ gulp sass
 ``` 
 to add it to index.html
 
+dependencies:
+
+https://github.com/arielfaur/ionic-audio
+
 
