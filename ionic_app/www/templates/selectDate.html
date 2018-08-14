@@ -14,19 +14,34 @@
         </ionic-datepicker>-->
       <div class="timeSelectors">
         <!--selectors-->
-        <div class="component date-option" ng-click="selectTime('Today')">
+        <div class="component date-option activated" ng-click="selectTime('Today')" ng-show="optionSelected == 'Today'">
           Hoy
         </div>
-        <div class="component date-option" ng-click="selectTime('yesterday')">
+        <div class="component date-option " ng-click="selectTime('Today')" ng-show="optionSelected !== 'Today'">
+          Hoy
+        </div>
+        <div class="component date-option activated" ng-click="selectTime('yesterday')" ng-show="optionSelected == 'yesterday'">
           Ayer
         </div>
-        <div class="component date-option" ng-click="selectTime('7d')">
-          7 Días
+        <div class="component date-option " ng-click="selectTime('yesterday')" ng-show="optionSelected !== 'yesterday'">
+          Ayer
         </div>
-        <div class="component date-option" ng-click="selectTime('30d')">
-          30 Días
+        <div class="component date-option activated" ng-click="selectTime('7d')" ng-show="optionSelected == '7d'">
+          7d
+        </div>
+        <div class="component date-option " ng-click="selectTime('7d')" ng-show="optionSelected !== '7d'">
+          7d
+        </div>
+        <div class="component date-option" ng-click="selectTime('30d')" ng-show="optionSelected == '30d'">
+          30d
         </div >
-        <div class="component date-option" ng-click="selectTime('5y')">
+        <div class="component date-option " ng-click="selectTime('30d')" ng-show="optionSelected !== '30d'">
+          30d
+        </div >
+        <div class="component date-option activated" ng-click="selectTime('5y')" ng-show="optionSelected == '5y'">
+          Todos
+        </div>
+        <div class="component date-option" ng-click="selectTime('5y')" ng-show="optionSelected !== '5y'">
           Todos
         </div>
       </div>
@@ -47,11 +62,14 @@
 
     </ion-content>
   <!--outside content-->
-  <div class="fixed-outside">
+  <!--<div class="fixed-outside">
     <div class="row">
-      <div class="col">
+      <div class="col">-->
+
+  <ion-footer-bar align-title="center" class="invisible-footer">
         <button ng-click="saveAndExit();" class="button button-circle button-purple icon ion-checkmark-round"></button>
-      </div>
+    </ion-footer-bar><!--
     </div>
-  </div>
+    </div>
+  </div>-->
 </ion-view>

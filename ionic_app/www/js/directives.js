@@ -3,6 +3,35 @@ angular.module('app.directives', [])
 .directive('blankDirective', [function(){
 
 }])
+  .directive('loadedData', function () {
+    return function ($scope, $element) {
+      $element[0].addEventListener("loadeddata", function (data) {
+        console.log(JSON.stringify(data.srcElement.duration)); // never calls
+      });
+      $element[0].addEventListener("error", function (data) {
+        console.log("ERROR"+JSON.stringify(data.srcElement.duration)); // never calls
+        $scope.$emit("ERRORMEDIA");
+      });
+    }
+  })
+  .directive('browseTo', function ($ionicGesture) {
+    return {
+      restrict: 'A',
+      link: function ($scope, $element, $attrs) {
+        var handleTap = function (e) {
+          // todo: capture Google Analytics here
+          var newUrl = $attrs.browseTo.replace("embedded=true","embedded=false");
+          var inAppBrowser = window.open(encodeURI(newUrl), '_system');
+        };
+        var tapGesture = $ionicGesture.on('tap', handleTap, $element);
+        $scope.$on('$destroy', function () {
+          // Clean up - unbind drag gesture handler
+          $ionicGesture.off(tapGesture, 'tap', handleTap);
+        });
+      }
+    }
+  })
+
 //indicates that the source of the filter is trusted url
   .filter('trusted', function ($sce) {
   return function(url) {
@@ -13,6 +42,9 @@ angular.module('app.directives', [])
   .filter('DateNew', function($filter){
     return function(newDate) {
       date = new Date();
+      if (!angular.isDefined(newDate)) {
+        return null;
+      }
       newDate = newDate.split("-");
       date.setFullYear(newDate[0]);
       date.setMonth(parseInt(newDate[1])-1);
@@ -31,6 +63,20 @@ angular.module('app.directives', [])
         return "HOY";//check to translate
       } else {
         return $filter('date')(date, "dd/MM/yyyy");
+      }
+    };
+  })
+  .filter('DateDossier',function(){
+    return function(n){
+      if (!angular.isDefined(n)) {
+        return null;
+      }
+      today = new moment();
+      if (today.diff(n,'days')){
+        //1 or more days of difference
+        return n.format("DD/MM/YYYY");
+      } else {
+        return "HOY";
       }
     };
   })
@@ -62,13 +108,13 @@ angular.module('app.directives', [])
         case "RADIO":
               return "Radio";
         case "SOCIAL":
-              return "Social Media";
+              return "Redes Sociales";
         case "TWITTER":
               return "Twitter";
         case "PRESS":
               return "Prensa";
         case "INTERNET":
-              return "Internet";
+              return "Medios Digitales";
         default :
               return "";
       }
@@ -76,6 +122,9 @@ angular.module('app.directives', [])
   })
   .filter('limitationText',function() {
     return function(text,size) {
+      if (!angular.isDefined(text)) {
+        return "";
+      }
       if (text.length >size) {
         return text.substr(0,size)+"...";
       } else {

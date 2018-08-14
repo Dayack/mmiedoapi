@@ -1,25 +1,49 @@
-<ion-view style="" title="Noticias" cache-view="false">
+<ion-view style="" title="Noticias" cache-view="true">
   <ion-content class="has-header" overflow-scroll="true" padding="'true'">
     <!--<ion-list>
       <ion-item ng-repeat="newBlock in blockNews track by type">
         <ion-list style="">-->
     <div ng-repeat="block in blockNews track by $index">
-      <div style="padding: 0px;" class=" row responsive-sm media-header">
+      <div style="padding: 0px;" class="  responsive-sm media-header">
         <div style="margin-bottom: -5px;" class="col">
           <h3 class="title title-color">{{block.type | mediaName}}</h3>
         </div>
       </div>
-      <!--warning of no news-->
+      <!--warning of no news
       <div ng-show="loadedComplete && block.news.length == 0" class="no-new-content">
         No hay noticias
+      </div>-->
+      <div ng-show="!block.loading && block.news.length ==0" style="text-align: center;">
+        No se han encontrado noticias
+      </div>
+      <div ng-show="block.loading" style="text-align:center;">
+        <ion-spinner></ion-spinner>
       </div>
       <!--list of items-->
-      <ion-list ng-show="(block.news.length >0) && loadedComplete">
-        <ion-item ng-repeat="new in block.news | unique: 'IDNOTICIA' "  ui-sref="detalle({date:new.FECHA ,id:new.IDNOTICIA, media:block.type})" style=""  class="new-item"><!--ng-click="goToNew(new)"-->
+      <ion-list ng-show="(block.news.length >0) && !block.loading "><!--loadedComplete-->
+        <ion-item ng-repeat="new in block.news | unique: 'IDNOTICIA' "  ng-click="goToNew(new, block.type)" style=""  class="new-item"><!--ng-click="goToNew(new)"-->
           <div>
 
             <div class="news_abstract">
+              <!--CASE FOR NOT TV/RADIO-->
+              <div ng-if="(block.type !=='TV' && block.type !=='RADIO')">
               <div>
+                <div class="icon-media-item">
+                  <i ng-show="block.type == 'PRESS'" class="icon icon-mmi-press media-icon"></i>
+                  <i ng-show="block.type == 'RADIO'" class="icon icon-mmi-radio media-icon"></i>
+                  <i ng-show="block.type == 'TV'" class="icon icon-mmi-tv media-icon"></i>
+                  <i ng-show="block.type == 'SOCIAL'" class="icon icon-mmi-social media-icon"></i>
+                  <i ng-show="block.type == 'TWITTER'" class="icon icon-mmi-twitter media-icon"></i>
+                  <i ng-show="block.type == 'INTERNET'" class="icon icon-mmi-arroba media-icon"></i>
+                  <span class="purple-text new-support">{{new.SOPORTE | limitationText:25}}</span>
+                </div>
+                <div class="date-item">
+                  {{new.FECHA | DateNew}}
+                </div>
+              </div>
+                </div>
+              <!--CASE FOR TV/RADIO-->
+              <div ng-if="(block.type == 'TV' || block.type =='RADIO')">
                 <div class="icon-media-item">
                   <i cla ng-show="block.type == 'PRESS'" class="icon icon-mmi-press media-icon"></i>
                   <i ng-show="block.type == 'RADIO'" class="icon icon-mmi-radio media-icon"></i>
@@ -27,10 +51,13 @@
                   <i ng-show="block.type == 'SOCIAL'" class="icon icon-mmi-social media-icon"></i>
                   <i ng-show="block.type == 'TWITTER'" class="icon icon-mmi-twitter media-icon"></i>
                   <i ng-show="block.type == 'INTERNET'" class="icon icon-mmi-arroba media-icon"></i>
-                  <span class="purple-text new-support">{{new.SOPORTE | limitationText:15}}</span>
+                  <span class="purple-text new-support">{{new.SUPERSOPORTE | limitationText:25}}</span>
                 </div>
                 <div class="date-item">
-                  {{new.FECHA | DateNew}}
+                  <span> {{new.FECHA | DateNew}}</span>
+                </div>
+                <div style="clear:both;">
+                <span class="purple-text new-support">{{new.SOPORTE}}</span>
                 </div>
               </div>
               <div class="content-item">

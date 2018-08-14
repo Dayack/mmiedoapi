@@ -1,0 +1,24 @@
+<ion-view style="" title="Detalle de Prensa"   cache-view="false"><!----><!--hide-nav-bar="true" -->
+  <ion-content overflow-scroll="true"><!--class="has-header" -->
+    <div ng-if="url != null" class="pdf-full-container">
+      <div id="open" class="open-pdf-icon"  browse-to="{{url}}">
+        <i class="icon ion-android-open"></i>
+      </div>
+      <iframe ng-src="{{url}}" class="pdf-full-container"></iframe>
+    </div>
+    <div ng-if="url == null">
+      No se ha podido cargar el PDF
+    </div>
+  </ion-content>
+
+  <ion-footer-bar align-title="center" class="invisible-footer">
+    <!--
+  <div class="fixed-outside">
+    <div class="row">
+      <div class="col">-->
+    <button ng-click="goBack();" class="button button-circle button-purple icon ion-checkmark-round"></button>
+    <!-- </div>
+   </div>
+ </div>-->
+  </ion-footer-bar>
+</ion-view>

@@ -3,6 +3,21 @@ angular.module('app.services', [])
   .factory('BlankFactory', [function () {
 
   }])
+
+  .factory('timeoutHttpIntercept', function ($rootScope, $q) {
+    return {
+      'request': function (config) {
+        if (config.url.indexOf("getusuarios_categorias") >0) {
+
+        } else {
+          config.timeout = 50000;//40 seconds of timeout
+        }
+        return config;
+      }
+    };
+  }
+    )
+
   .factory('$localstorage', ['$window', function($window) {
     return {
       set: function(key, value) {
@@ -25,11 +40,19 @@ angular.module('app.services', [])
   .service('ConfigService', function () {
     var zona = '1';
     var api_key = 'DFKGMKLJOIRJNG';
+    var mediaUrl='http://can.mmi-e.com/';
     this.getZona = function () {
       return zona;
     };
     this.getApiKey = function () {
       return api_key;
+    };
+    var limitPage = 10;
+    this.getLimitPage = function() {
+      return limitPage;
+    };
+    this.getMediaUrl=function(){
+      return mediaUrl;
     };
 
   })
@@ -73,7 +96,7 @@ angular.module('app.services', [])
 /**
  * User Service, used to save user info
  */
-  .service('UserService', function (HttpService, $q, $window) {
+  .service('UserService', function (HttpService, $q, $window,FilterService) {
     var user = null;
     /**
      *  Login, will send the login request, and save the user data in the Service, will return 'OK' or 'ERROR' to the controller
@@ -84,12 +107,15 @@ angular.module('app.services', [])
       var defer = $q.defer();
       HttpService.login(username, password).then(function (data) {
         //the answer from the HTTP was ok, not error and if user/password is ok
-        if (data !== null && data != "error" && (data !== false)) {
+        if ((data !== null && data != "error" && (data !== false)) && angular.isDefined(data.IDUSUARIO)) {
           user = data;
-          //MOCKED TEST DATA
-         user.IDUSUARIO=1445;
-          $window.localStorage.setItem('user',JSON.stringify(data));
-          defer.resolve("OK");
+          HttpService.getPerfil(user.IDUSUARIO).then(function(perfil){
+            //MOCKED TEST DATA
+           //user.IDUSUARIO=17640;//1445;
+            user.IDPERFIL = perfil;
+            $window.localStorage.setItem('user',JSON.stringify(data));
+            defer.resolve("OK");
+          });
         } else {
           user = null;
           defer.resolve("ERROR");
@@ -110,6 +136,8 @@ angular.module('app.services', [])
     this.logout = function() {
       user = null;
       $window.localStorage.removeItem('user');
+      $window.localStorage.removeItem('categories');
+      FilterService.resetFilters();
     };
 
     this.getUser = function () {
@@ -133,12 +161,19 @@ angular.module('app.services', [])
         date: null,
         text:null
       },
+      dateSelected:'5y',
       support_zones: [],
       new_zones: []
     };
     var filteredByDate = false;
     var filteredByOrigin = false;
     var filteredByPlace=false;
+    this.setDateSelected=function(date) {
+      filters.dateSelected=date;
+    };
+    this.getDateSelected=function(){
+      return filters.dateSelected;
+    };
 
     //restart dates the filter set the date from 1 month ago to now
     this.setMedia=function(media) {
@@ -148,8 +183,9 @@ angular.module('app.services', [])
     this.restartDates = function() {
       filters.endDate.date  = DateHelperService.getToday();
       filters.endDate.text = DateHelperService.formatDate(filters.endDate.date);
-      filters.startDate.date =DateHelperService.addDays(filters.endDate.date,-1865);
+      filters.startDate.date =DateHelperService.addDays(filters.endDate.date,-30/*-1865*/);
       filters.startDate.text = DateHelperService.formatDate(filters.startDate.date);
+      filters.dateSelected='30d'//'5y';
       //to end Date -30 days
     };
 
@@ -191,18 +227,127 @@ angular.module('app.services', [])
     this.getFiltered=function(){
       return ((filteredByDate || filteredByOrigin) || filteredByPlace);
     };
+
+    //restart when logout
+    this.resetFilters = function(){
+      filters = {
+        media: 'TV',//by default we select TV, this filter is always set
+        startDate: {
+          date: null,
+          text:null
+        },
+        endDate: {
+          date: null,
+          text:null
+        },
+        support_zones: [],
+        new_zones: [],
+        dateSelected: '30d'//'5y'
+      };
+      filteredByDate=false;
+      filteredByOrigin=false;
+      filteredByPlace=false;
+    };
+  })
+
+  .service('ScrollService',function(){
+    var lastUrl=null;//last state visited
+    var lastOffset=null;
+    var lastScroll=null;
+    this.getLastUrl=function(){
+      return lastUrl;
+    };
+    this.setLastUrl=function(newUrl){
+      lastUrl = newUrl;
+    };
+    this.setOffset=function(newOffset){
+      lastOffset= newOffset;
+    };
+    this.getOffset=function(){
+      return lastOffset;
+    };
+    this.setScroll=function(newScroll){
+      lastScroll = newScroll;
+    };
+    this.getScroll=function(){
+      return lastScroll;
+    };
+  })
+
+  .service('PreviewCacheService',function(){
+    var cachedBlocks=null;
+    this.setCachedBlocks=function(blocks){
+      cachedBlocks=blocks;
+    };
+    this.getCachedBlocks=function(){
+      return cachedBlocks;
+    };
+    this.clearCachedBlocks=function(){
+      cachedBlocks=null;
+    };
+
+
   })
 /**
  * Service to load the news
  */
-  .service('NewsService', function (HttpService,CategoryService, $q,DateHelperService) {
+  .service('NewsService', function (HttpService,CategoryService, $q,DateHelperService,UserService) {
 
     var limit = 10;
     var news = [];
     var offset = 0;
     var lastSearchHash = null;
+    var thumbnails=[];
+    var mediaUrl=null;
+    var idNew=null;
+    var autoPlay=false;
+    var superSupport=null;
+    var pdfUrl=null;
+    this.setPdfUrl=function(url){
+      pdfUrl=url;
+    };
+    this.getPdfUrl=function(){
+      return pdfUrl;
+    };
+    this.setAutoPlay=function(state){
+      autoPlay=state;
+    };
+    this.getAutoPlay=function(){
+      return autoPlay;
+    };
+    this.setSuperSupport=function(newSup){
+      superSupport=newSup;
+    };
+    this.getSuperSupport=function() {
+      return superSupport;
+    };
+    this.setIdNew=function(id){
+      idNew=id;
+    };
+    this.getIdNew=function(){
+      return idNew;
+    };
+
+    this.setThumbNails=function(thumbs){
+      thumbnails=thumbs;
+    };
+    this.getThumbNails=function(){
+      return thumbnails;
+    };
+
+    this.setMediaUrl=function(url){
+      mediaUrl=url;
+    };
+
+    this.getMediaUrl=function(){
+      return mediaUrl;
+    };
+
     //-- preview config block
     var blockLimit = 5;
+    //save and load the last url to save the scroll position
+
+
     /**
      * Loads the news for user, filters, and options specified
      * @param user
@@ -220,6 +365,9 @@ angular.module('app.services', [])
       }
       if (new_offset!==null) {
         offset = new_offset;
+      }
+      if (!angular.isDefined(user)) {
+        user = UserService.getUser();
       }
       var categories = CategoryService.getSelectedCategories();
       var searchHash ="type="+type+ JSON.stringify(user) + JSON.stringify(filters)+"offset="+offset+"limit="+limit;
@@ -247,12 +395,12 @@ angular.module('app.services', [])
         HttpService.getNews(user,type, filters,   offset  ,
            limit  ,categories).then(function (data) {
           //the answer from the HTTP was ok, not error and if user/password is ok
-            result.news = data;
+
           if (data !== null && data != "error" && (data !== false)) {
-            news = data;
+            result.news = data;
             defer.resolve(result);
           } else {
-            news = [];
+            result.news = [];
             defer.resolve(result);
           }
         });
@@ -263,9 +411,9 @@ angular.module('app.services', [])
       return result;*/
     };
 
-    this.getNew=function(media,date,id) {
+    this.getNew=function(media,date,id,userId) {
       var defer = $q.defer();
-      HttpService.getDetailNew(media,DateHelperService.formatStringDate(date),id).then(function(data){
+      HttpService.getDetailNew(media,DateHelperService.formatStringDate(date),id,userId).then(function(data){
          defer.resolve(data);
 
      });
@@ -273,7 +421,7 @@ angular.module('app.services', [])
     };
 
 
-    this.getVideo=function(media, date, id) {
+    this.getMedia=function(media, date, id,user) {
       var defer = $q.defer();
 
       var pos= date.indexOf("-");
@@ -282,7 +430,7 @@ angular.module('app.services', [])
       var pos2= date.indexOf("-", pos+1);
       var month = date.substring(pos+1, pos2);
 
-      HttpService.getDetailVideo(media,month, year, id).then(function(data){
+      HttpService.getDetailMedia(media,month, year, id,user).then(function(data){
         //alert(data);
          defer.resolve(data);
       });
@@ -340,7 +488,11 @@ angular.module('app.services', [])
     this.clearStatus = function() {
       $window.localStorage.removeItem("categories");
       categories = [];
+      selectedCategories=[];
       selectedCategory=[];
+      selectedCategories=[];
+      categoriesUser=[];
+      allSelected=true;
     };
     /**
      *  getCategories, will get all user's categories
@@ -352,7 +504,7 @@ angular.module('app.services', [])
 
     this.getCategories = function (user) {
       var defer = $q.defer();
-      if (categoriesUser === user) {
+      if (angular.equals(categoriesUser,user) && categories !==[]) {
         defer.resolve(categories);
       } else {
         HttpService.getCategories(user).then(function (data) {
@@ -360,8 +512,13 @@ angular.module('app.services', [])
             categoriesUser = user;
             //categories = data;
             //wee need merge all the trees
+            if (categories === null) {
+              categories = [];
+            }
             angular.forEach(data, function(value, key) {
-              categories.push(value.CONTENIDO[0]);/*data[0].CONTENIDO[1]*/
+              angular.forEach(value.CONTENIDO,function(value1,key1){
+                categories.push(value1);
+              });
               //check if the father is the only node
 
             });
@@ -410,6 +567,23 @@ angular.module('app.services', [])
       return subCategories;
     };
 
+    //extrac the toRemove Array items from source array
+    this.difference = function(source, toRemove) {
+      return source.filter(function(value){
+        return toRemove.indexOf(value) == -1;
+      });
+    };
+
+    this.getAllSubIds= function(subCategory) {
+        ids= [];
+        if (subCategory.hasOwnProperty("CHILDREN") && subCategory.CHILDREN.length > 0) {
+          for (var i = 0; i< subCategory.CHILDREN.length; i++) {
+            ids = ids.concat(this.getAllSubIds(subCategory.CHILDREN[i]));
+          }
+        }
+        return ids.concat([subCategory.IDCATEGORIA]);
+    };
+
     this.selectSubCategory = function (subCategory) {
       categoryId = selectedCategory.IDCATEGORIA;
       subCategoryId = subCategory.IDCATEGORIA;
@@ -417,14 +591,16 @@ angular.module('app.services', [])
       if (!selectedCategories.hasOwnProperty(categoryId)) {
 		subCategory.selected = true;
         selectedCategory.selected = true;
-        selectedCategories[categoryId] = [subCategoryId, ];
+        selectedCategories[categoryId] = this.getAllSubIds(subCategory);//[subCategoryId, ];
       } else if (selectedCategories[categoryId].indexOf(subCategoryId) == -1) {
-        selectedCategories[categoryId].push(subCategoryId);
+        //selectedCategories[categoryId].push(subCategoryId);
+        selectedCategories[categoryId] = selectedCategories[categoryId].concat(this.getAllSubIds(subCategory));
         selectedCategory.selected = true;
         subCategory.selected = true;
       } else {
         subCategory.selected = false;
-        selectedCategories[categoryId].splice(selectedCategories[categoryId].indexOf(subCategoryId), 1);
+       // selectedCategories[categoryId].splice(selectedCategories[categoryId].indexOf(subCategoryId), 1);
+        selectedCategories[categoryId] = this.difference(selectedCategories[categoryId], this.getAllSubIds(subCategory));
         if (selectedCategories[categoryId].length === 0) {
           selectedCategory.selected = false;
         } else {
@@ -461,9 +637,10 @@ angular.module('app.services', [])
             allCat[value.IDCATEGORIA] = [];
           }
           angular.forEach(value.CHILDREN, function (subvalue, subkey) {
-            allCat[value.IDCATEGORIA].push(subvalue.IDCATEGORIA);
-          });
-        });
+            allCat[value.IDCATEGORIA] = allCat[value.IDCATEGORIA].concat(this.getAllSubIds(subvalue));
+            //allCat[value.IDCATEGORIA].push(subvalue.IDCATEGORIA);
+          }.bind(this));
+        }.bind(this));
             return allCat;
       } else {
         return selectedCategories;
@@ -594,7 +771,126 @@ angular.module('app.services', [])
 
   })
 
+.service('DossierService',function($http,$q,ConfigService,$window,UserService){
 
+
+    var urlVisor="https://drive.google.com/viewerng/viewer?pid=explorer&efh=false&a=v&chrome=false&embedded=true&url=";
+
+    local_dir = "mmi_pdf_dossiers";
+    var dossier=null;
+    var arboles=null;
+    var pdf_url=null;
+    var saved_pdf=null;//structure saved in localStorage
+    var dossiers_cache=null;
+
+    this.setCachedDossier=function(dossiers){
+      dossiers_cache= dossiers;
+    };
+
+    this.getCachedDossier=function(){
+      return dossiers_cache;
+    };
+
+    //save the actual Dossier in the localStorage
+
+    this.getUrlVisor=function(){
+      return urlVisor;
+    };
+    this.savePdf=function(day,dossier){
+      saved_pdf = JSON.parse($window.localStorage.getItem(local_dir));
+      console.log("previously saved "+saved_pdf);
+      if (!angular.isDefined(saved_pdf) || saved_pdf === null){
+        saved_pdf = {};
+      }
+      if (!angular.isDefined(saved_pdf[day])){
+        saved_pdf[day]=[];
+      }
+
+      console.log("saving in "+ JSON.stringify(saved_pdf[day]) + " -> "+ JSON.stringify(dossier));
+      saved_pdf[day] = saved_pdf[day].concat([dossier]);
+
+      console.log("saving"+ JSON.stringify(saved_pdf));
+      $window.localStorage.setItem(local_dir,JSON.stringify(saved_pdf));
+      console.log("saved!");
+    };
+
+    this.getSavedPdfs=function() {
+      saved_pdf = JSON.parse($window.localStorage.getItem(local_dir));
+      console.log("loading "+ JSON.stringify(saved_pdf));
+      if (!angular.isDefined(saved_pdf) || saved_pdf === null) {
+        saved_pdf = {};
+      }
+      return saved_pdf;
+    };
+
+    /**
+     * extract tree categories for the actual user
+     * @param userId
+     * @returns {*}
+     */
+
+
+
+    this.getArbolesPDF=function(profileId,userId){
+      if (arboles !==null) {
+        return arboles;
+      }
+      var deffered = $q.defer();
+      $http.get('/getperfiles_arboles/'+ConfigService.getApiKey()+"_"+userId+'/'+ConfigService.getZona()+'/'+profileId).then(function(data){
+        if (data.status !==200) {
+          deffered.resolve([]);
+        } else {
+          var dossiers=[];
+          angular.forEach(data.data,function(arbol){
+            if (arbol.TIPO ==="PDF"){
+              dossiers.push(arbol);
+            }
+          });
+          deffered.resolve(dossiers);
+        }
+      });
+      return deffered.promise;
+    };
+    this.setDossier=function(d){
+      dossier = d;
+    };
+    this.getDossier=function(){
+      return dossier;
+    };
+
+    ///extract file url if the dossier is downloaded
+    //if not return null
+    this.getDownloadedDossier=function(dossier){
+      return null;
+    };
+
+    this.getDossierPDFCoverUrl=function(day,userId){
+      var deffered= $q.defer();
+      $http.get('/get_url_portadas/'+ConfigService.getApiKey()+"_"+userId+'/'+ConfigService.getZona()+'/'+day).then(function(data){
+
+        deffered.resolve(data.data[0].URL);
+      });
+      return deffered.promise;
+    };
+
+    //get the url data
+    this.getDossierPDFUrl=function(dossier,profileId,day,userId){
+
+      var deffered= $q.defer();
+      if (dossier === null || userId === null || day ===null) {
+        deffered.resolve(null);
+      } else {
+        $http.get('/get_url_dossier/' + ConfigService.getApiKey()+"_"+userId + '/' + ConfigService.getZona() + '/' + profileId + '/' + dossier.dossier/*IDARBOL*/ + '/' + day).then(function (data) {
+          deffered.resolve(data.data[0].URL);
+        });
+      }
+      return deffered.promise;
+
+    };
+
+    this.getDossier
+
+  })
 
 /**
  * HTTP Service, this service will centralize all API calls
@@ -626,7 +922,26 @@ angular.module('app.services', [])
       return deferred.promise;
     };
 
-    this.getDetailNew = function(media,date,id){
+    this.getPerfil=function(id){
+      var deferred = $q.defer();
+
+
+      //REAL REQUEST
+      $http.get('/getusuarios_perfil/'+ConfigService.getApiKey()+"_"+id+'/'+ConfigService.getZona()+'/'+id).success(function(data,status){
+        if (data instanceof Array && data.length >0) {
+          deferred.resolve(data[0].IDPERFIL);
+        } else {
+          deferred.resolve(null);
+        }
+
+      }).error(function(data,status){
+        deferred.resolve("error");
+      });
+
+      return deferred.promise;
+    };
+
+    this.getDetailNew = function(media,date,id,userId){
       var deferred = $q.defer();
       var url="";
       switch (media) {
@@ -647,9 +962,15 @@ angular.module('app.services', [])
           url="/getnoticiassocialmedia_detalle";
           break;
       }
-      $http.get(url+'/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+id+'/'+date).then(function(data){
-        deferred.resolve(data.data[0]);
+      $http.get(url+'/'+ConfigService.getApiKey()+"_"+userId+'/'+ConfigService.getZona()+'/'+id+'/'+date).success(function(data){
+        if (angular.isDefined(data) && (angular.isArray(data) && data !== false)) {
+          deferred.resolve(data[0]);
+        } else {
+          deferred.resolve("ERROR");
+        }
         //alert(data);
+      }).error(function(data){
+        deferred.resolve("ERROR");
       });
       return deferred.promise;
     };
@@ -659,10 +980,13 @@ angular.module('app.services', [])
       //---DELETE THIS WHEN THE REQUEST IS WORKING
       var deferred = $q.defer();
 
-
+      var canceller = $q.defer();
       // REAL REQUEST
       //alert('/getusuarios_categorias/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+user.IDUSUARIO);
-    $http.get('/getusuarios_categorias/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+user.IDUSUARIO).success(function(data,status){
+      var config = {
+        timeout: canceller.promise
+      };
+    $http.get('/getusuarios_categorias/'+ConfigService.getApiKey()+"_"+user.IDUSUARIO+'/'+ConfigService.getZona()+'/'+user.IDUSUARIO,config).success(function(data,status){
        if (data instanceof Array && data.length >0) {
        deferred.resolve(data);
        } else {
@@ -671,16 +995,18 @@ angular.module('app.services', [])
 
        }).error(function(data,status){
        deferred.resolve("error");
+        console.log("status="+status);
        });
       return deferred.promise;
     };
 
 
-    this.getDetailVideo = function (media,month, year, id) {
+    this.getDetailMedia = function (media,month, year, id, user) {
       var deferred = $q.defer();
 
-      var url_tv = "get_url_multimedia_tv";
-      var url_radio = "get_url_multimedia_radio";
+      var url_tv = "/get_url_multimedia_tv";
+      var url_radio = "/get_url_multimedia_radio";
+      var url_press = "/get_url_pdf_prensa";
 
       var url_get = "";
       switch (media) {
@@ -691,16 +1017,24 @@ angular.module('app.services', [])
         case "RADIO":
           url_get = url_radio;
           break;
+        case "PRESS"://ni case of press the base url is not necessary
+              url_get = url_press;
+              break;
       }
 
 
       //$http.get("http://api.mmi-e.com/mmiapi.php/get_url_multimedia_tv/DFKGMKLJOIRJNG/1/02/2016/161")
       //alert('http://api.mmi-e.com/mmiapi.php/'+ url_get + '/' + ConfigService.getApiKey() + '/' + ConfigService.getZona() + '/' + month + '/' + year + '/' + id);
-      $http.get('http://api.mmi-e.com/mmiapi.php/'+ url_get + '/' +  ConfigService.getApiKey() + '/' + ConfigService.getZona() + '/' + month + '/' + year + '/' + id)
+      $http.get(url_get + '/' +  ConfigService.getApiKey() +(angular.isDefined(user) ? "_"+user.IDUSUARIO : "")+ '/' + ConfigService.getZona() + '/' + month + '/' + year + '/' + id)
       .success(function(data) {
           //alert(data[0].URL);
+          var final_url = "";
           //alert('http://test.can.mmi-e.com/' + data[0].URL);
-          var final_url = 'http://test.can.mmi-e.com/' + data[0].URL;
+          if (media !== 'PRESS') {
+            final_url = 'http://test.can.mmi-e.com/' + data[0].URL;
+          } else {
+            final_url = data[0].URL;
+          }
           deferred.resolve(final_url);
           //alert(data[0].URL);
         })
@@ -716,7 +1050,7 @@ angular.module('app.services', [])
 
     this.getPlaces = function (user, filters) {
       var deferred = $q.defer();
-      if (user.LOGIN === 'demo.old') {
+      //if (user.LOGIN === 'demo.old') {
         deferred.resolve([
           {"IDPLACE": "1", "NOMBRE": "Tenerife"},
           {"IDPLACE": "2", "NOMBRE": "Fuerteventura"},
@@ -727,16 +1061,16 @@ angular.module('app.services', [])
           {"IDPLACE": "7", "NOMBRE": "Gran Canaria"},
         ]);
 
-      } else {
+      /*} else {
         deferred.resolved([]);
-      }
+      }*/
       return deferred.promise;
     };
 
 
    this.getOrigins = function (user, filters) {
       var deferred = $q.defer();
-      if (user.LOGIN === 'demo.old') {
+     // if (user.LOGIN === 'demo.old') {
         deferred.resolve([
           {"IDPLACE": "1", "NOMBRE": "Tenerife"},
           {"IDPLACE": "2", "NOMBRE": "Fuerteventura"},
@@ -747,9 +1081,9 @@ angular.module('app.services', [])
           {"IDPLACE": "7", "NOMBRE": "Gran Canaria"},
         ]);
 
-      } else {
+    /*  } else {
         deferred.resolved([]);
-      }
+      }*/
       return deferred.promise;
     };
 
@@ -826,7 +1160,7 @@ angular.module('app.services', [])
         params = params[0];
       }
 
-       $http.post('/'+url_get+'/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+filters.startDate.text+
+       $http.post('/'+url_get+'/'+ConfigService.getApiKey()+(angular.isDefined(user) ? "_"+user.IDUSUARIO : "")+'/'+ConfigService.getZona()+'/'+filters.startDate.text+
        '/'+filters.endDate.text+'/'+offset+'/'+limit+
          (using_social ? ('/'+social_type ) : ""),params).success(function(data,status){
        if (data instanceof Array && data.length >0) {
