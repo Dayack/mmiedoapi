@@ -1,25 +1,13 @@
-<ion-view style="" title="Login" class="login-view">
+<ion-view style="" hide-nav-bar="true" class="login-view" cache-view="false"><!---->
   <ion-content class="has-header" overflow-scroll="true" padding="'true'">
-    <!--<form style="" class="list">
-      <ion-list style="">
-        <label style="" class="item item-input">
-          <span class="input-label">Username</span>
-          <input placeholder="" type="text" ng-model="user.username">
-        </label>
-        <label style="" class="item item-input">
-          <span class="input-label">Password</span>
-          <input placeholder="" type="password" ng-model="user.password">
-        </label>
-      </ion-list>
-      <div style="height: 40px;" class="spacer"></div>
-      <a style="" class="button button-stable button-block " ng-click="login()">Log in</a>
 
-      <div class="center-text" ng-show="successfulLogin === false">
-        <span class="red-text">Usuario o password incorrecto, por favor, vuelva a intentarlo</span>
-      </div>
-    </form>-->
+
   </ion-content>
-  <div class="fixed-outside">
+  <!--<div class="login-title">
+    <h1 class="white-text login-h1">MMI</h1>
+    <h3 class="white-text">Analytics</h3>
+  </div>-->
+  <div class="fixed-outside" ng-show="canLogin">
     <div class="row">
       <div class="col">
     <form style="" class="list">

@@ -6,7 +6,7 @@
       <!-- <a style="" class="button button-stable button-block " ng-click="selectCategory(category)"
           ng-repeat="category in categories">{{ category.NOMBRE }}</a>-->
       <ion-checkbox ng-model="allSelected.value" ng-click="selectAll()">TODOS</ion-checkbox>
-      <ion-checkbox ng-model="place.selected" ng-click="selectPlace(place)" ng-repeat="place in places">
+      <ion-checkbox ng-model="place.selected" ng-click="selectPlace(place)" ng-repeat="place in places | orderBy:'NOMBRE'">
         <label ng-class="{selectedText: place.selected}">{{place.NOMBRE}}</label>
       </ion-checkbox>
       <!--space-->
@@ -19,11 +19,14 @@
 
   </ion-content>
   <!--outside content-->
-  <div class="fixed-outside">
+
+  <ion-footer-bar align-title="center" class="invisible-footer">
+  <!--<div class="fixed-outside">
     <div class="row">
-      <div class="col">
+      <div class="col">-->
         <button ng-click="goToNews();" class="button button-circle button-purple icon ion-checkmark-round"></button>
-      </div>
+    <!--  </div>
     </div>
-  </div>
+  </div>-->
+    </ion-footer-bar>
 </ion-view>

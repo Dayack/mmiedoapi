@@ -4,7 +4,7 @@
     <div>
 
       <ion-checkbox ng-model="allSelected.value" ng-click="selectAll()">TODOS</ion-checkbox>
-      <ion-checkbox ng-model="origin.selected" ng-click="selectOrigin(origin)" ng-repeat="origin in origins">
+      <ion-checkbox ng-model="origin.selected" ng-click="selectOrigin(origin)" ng-repeat="origin in origins | orderBy:'NOMBRE'">
         <label ng-class="{selectedText: origin.selected}">{{origin.NOMBRE}}</label>
       </ion-checkbox>
       <label class="item item-checkbox ng-valid" style="   border: none;
@@ -15,11 +15,14 @@
 
 
   </ion-content>
-  <div class="fixed-outside">
+
+  <ion-footer-bar align-title="center" class="invisible-footer">
+  <!--<div class="fixed-outside">
     <div class="row">
-      <div class="col">
+      <div class="col">-->
         <button ng-click="goToNews();" class="button button-circle button-purple icon ion-checkmark-round"></button>
-      </div>
+     <!-- </div>
     </div>
-  </div>
+  </div>-->
+    </ion-footer-bar>
 </ion-view>

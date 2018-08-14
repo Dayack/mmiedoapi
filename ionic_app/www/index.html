@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta name = "format-detection" content = "telephone=no">
+   <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' http://test.can.mmi-e.com/ http://api.mmi-e.com/">-->
+    <meta http-equiv="Content-Security-Policy" content="default-src *; script-src &apos;self&apos; &apos;unsafe-inline&apos; &apos;unsafe-eval&apos; *; style-src  &apos;self&apos; &apos;unsafe-inline&apos; *">
+
+    <meta name="format-detection" content="telephone=no">
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
     <title></title>
@@ -15,6 +18,12 @@
     <script src="lib/ionic/js/ionic.bundle.js"></script>
     <script src="lib/ionic-datepicker/dist/ionic-datepicker.bundle.min.js"></script>
 
+    <script src="lib/ionic-audio/dist/ion-audio.js"></script>
+<!--develop is 404, cordova-->
+   <!-- <script src="js/ng-cordova.min.js"></script>-->
+    <script src="lib/ngCordova/dist/ng-cordova.js"></script>
+    <script src="cordova.js"></script>
+    <!--ionic audio player-->
 
 
 
@@ -26,6 +35,10 @@
     <script src="lib/moment/locale/es.js"></script>
     <link href="lib/angular-bootstrap-datetimepicker/src/css/datetimepicker.css" rel="stylesheet">
     <script src="lib/angular-bootstrap-datetimepicker/src/js/datetimepicker.js"></script>
+    <link href="lib/ng-pdfviewer/lib/bootstrap.min.css" rel="stylesheet">
+    <!--<script src="lib/ng-pdfviewer/lib/compatibility.js"></script>
+    <script src="lib/ng-pdfviewer/lib/pdf.js"></script>
+    <script src="lib/ng-pdfviewer/ng-pdfviewer.js"></script>-->
 
     <!-- compiled css output -->
     <link href="css/ionic.app.css" rel="stylesheet">

@@ -29,14 +29,21 @@ angular.module('app.routes', [])
 
 
 
-    .state('medios', {
+    .state('menu.medios', {
       url: '/media',
-      templateUrl: 'templates/medios.html',
-      controller: 'mediosCtrl'
+      views: {
+        'side-menu21': {
+          templateUrl: 'templates/medios.html',
+          controller: 'mediosCtrl'
+        }}
     })
 
 
-
+    .state('multimedia', {
+      url: '/mm',
+      templateUrl: 'templates/multimedia.html',
+      controller: 'multimediaCtrl'
+    })
 
 
     .state('menu.categorias', {
@@ -90,7 +97,8 @@ angular.module('app.routes', [])
 
 
     .state('menu.noticias', {
-      url: '/news/:media',
+      url: '/news/:media/:pag',
+    reloadOnSearch: false,
       views: {
         'side-menu21': {
           templateUrl: 'templates/noticias.html',
@@ -116,19 +124,40 @@ angular.module('app.routes', [])
 
 
     .state('detalle', {
-      url: '/detail',
+      url: '/detail/:media/:date/:id/:support',
         templateUrl: 'templates/detalleDeLaNoticia.html',
         controller: 'detalleCtrl'
     })
 
-    .state('date_filter', {
+    .state('menu.date_filter', {
       url: '/date_filter',
-        templateUrl: 'templates/selectDate.html',
-        controller: 'selectDateCtrl'
+      views: {
+        'side-menu21': {
+          templateUrl: 'templates/selectDate.html',
+          controller: 'selectDateCtrl'
+        }
+      }
     })
 
-
-    ;
+    .state('pdf',{
+      url:'/pdf',
+      templateUrl:'templates/pdf-detail.html',
+      controller:'pdfCtrl'
+    })
+    .state('menu.dossiers',{
+      url:'/dossiers',
+      views: {
+        'side-menu21': {
+          templateUrl: 'templates/dossierList.html',
+          controller: 'dossierListCtrl'
+        }
+      }
+    })
+    .state('dossier',{
+      url:'/dossier/:dossierId/:type/:day',
+          templateUrl: 'templates/dossier.html',
+          controller: 'dossierCtrl'
+    });
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/login');
