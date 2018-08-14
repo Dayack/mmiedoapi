@@ -2,10 +2,12 @@
   color: $icon-grey;
   font-size: 20px;
   font-weight: bold;
-  margin-right: 5px;
+  margin-right: 1px;
 }
 .icon-media-item{
   float: left;
+  white-space:nowrap;
+  overflow:hidden;
 }
 .date-item{
   float: right;
@@ -28,6 +30,12 @@
   padding-bottom: 5px;
   padding-top: 5px;
 }
+.new-item a{
+  padding: 16px !important;
+}
+.dossier-preview{
+  padding:0px;
+}
 .icon-white{
   color: white;
 }
@@ -35,10 +43,10 @@
   background-color: $purple;
   color: white;
   text-align: right;
-  padding: 5px 40px 5px 0px;
+  padding: 8px 40px 8px 0px;
   cursor: pointer;
   margin-bottom: 5px;
-  height: 30px;
+  height: 36px;
 }
 .no-new-content{
   text-align: center;
@@ -46,10 +54,41 @@
 }
 .new-support{
    font-size: 15px;
+   vertical-align: top;
 }
 
 .see-more-div{
   float:right;
-  margin-left: 5px;
+  display: inline;
+  margin-left: 15px;
 }
 
+.title-left{
+  text-align: center !important;
+}
+/*detail css*/
+
+.video-frame{
+  width: 100%;
+}
+.audioPlugin .item-thumbnail-left{
+  padding: 0px;
+}
+.audioPlugin .item{
+  float: left;
+  border: 0px;
+  padding: 0px;
+  padding-left: 10px;
+}
+.padding-footer{
+  bottom: 65px !important;
+}
+.play-mask{
+  position: absolute;
+  top: 0px;
+  width: 100%;
+}
+.thumbnail-container{
+  margin:auto;
+  position: relative;
+}

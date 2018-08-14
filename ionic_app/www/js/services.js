@@ -3,6 +3,21 @@ angular.module('app.services', [])
   .factory('BlankFactory', [function () {
 
   }])
+
+  .factory('timeoutHttpIntercept', function ($rootScope, $q) {
+    return {
+      'request': function (config) {
+        if (config.url.indexOf("getusuarios_categorias") >0) {
+
+        } else {
+          config.timeout = 50000;//40 seconds of timeout
+        }
+        return config;
+      }
+    };
+  }
+    )
+
   .factory('$localstorage', ['$window', function($window) {
     return {
       set: function(key, value) {
@@ -25,22 +40,54 @@ angular.module('app.services', [])
   .service('ConfigService', function () {
     var zona = '1';
     var api_key = 'DFKGMKLJOIRJNG';
+    var mediaUrl='http://can.mmi-e.com/';
     this.getZona = function () {
       return zona;
     };
     this.getApiKey = function () {
       return api_key;
     };
+    var limitPage = 10;
+    this.getLimitPage = function() {
+      return limitPage;
+    };
+    this.getMediaUrl=function(){
+      return mediaUrl;
+    };
 
   })
 
   //HELPER FOR DATES
   .service('DateHelperService',function(){
+    //format the date to String DD-MM-YYYY
     this.formatDate=function(date) {
       day =  date.getDate();
       month = date.getMonth()+1;
       year = date.getFullYear();
       return (day<10 ? "0":"")+day+(month<10?"0":"")+month+year;
+    };
+    //get the Date of today
+    this.getToday=function(){
+      var today = new Date();
+      today= new Date(today.setHours(0));
+      today= new Date(today.setMinutes(0));
+      today= new Date(today.setSeconds(0));
+      today= new Date(today.setMilliseconds(0));
+      return today;
+    };
+
+    //add or extract days to a date
+    this.addDays=function(date,days) {
+      var newDate = new Date();
+      newDate.setTime(date.getTime() + (days* 24 * 60 * 60 * 1000));
+      return newDate;
+    };
+
+    //transform YYYY-MM-DD to DDMMYYYY
+    this.formatStringDate = function(date) {
+      var stringDate = date.split("-");
+      return stringDate[2]+stringDate[1]+stringDate[0];
+
     };
 
   })
@@ -49,7 +96,7 @@ angular.module('app.services', [])
 /**
  * User Service, used to save user info
  */
-  .service('UserService', function (HttpService, $q, $window) {
+  .service('UserService', function (HttpService, $q, $window,FilterService) {
     var user = null;
     /**
      *  Login, will send the login request, and save the user data in the Service, will return 'OK' or 'ERROR' to the controller
@@ -60,12 +107,15 @@ angular.module('app.services', [])
       var defer = $q.defer();
       HttpService.login(username, password).then(function (data) {
         //the answer from the HTTP was ok, not error and if user/password is ok
-        if (data !== null && data != "error" && (data !== false)) {
+        if ((data !== null && data != "error" && (data !== false)) && angular.isDefined(data.IDUSUARIO)) {
           user = data;
-          //MOCKED TEST DATA
-          //user.IDUSUARIO=1445;
-          $window.localStorage.setItem('user',JSON.stringify(data));
-          defer.resolve("OK");
+          HttpService.getPerfil(user.IDUSUARIO).then(function(perfil){
+            //MOCKED TEST DATA
+           //user.IDUSUARIO=17640;//1445;
+            user.IDPERFIL = perfil;
+            $window.localStorage.setItem('user',JSON.stringify(data));
+            defer.resolve("OK");
+          });
         } else {
           user = null;
           defer.resolve("ERROR");
@@ -86,6 +136,8 @@ angular.module('app.services', [])
     this.logout = function() {
       user = null;
       $window.localStorage.removeItem('user');
+      $window.localStorage.removeItem('categories');
+      FilterService.resetFilters();
     };
 
     this.getUser = function () {
@@ -109,8 +161,18 @@ angular.module('app.services', [])
         date: null,
         text:null
       },
+      dateSelected:'5y',
       support_zones: [],
       new_zones: []
+    };
+    var filteredByDate = false;
+    var filteredByOrigin = false;
+    var filteredByPlace=false;
+    this.setDateSelected=function(date) {
+      filters.dateSelected=date;
+    };
+    this.getDateSelected=function(){
+      return filters.dateSelected;
     };
 
     //restart dates the filter set the date from 1 month ago to now
@@ -119,14 +181,11 @@ angular.module('app.services', [])
     };
 
     this.restartDates = function() {
-      var today = new Date();
-      var days = 365;
-      filters.endDate.text = DateHelperService.formatDate(today);
-      filters.endDate.date = new Date();
-      filters.endDate.date.setTime(today.getTime());
-      filters.startDate.date = new Date();
-      filters.startDate.date.setTime(today.getTime() -  (days * 24 * 60 * 60 * 1000));
+      filters.endDate.date  = DateHelperService.getToday();
+      filters.endDate.text = DateHelperService.formatDate(filters.endDate.date);
+      filters.startDate.date =DateHelperService.addDays(filters.endDate.date,-30/*-1865*/);
       filters.startDate.text = DateHelperService.formatDate(filters.startDate.date);
+      filters.dateSelected='30d'//'5y';
       //to end Date -30 days
     };
 
@@ -140,22 +199,159 @@ angular.module('app.services', [])
     this.setMedia = function(media) {
       filters.media = media;
     };
+
+    this.setFromDate=function(dateFrom){
+      filters.startDate.date = dateFrom;
+      filters.startDate.text = DateHelperService.formatDate(filters.startDate.date);
+    };
+
+
+    this.setToDate=function(dateTo){
+      filters.endDate.date = dateTo;
+      filters.endDate.text = DateHelperService.formatDate(filters.endDate.date);
+    };
+
+    this.setFiltered=function(newFilter){
+      filtered =newFilter;
+    };
+    this.setFilterByDate=function(filter) {
+      filteredByDate = filter;
+    };
+    this.setFilterByOrigin= function(filter){
+      filteredByOrigin=filter;
+    };
+
+    this.setFilterByPlace = function(filter){
+      filteredByPlace=filter;
+    };
+    this.getFiltered=function(){
+      return ((filteredByDate || filteredByOrigin) || filteredByPlace);
+    };
+
+    //restart when logout
+    this.resetFilters = function(){
+      filters = {
+        media: 'TV',//by default we select TV, this filter is always set
+        startDate: {
+          date: null,
+          text:null
+        },
+        endDate: {
+          date: null,
+          text:null
+        },
+        support_zones: [],
+        new_zones: [],
+        dateSelected: '30d'//'5y'
+      };
+      filteredByDate=false;
+      filteredByOrigin=false;
+      filteredByPlace=false;
+    };
+  })
+
+  .service('ScrollService',function(){
+    var lastUrl=null;//last state visited
+    var lastOffset=null;
+    var lastScroll=null;
+    this.getLastUrl=function(){
+      return lastUrl;
+    };
+    this.setLastUrl=function(newUrl){
+      lastUrl = newUrl;
+    };
+    this.setOffset=function(newOffset){
+      lastOffset= newOffset;
+    };
+    this.getOffset=function(){
+      return lastOffset;
+    };
+    this.setScroll=function(newScroll){
+      lastScroll = newScroll;
+    };
+    this.getScroll=function(){
+      return lastScroll;
+    };
+  })
+
+  .service('PreviewCacheService',function(){
+    var cachedBlocks=null;
+    this.setCachedBlocks=function(blocks){
+      cachedBlocks=blocks;
+    };
+    this.getCachedBlocks=function(){
+      return cachedBlocks;
+    };
+    this.clearCachedBlocks=function(){
+      cachedBlocks=null;
+    };
+
+
   })
 /**
  * Service to load the news
  */
-  .service('NewsService', function (HttpService,CategoryService, $q) {
+  .service('NewsService', function (HttpService,CategoryService, $q,DateHelperService,UserService) {
 
     var limit = 10;
     var news = [];
     var offset = 0;
     var lastSearchHash = null;
+    var thumbnails=[];
+    var mediaUrl=null;
+    var idNew=null;
+    var autoPlay=false;
+    var superSupport=null;
+    var pdfUrl=null;
+    this.setPdfUrl=function(url){
+      pdfUrl=url;
+    };
+    this.getPdfUrl=function(){
+      return pdfUrl;
+    };
+    this.setAutoPlay=function(state){
+      autoPlay=state;
+    };
+    this.getAutoPlay=function(){
+      return autoPlay;
+    };
+    this.setSuperSupport=function(newSup){
+      superSupport=newSup;
+    };
+    this.getSuperSupport=function() {
+      return superSupport;
+    };
+    this.setIdNew=function(id){
+      idNew=id;
+    };
+    this.getIdNew=function(){
+      return idNew;
+    };
+
+    this.setThumbNails=function(thumbs){
+      thumbnails=thumbs;
+    };
+    this.getThumbNails=function(){
+      return thumbnails;
+    };
+
+    this.setMediaUrl=function(url){
+      mediaUrl=url;
+    };
+
+    this.getMediaUrl=function(){
+      return mediaUrl;
+    };
+
     //-- preview config block
     var blockLimit = 5;
+    //save and load the last url to save the scroll position
+
+
     /**
      * Loads the news for user, filters, and options specified
      * @param user
-     * @param type = type of the news to load 'TV','RADIO','SOCIAL','PRESS','TWITTER'
+     * @param type = type of the news to load 'TV','RADIO','SOCIAL','PRESS','TWITTER','INTERNET'
      * @param filters
      * @param options
      * @returns {*}
@@ -169,6 +365,9 @@ angular.module('app.services', [])
       }
       if (new_offset!==null) {
         offset = new_offset;
+      }
+      if (!angular.isDefined(user)) {
+        user = UserService.getUser();
       }
       var categories = CategoryService.getSelectedCategories();
       var searchHash ="type="+type+ JSON.stringify(user) + JSON.stringify(filters)+"offset="+offset+"limit="+limit;
@@ -196,12 +395,12 @@ angular.module('app.services', [])
         HttpService.getNews(user,type, filters,   offset  ,
            limit  ,categories).then(function (data) {
           //the answer from the HTTP was ok, not error and if user/password is ok
-            result.news = data;
+
           if (data !== null && data != "error" && (data !== false)) {
-            news = data;
+            result.news = data;
             defer.resolve(result);
           } else {
-            news = [];
+            result.news = [];
             defer.resolve(result);
           }
         });
@@ -211,6 +410,33 @@ angular.module('app.services', [])
       result.news= news;
       return result;*/
     };
+
+    this.getNew=function(media,date,id,userId) {
+      var defer = $q.defer();
+      HttpService.getDetailNew(media,DateHelperService.formatStringDate(date),id,userId).then(function(data){
+         defer.resolve(data);
+
+     });
+      return defer.promise;
+    };
+
+
+    this.getMedia=function(media, date, id,user) {
+      var defer = $q.defer();
+
+      var pos= date.indexOf("-");
+      var year = date.substring(0, pos);
+
+      var pos2= date.indexOf("-", pos+1);
+      var month = date.substring(pos+1, pos2);
+
+      HttpService.getDetailMedia(media,month, year, id,user).then(function(data){
+        //alert(data);
+         defer.resolve(data);
+      });
+      return defer.promise;
+    };
+
 
 
   })
@@ -261,6 +487,12 @@ angular.module('app.services', [])
 
     this.clearStatus = function() {
       $window.localStorage.removeItem("categories");
+      categories = [];
+      selectedCategories=[];
+      selectedCategory=[];
+      selectedCategories=[];
+      categoriesUser=[];
+      allSelected=true;
     };
     /**
      *  getCategories, will get all user's categories
@@ -272,7 +504,7 @@ angular.module('app.services', [])
 
     this.getCategories = function (user) {
       var defer = $q.defer();
-      if (categoriesUser === user) {
+      if (angular.equals(categoriesUser,user) && categories !==[]) {
         defer.resolve(categories);
       } else {
         HttpService.getCategories(user).then(function (data) {
@@ -280,8 +512,13 @@ angular.module('app.services', [])
             categoriesUser = user;
             //categories = data;
             //wee need merge all the trees
+            if (categories === null) {
+              categories = [];
+            }
             angular.forEach(data, function(value, key) {
-              categories.push(value.CONTENIDO[0]);/*data[0].CONTENIDO[1]*/
+              angular.forEach(value.CONTENIDO,function(value1,key1){
+                categories.push(value1);
+              });
               //check if the father is the only node
 
             });
@@ -326,8 +563,29 @@ angular.module('app.services', [])
       return selectedCategory.NOMBRE;
     };
 
+    this.getSelectedCategory = function () {
+      return selectedCategory;
+    };
+
     this.getSubCategories = function () {
       return subCategories;
+    };
+
+    //extrac the toRemove Array items from source array
+    this.difference = function(source, toRemove) {
+      return source.filter(function(value){
+        return toRemove.indexOf(value) == -1;
+      });
+    };
+
+    this.getAllSubIds= function(subCategory) {
+        ids= [];
+        if (subCategory.hasOwnProperty("CHILDREN") && subCategory.CHILDREN.length > 0) {
+          for (var i = 0; i< subCategory.CHILDREN.length; i++) {
+            ids = ids.concat(this.getAllSubIds(subCategory.CHILDREN[i]));
+          }
+        }
+        return ids.concat([subCategory.IDCATEGORIA]);
     };
 
     this.selectSubCategory = function (subCategory) {
@@ -337,14 +595,16 @@ angular.module('app.services', [])
       if (!selectedCategories.hasOwnProperty(categoryId)) {
 		subCategory.selected = true;
         selectedCategory.selected = true;
-        selectedCategories[categoryId] = [subCategoryId, ];
+        selectedCategories[categoryId] = this.getAllSubIds(subCategory);//[subCategoryId, ];
       } else if (selectedCategories[categoryId].indexOf(subCategoryId) == -1) {
-        selectedCategories[categoryId].push(subCategoryId);
+        //selectedCategories[categoryId].push(subCategoryId);
+        selectedCategories[categoryId] = selectedCategories[categoryId].concat(this.getAllSubIds(subCategory));
         selectedCategory.selected = true;
         subCategory.selected = true;
       } else {
         subCategory.selected = false;
-        selectedCategories[categoryId].splice(selectedCategories[categoryId].indexOf(subCategoryId), 1);
+       // selectedCategories[categoryId].splice(selectedCategories[categoryId].indexOf(subCategoryId), 1);
+        selectedCategories[categoryId] = this.difference(selectedCategories[categoryId], this.getAllSubIds(subCategory));
         if (selectedCategories[categoryId].length === 0) {
           selectedCategory.selected = false;
         } else {
@@ -353,6 +613,26 @@ angular.module('app.services', [])
       }
       that.saveStatus();
     };
+
+    this.selectFatherCategory=function(category) {
+      categoryId = selectedCategory.IDCATEGORIA;
+      if (selectedCategories.hasOwnProperty(categoryId)) {
+        if (selectedCategories[categoryId].indexOf(category.IDCATEGORIA)==-1) {
+          selectedCategories[categoryId].push(category.IDCATEGORIA);
+        }
+      }
+    };
+
+    //delete the father category
+    this.deleteCategory = function () {
+      var idFather = selectedCategory.IDCATEGORIA;
+      if (selectedCategories.hasOwnProperty(idFather)) {
+        if (selectedCategories[idFather].indexOf(idFather)>-1) {
+          selectedCategories[idFather].splice(selectedCategories[idFather].indexOf(idFather), 1);
+        }
+      }
+    };
+
 
     this.setCurrentCategories = function (category) {
       selectedCategories = category;
@@ -378,12 +658,13 @@ angular.module('app.services', [])
         var allCat = {};
         angular.forEach(categories,function(value,key) {
           if (!allCat.hasOwnProperty(value.IDCATEGORIA)) {
-            allCat[value.IDCATEGORIA] = [];
+            allCat[value.IDCATEGORIA] = [value.IDCATEGORIA];//add the category father
           }
           angular.forEach(value.CHILDREN, function (subvalue, subkey) {
-            allCat[value.IDCATEGORIA].push(subvalue.IDCATEGORIA);
-          });
-        });
+            allCat[value.IDCATEGORIA] = allCat[value.IDCATEGORIA].concat(this.getAllSubIds(subvalue));
+            //allCat[value.IDCATEGORIA].push(subvalue.IDCATEGORIA);
+          }.bind(this));
+        }.bind(this));
             return allCat;
       } else {
         return selectedCategories;
@@ -412,7 +693,7 @@ angular.module('app.services', [])
 
   .service('PlacesService', function (HttpService, $q) {
 
-    var allPlaces = false;
+    var allPlaces = true;
     var places = [];
     var placesUser = null;
     var selectedPlaces = [];
@@ -456,17 +737,22 @@ angular.module('app.services', [])
       }
       selectedPlaces = [];
     };
+    this.areAllSelected=function(){
+      return allPlaces;
+    };
 
   })
 
 
   .service('OriginService', function (HttpService, $q) {
 
-    var allOrigins = false;
+    var allOrigins = true;
     var origins = [];
     var originUser = null;
     var selectedOrigins = [];
-
+    this.areAllSelected=function(){
+      return allOrigins;
+    };
     this.getOrigins = function (user) {
       var defer = $q.defer();
       if (originUser === user) {
@@ -509,7 +795,126 @@ angular.module('app.services', [])
 
   })
 
+.service('DossierService',function($http,$q,ConfigService,$window,UserService){
 
+
+    var urlVisor="https://drive.google.com/viewerng/viewer?pid=explorer&efh=false&a=v&chrome=false&embedded=true&url=";
+
+    local_dir = "mmi_pdf_dossiers";
+    var dossier=null;
+    var arboles=null;
+    var pdf_url=null;
+    var saved_pdf=null;//structure saved in localStorage
+    var dossiers_cache=null;
+
+    this.setCachedDossier=function(dossiers){
+      dossiers_cache= dossiers;
+    };
+
+    this.getCachedDossier=function(){
+      return dossiers_cache;
+    };
+
+    //save the actual Dossier in the localStorage
+
+    this.getUrlVisor=function(){
+      return urlVisor;
+    };
+    this.savePdf=function(day,dossier){
+      saved_pdf = JSON.parse($window.localStorage.getItem(local_dir));
+      console.log("previously saved "+saved_pdf);
+      if (!angular.isDefined(saved_pdf) || saved_pdf === null){
+        saved_pdf = {};
+      }
+      if (!angular.isDefined(saved_pdf[day])){
+        saved_pdf[day]=[];
+      }
+
+      console.log("saving in "+ JSON.stringify(saved_pdf[day]) + " -> "+ JSON.stringify(dossier));
+      saved_pdf[day] = saved_pdf[day].concat([dossier]);
+
+      console.log("saving"+ JSON.stringify(saved_pdf));
+      $window.localStorage.setItem(local_dir,JSON.stringify(saved_pdf));
+      console.log("saved!");
+    };
+
+    this.getSavedPdfs=function() {
+      saved_pdf = JSON.parse($window.localStorage.getItem(local_dir));
+      console.log("loading "+ JSON.stringify(saved_pdf));
+      if (!angular.isDefined(saved_pdf) || saved_pdf === null) {
+        saved_pdf = {};
+      }
+      return saved_pdf;
+    };
+
+    /**
+     * extract tree categories for the actual user
+     * @param userId
+     * @returns {*}
+     */
+
+
+
+    this.getArbolesPDF=function(profileId,userId){
+      if (arboles !==null) {
+        return arboles;
+      }
+      var deffered = $q.defer();
+      $http.get('/getperfiles_arboles/'+ConfigService.getApiKey()+"_"+userId+'/'+ConfigService.getZona()+'/'+profileId).then(function(data){
+        if (data.status !==200) {
+          deffered.resolve([]);
+        } else {
+          var dossiers=[];
+          angular.forEach(data.data,function(arbol){
+            if (arbol.TIPO ==="PDF"){
+              dossiers.push(arbol);
+            }
+          });
+          deffered.resolve(dossiers);
+        }
+      });
+      return deffered.promise;
+    };
+    this.setDossier=function(d){
+      dossier = d;
+    };
+    this.getDossier=function(){
+      return dossier;
+    };
+
+    ///extract file url if the dossier is downloaded
+    //if not return null
+    this.getDownloadedDossier=function(dossier){
+      return null;
+    };
+
+    this.getDossierPDFCoverUrl=function(day,userId){
+      var deffered= $q.defer();
+      $http.get('/get_url_portadas/'+ConfigService.getApiKey()+"_"+userId+'/'+ConfigService.getZona()+'/'+day).then(function(data){
+
+        deffered.resolve(data.data[0].URL);
+      });
+      return deffered.promise;
+    };
+
+    //get the url data
+    this.getDossierPDFUrl=function(dossier,profileId,day,userId){
+
+      var deffered= $q.defer();
+      if (dossier === null || userId === null || day ===null) {
+        deffered.resolve(null);
+      } else {
+        $http.get('/get_url_dossier/' + ConfigService.getApiKey()+"_"+userId + '/' + ConfigService.getZona() + '/' + profileId + '/' + dossier.dossier/*IDARBOL*/ + '/' + day).then(function (data) {
+          deffered.resolve(data.data[0].URL);
+        });
+      }
+      return deffered.promise;
+
+    };
+
+    this.getDossier
+
+  })
 
 /**
  * HTTP Service, this service will centralize all API calls
@@ -541,14 +946,71 @@ angular.module('app.services', [])
       return deferred.promise;
     };
 
+    this.getPerfil=function(id){
+      var deferred = $q.defer();
+
+
+      //REAL REQUEST
+      $http.get('/getusuarios_perfil/'+ConfigService.getApiKey()+"_"+id+'/'+ConfigService.getZona()+'/'+id).success(function(data,status){
+        if (data instanceof Array && data.length >0) {
+          deferred.resolve(data[0].IDPERFIL);
+        } else {
+          deferred.resolve(null);
+        }
+
+      }).error(function(data,status){
+        deferred.resolve("error");
+      });
+
+      return deferred.promise;
+    };
+
+    this.getDetailNew = function(media,date,id,userId){
+      var deferred = $q.defer();
+      var url="";
+      switch (media) {
+        case "PRESS":
+          url="/getnoticiasprensa_detalle";
+          break;
+        case "TV":
+          url="/getnoticiastv_detalle";
+          break;
+        case "RADIO":
+          url="/getnoticiasradio_detalle";
+          break;
+        case "INTERNET":
+          url="/getnoticiasinternet_detalle";
+          break;
+        case "SOCIAL":
+        case "TWITTER":
+          url="/getnoticiassocialmedia_detalle";
+          break;
+      }
+      $http.get(url+'/'+ConfigService.getApiKey()+"_"+userId+'/'+ConfigService.getZona()+'/'+id+'/'+date).success(function(data){
+        if (angular.isDefined(data) && (angular.isArray(data) && data !== false)) {
+          deferred.resolve(data[0]);
+        } else {
+          deferred.resolve("ERROR");
+        }
+        //alert(data);
+      }).error(function(data){
+        deferred.resolve("ERROR");
+      });
+      return deferred.promise;
+    };
+
     this.getCategories = function (user, filters) {
       //MOCKED REQUEST
       //---DELETE THIS WHEN THE REQUEST IS WORKING
       var deferred = $q.defer();
 
-
+      var canceller = $q.defer();
       // REAL REQUEST
-       $http.get('/getusuarios_categorias/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+user.IDUSUARIO).success(function(data,status){
+      //alert('/getusuarios_categorias/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+user.IDUSUARIO);
+      var config = {
+        timeout: canceller.promise
+      };
+    $http.get('/getusuarios_categorias/'+ConfigService.getApiKey()+"_"+user.IDUSUARIO+'/'+ConfigService.getZona()+'/'+user.IDUSUARIO,config).success(function(data,status){
        if (data instanceof Array && data.length >0) {
        deferred.resolve(data);
        } else {
@@ -557,14 +1019,62 @@ angular.module('app.services', [])
 
        }).error(function(data,status){
        deferred.resolve("error");
+        console.log("status="+status);
        });
       return deferred.promise;
     };
 
 
+    this.getDetailMedia = function (media,month, year, id, user) {
+      var deferred = $q.defer();
+
+      var url_tv = "/get_url_multimedia_tv";
+      var url_radio = "/get_url_multimedia_radio";
+      var url_press = "/get_url_pdf_prensa";
+
+      var url_get = "";
+      switch (media) {
+        case "TV":
+          url_get = url_tv;
+          break;
+
+        case "RADIO":
+          url_get = url_radio;
+          break;
+        case "PRESS"://ni case of press the base url is not necessary
+              url_get = url_press;
+              break;
+      }
+
+
+      //$http.get("http://api.mmi-e.com/mmiapi.php/get_url_multimedia_tv/DFKGMKLJOIRJNG/1/02/2016/161")
+      //alert('http://api.mmi-e.com/mmiapi.php/'+ url_get + '/' + ConfigService.getApiKey() + '/' + ConfigService.getZona() + '/' + month + '/' + year + '/' + id);
+      $http.get(url_get + '/' +  ConfigService.getApiKey() +(angular.isDefined(user) ? "_"+user.IDUSUARIO : "")+ '/' + ConfigService.getZona() + '/' + month + '/' + year + '/' + id)
+      .success(function(data) {
+          //alert(data[0].URL);
+          var final_url = "";
+          //alert('http://test.can.mmi-e.com/' + data[0].URL);
+          if (media !== 'PRESS') {
+            final_url = 'http://test.can.mmi-e.com/' + data[0].URL;
+          } else {
+            final_url = data[0].URL;
+          }
+          deferred.resolve(final_url);
+          //alert(data[0].URL);
+        })
+        .error(function(data) {
+          //alert("ERROR");
+          deferred.resolve("error");
+        });
+
+        return deferred.promise;
+
+    };
+
+
     this.getPlaces = function (user, filters) {
       var deferred = $q.defer();
-      if (user.LOGIN === 'demo.old') {
+      //if (user.LOGIN === 'demo.old') {
         deferred.resolve([
           {"IDPLACE": "1", "NOMBRE": "Tenerife"},
           {"IDPLACE": "2", "NOMBRE": "Fuerteventura"},
@@ -575,16 +1085,16 @@ angular.module('app.services', [])
           {"IDPLACE": "7", "NOMBRE": "Gran Canaria"},
         ]);
 
-      } else {
+      /*} else {
         deferred.resolved([]);
-      }
+      }*/
       return deferred.promise;
     };
 
 
    this.getOrigins = function (user, filters) {
       var deferred = $q.defer();
-      if (user.LOGIN === 'demo.old') {
+     // if (user.LOGIN === 'demo.old') {
         deferred.resolve([
           {"IDPLACE": "1", "NOMBRE": "Tenerife"},
           {"IDPLACE": "2", "NOMBRE": "Fuerteventura"},
@@ -595,9 +1105,9 @@ angular.module('app.services', [])
           {"IDPLACE": "7", "NOMBRE": "Gran Canaria"},
         ]);
 
-      } else {
+    /*  } else {
         deferred.resolved([]);
-      }
+      }*/
       return deferred.promise;
     };
 
@@ -672,9 +1182,15 @@ angular.module('app.services', [])
       //the API doesnt allow array of 1 category, so we must transform into an object
       if (params.length===1) {
         params = params[0];
+
+        params = JSON.stringify(params);
+      } else{
+        //pass the array to string without []
+        params = JSON.stringify(params);
+        params=params.substr(1,params.length-2);
       }
 
-       $http.post('/'+url_get+'/'+ConfigService.getApiKey()+'/'+ConfigService.getZona()+'/'+filters.startDate.text+
+       $http.post('/'+url_get+'/'+ConfigService.getApiKey()+(angular.isDefined(user) ? "_"+user.IDUSUARIO : "")+'/'+ConfigService.getZona()+'/'+filters.startDate.text+
        '/'+filters.endDate.text+'/'+offset+'/'+limit+
          (using_social ? ('/'+social_type ) : ""),params).success(function(data,status){
        if (data instanceof Array && data.length >0) {
@@ -691,4 +1207,3 @@ angular.module('app.services', [])
 
   })
 ;
-
