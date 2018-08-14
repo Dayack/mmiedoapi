@@ -133,4 +133,3 @@ angular.module('app.directives', [])
 
     };
   });
-
