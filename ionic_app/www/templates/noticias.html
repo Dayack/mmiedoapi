@@ -15,6 +15,9 @@
                       <div class="date-item">
                         {{new.FECHA | DateNew}}
                       </div>
+                      <div style="clear:both;">
+                        <span ng-if="(new.SOPORTE == 'Instagram')" class="purple-text new-support"> @{{new.AUTHOR}}</span>
+                      </div>
                     </div>
 
                     <div ng-if="(media == 'TV' || media =='RADIO')">
@@ -22,7 +25,7 @@
                       <div class="date-item" style="clear: both;">
                         {{new.FECHA | DateNew}}
                       </div>
-                      <div><span class="purple-text new-suppoert">{{new.SUPERSOPORTE}}</span></div>
+                      <div><span class="purple-text new-support">{{new.SUPERSOPORTE}}</span></div>
                       <div class="icon-media-item" style="clear: both;">
 
                         <span class="purple-text new-support" >{{new.SOPORTE | limitationText:80}}</span>
