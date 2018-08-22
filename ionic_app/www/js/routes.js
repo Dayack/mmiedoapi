@@ -124,7 +124,7 @@ angular.module('app.routes', [])
 
 
     .state('detalle', {
-      url: '/detail/:media/:date/:id/:support',
+      url: '/detail/:media/:date/:id/:support/:superSupport',
         templateUrl: 'templates/detalleDeLaNoticia.html',
         controller: 'detalleCtrl'
     })

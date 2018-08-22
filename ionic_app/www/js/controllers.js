@@ -426,7 +426,11 @@ angular.module('app.controllers', ['ionic'])
 
         });
         //SOCIAL
+
+        //$scope.extrainfo <--- traemos datos de media y social por ejemplo
         NewsService.getNews($scope.user, "SOCIAL", $scope.filters, $scope.options, 5, 0).then(function (data) {
+          console.log("SOCIAL")
+          console.log(data);
           for (var i = 0; i < $scope.blockNews.length; i++) {
             $scope.blockNews[i].loading=false;
             if ($scope.blockNews[i].type === data.type) {
@@ -438,6 +442,8 @@ angular.module('app.controllers', ['ionic'])
         });
         //INTERNET
         NewsService.getNews($scope.user, "INTERNET", $scope.filters, $scope.options, 5, 0).then(function (data) {
+          console.log("INTERNET")
+          console.log(data);
           for (var i = 0; i < $scope.blockNews.length; i++) {
             $scope.blockNews[i].loading=false;
             if ($scope.blockNews[i].type === data.type) {
@@ -492,7 +498,6 @@ angular.module('app.controllers', ['ionic'])
     };
 
     $scope.goToNew=function(item,media){
-
       ScrollService.setLastUrl($scope.currentState);
       $timeout(function(){
         $scope.$digest();
@@ -528,7 +533,7 @@ angular.module('app.controllers', ['ionic'])
           default:
                 break;
         }
-      $state.go('detalle',{date:item.FECHA,id:item.IDNOTICIA,media:media,support:item.SOPORTE});
+      $state.go('detalle',{date:item.FECHA,id:item.IDNOTICIA,media:media,support:item.SOPORTE, superSupport:item.SUPERSOPORTE});
       },500);
     };
 
@@ -671,104 +676,136 @@ angular.module('app.controllers', ['ionic'])
           default:
             break;
         }
-        $state.go('detalle',{date:item.FECHA,id:item.IDNOTICIA,media:media,support:item.SOPORTE});
+        $state.go('detalle',{date:item.FECHA,id:item.IDNOTICIA,media:media,support:item.SOPORTE, superSupport:item.SUPERSOPORTE});
       },500);
     };
 })
 
-.controller('detalleCtrl', function(MediaManager,$ionicLoading,UserService,ScrollService,$location,$rootScope,$sce,$http,$timeout,$document,$ionicHistory,$cordovaInAppBrowser,$scope,$window,UserService,CategoryService,$state,$ionicNavBarDelegate,$stateParams,NewsService) {
+.controller('detalleCtrl', function(MediaManager,$ionicLoading,UserService,ScrollService,$location,$rootScope,$sce,$http,
+                                    $timeout,$document,$ionicHistory,$cordovaInAppBrowser,$scope,$window,CategoryService,$state,$ionicNavBarDelegate,$stateParams,NewsService,$cordovaSocialSharing) {
 
+  $scope.media = $stateParams.media;
+  $scope.date = $stateParams.date;
+  $scope.id = $stateParams.id;
+  $scope.support = $stateParams.support;
+  $scope.dataNew = null;
+  $scope.extendedText = false;
+  $scope.hasLink = false;//has a link to external web?
+  $scope.loaded = false;
+  $scope.errorLoading = false;
+  $scope.thumbnails = [""];
+  $scope.superSupport = $stateParams.superSupport;
+  $scope.mediaLoaded = false;//to render the video, audio tag
+  $scope.autoPlay = NewsService.getAutoPlay();
+  NewsService.setPdfUrl(null);
+  /*$ionicLoading.show({
+    template: '<div class="icon ion-loading-c loading-color">'
+  });*/
+  if ($scope.media === 'TV' && NewsService.getThumbNails() !== null) {
+    $scope.thumbnails = NewsService.getThumbNails();
+  }
+  NewsService.getNew($scope.media, $scope.date, $scope.id, UserService.getUser().IDUSUARIO).then(function (data) {
+    //$ionicLoading.hide();
+    $scope.dataNew = data;
+    NewsService.setTema(data.TEMA);
 
-    //video control
-  /*  $scope.mediaOK=true;
-
-    $scope.$on("ERRORMEDIA",function(){
-      $scope.mediaOK=false;
-      $scope.iframeUrl = $sce.trustAsResourceUrl($scope.multimedia.url);
-      console.log("MEDIA CHANGED");
-    });*/
-
-
-    $scope.media= $stateParams.media;
-    $scope.date= $stateParams.date;
-    $scope.id = $stateParams.id;
-    $scope.support= $stateParams.support;
-    $scope.dataNew = null;
-    $scope.extendedText=false;
-    $scope.hasLink=false;//has a link to external web?
-    $scope.loaded=false;
-    $scope.errorLoading=false;
-    $scope.thumbnails=[""];
-    $scope.superSupport=null;
-    $scope.mediaLoaded=false;//to render the video, audio tag
-    $scope.autoPlay=NewsService.getAutoPlay();
-    NewsService.setPdfUrl(null);
-    /*$ionicLoading.show({
-      template: '<div class="icon ion-loading-c loading-color">'
-    });*/
-    if ($scope.media ==='TV' && NewsService.getThumbNails() !==null){
-      $scope.thumbnails = NewsService.getThumbNails();
+    if ($scope.dataNew == "ERROR") {
+      $scope.errorLoading = true;
     }
-    NewsService.getNew($scope.media,$scope.date,$scope.id,UserService.getUser().IDUSUARIO).then(function(data) {
-      //$ionicLoading.hide();
-      $scope.dataNew = data;
-      if ($scope.dataNew == "ERROR") {
-        $scope.errorLoading=true;
-      }
-      $scope.loaded=true;
+    $scope.loaded = true;
 
-      $scope.extendedText = (angular.isDefined($scope.dataNew.ROLLO));
-      if ($scope.media=='TWITTER') {
-        //if is twitter, the title and the text are the same, so the title now is Twitter
-        $scope.dataNew.TEMA = '';
+    $scope.extendedText = (angular.isDefined($scope.dataNew.ROLLO));
+    if ($scope.media ) {
+      //if is twitter, the title and the text are the same, so the title now is Twitter
+      $scope.dataNew.TEMA = '';
+      if($scope.media === 'TV' || $scope.media === 'PRESS') {
+        let x = NewsService.getMediaUrl();
+        NewsService.setMediaUrl(x);
       }
-      $scope.hasLink = ((angular.isDefined($scope.dataNew.URL) && $scope.dataNew.URL.length >0));
-    });
-    if (NewsService.getSuperSupport() !== null) {
-      $scope.superSupport = NewsService.getSuperSupport();
+      else{
+        NewsService.setMediaUrl(data.URL);
+      }
     }
-    if ($scope.media === 'TV' || $scope.media === 'RADIO' || $scope.media ==='PRESS') {
-      $scope.multimedia = {url: NewsService.getMediaUrl()};
-      if ($scope.multimedia.url !==null) {
-        var url = $scope.multimedia.url;
-       /* var xhttp = new XMLHttpRequest();
-        xhttp.open('HEAD', url);
-        xhttp.onreadystatechange = function () {
-          if (this.readyState == this.DONE) {
-            console.log(this.status + " " + this.getResponseHeader("Content-Type"));//check answer type
+    $scope.hasLink = ((angular.isDefined($scope.dataNew.URL) && $scope.dataNew.URL.length > 0));
 
-            //load contentType
-            */
+  });
+  if (NewsService.getSuperSupport() !== null) {
+    $scope.superSupport = NewsService.getSuperSupport();
+  }
+  if ($scope.media === 'TV' || $scope.media === 'RADIO' || $scope.media === 'PRESS') {
+    $scope.multimedia = {url: NewsService.getMediaUrl()};
+    if ($scope.multimedia.url !== null) {
+      var url = $scope.multimedia.url;
+      console.log($scope.multimedia.url);
+      NewsService.setMediaUrl($scope.multimedia.url);
 
-        if ($scope.media ==='PRESS') {
-          //open in google reader, to be compatible with all devices:
-         // $scope.pdfurl = $sce.trustAsResourceUrl("http://docs.google.com/gview?embedded=true&url="+$scope.multimedia.url);//<----OK
+      if ($scope.media === 'PRESS') {
 
-           $scope.pdfurl = $sce.trustAsResourceUrl("https://drive.google.com/viewerng/viewer?pid=explorer&efh=false&a=v&chrome=false&embedded=true&url="+$scope.multimedia.url);
+        $scope.pdfurl = $sce.trustAsResourceUrl("https://drive.google.com/viewerng/viewer?pid=explorer&efh=false&a=v&chrome=false&embedded=true&url=" + $scope.multimedia.url);
 
-          NewsService.setPdfUrl($scope.pdfurl);
-        }
-
-        $scope.mediaLoaded=true;
-        //If is a video, and the user clicked in autoplay, must be in fullscreen
-         /* }
-        };
-
-        xhttp.send();*/
+        NewsService.setPdfUrl($scope.multimedia.url);
       }
-      /*NewsService.getMedia($scope.media, $scope.date, $scope.id).then(function (data) {
-        if (data != "error") {
-          $scope.multimedia = {url: data};
+
+      $scope.mediaLoaded = true;
 
 
-          $scope.mediaLoaded = true;
-          if ($scope.media ==='PRESS') {
-            //open in google reader, to be compatible with all devices:
-            $scope.pdfurl = $sce.trustAsResourceUrl("http://docs.google.com/gview?embedded=true&url="+$scope.multimedia.url);
-          }
-        }
-      });*/
+      //If is a video, and the user clicked in autoplay, must be in fullscreen
+      /* }
+     };
+
+     xhttp.send();*/
     }
+
+  }
+  $scope.social = function () {
+    var url = "";
+    var tema = "";
+    var subject = "";
+    if ($scope.media === 'TV' || $scope.media === 'RADIO') {
+      // alert("PAM");
+      url = NewsService.getMediaUrl();
+      tema = NewsService.getTema();
+      subject = ($scope.superSupport + " " + $scope.support + " " + tema + " ");
+
+    }
+    else if ($scope.media === 'PRESS') {
+      url = NewsService.getPdfUrl();
+      console.log(url);
+      tema = NewsService.getTema();
+      subject = ($scope.superSupport + " " + $scope.support + " " + tema + " ");
+
+    }
+    else {
+      url = NewsService.getMediaUrl();
+      tema = NewsService.getTema();
+      subject = ($scope.superSupport + " " + $scope.support);
+
+    }
+
+    var options = {
+      message: "MMI", // not supported on some apps (Facebook, Instagram)
+      subject: subject, // fi. for email
+      files: ['', ''], // an array of filenames either locally or remotely
+      url: url,
+      chooserTitle: 'Pick an app', // Android only, you can override the default share sheet title,
+      appPackageName: 'com.apple.social.facebook' // Android only, you can provide id of the App you want to share with
+    };
+
+
+    $cordovaSocialSharing.share(options.subject, options.message, options.files, options.url).then(onSuccess).catch(onError)
+
+  }
+
+  var onSuccess = function (result) {
+    console.log("Share completed? " + result.completed); // On Android apps mostly return false even while it's true
+    console.log("Shared to app: " + result.app); // On Android result.app since plugin version 5.4.0 this is no longer empty. On iOS it's empty when sharing is cancelled (result.completed=false)
+  };
+
+  var onError = function (msg) {
+    console.log("Sharing failed with message: " + msg);
+  };
+
+
 
     $scope.openLink=function(){
      // $window.open('http://www.google.com', '_system');

@@ -303,6 +303,8 @@ angular.module('app.services', [])
     var autoPlay=false;
     var superSupport=null;
     var pdfUrl=null;
+    var tema = '';
+    var fechaNoticia = '';
     this.setPdfUrl=function(url){
       pdfUrl=url;
     };
@@ -342,6 +344,22 @@ angular.module('app.services', [])
     this.getMediaUrl=function(){
       return mediaUrl;
     };
+
+    this.setTema=function(asunto){
+      tema=asunto;
+    };
+
+    this.getTema=function () {
+      return tema;
+    };
+
+    this.setdate=function (date) {
+      fechaNoticia=date;
+    }
+
+    this.getDate=function () {
+      return fechaNoticia;
+    }
 
     //-- preview config block
     var blockLimit = 5;

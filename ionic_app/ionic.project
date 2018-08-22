@@ -1,6 +1,8 @@
 {
   "name": "mmi",
-  "app_id": "11ed6667",
+  "integrations": {
+    "cordova": {}
+  },
   "gulpStartupTasks": [
     "sass",
     "watch"
@@ -9,8 +11,6 @@
     "www/**/*",
     "!www/lib/**/*"
   ],
-  "integrations": {
-    "cordova": {}
-  },
-  "type": "ionic1"
+  "type": "ionic1",
+  "pro_id": "874e4feb"
 }
