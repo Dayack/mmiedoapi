@@ -1,0 +1,1160 @@
+swagger: "2.0"
+info:
+  description: "Api para MMI Analitycs "
+  version: "1.0.0"
+  title: "MMI EDO API"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "apiteam@swagger.io"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+#host: "api.mmi-e.com/mmiapi.php"
+basePath: "http://api-edo.mmi-e.com/mmiapi_edo.php"
+tags:
+- name: "Categorías"
+  description: "Conjunto de métodos relacionados con categorías."
+- name: "Noticias"
+  description: "Conjunto de métodos relacionados con las noticias"
+- name: "Alertas"
+  description: "Conjunto de métodos relacionados con las alertas. Métodos deprecados."
+- name: "Transcripciones"
+  description: "Conjunto de métodos relacionados con transcripciones. Métodos deprecados"
+schemes:
+#- "https"
+- "http"
+
+paths:
+  /getcategorias/{ApiKey}/{idzona}:
+    get:
+      tags:
+        - "Categorías"
+      description: Obtiene el listado de las categorías incluidas en el sistema para la zona especificada.
+      parameters:
+      - name: ApiKey
+        in: path
+        description: Key de la Api
+        required: true
+        type: string
+      - name: idzona
+        in: path
+        description: Valor numérico que indica la zona  1 Canarias, 5 Colombia
+        required: true
+        type: integer      
+      responses:
+        '200':
+          description: Ok.
+          schema:
+            type: object
+            properties:
+              IDCATEGORIA:
+                type: integer
+              CODIGO:
+                type: integer
+              NOMBRE:
+                type: string
+              NOMBREWEB:
+                type: string
+              IDUBICACIONCATEGORIA:
+                type: integer
+              LONGITUD:
+                type: integer
+              LATITUD:
+                type: integer
+
+# http://api.mmi-e.com/mmiapi.php/getnoticiasprensa_categoria_contador_diseccionado/DFKGMKLJOIRJNG/1/153/01012016/31012016/1-2/0
+  /getnoticiasprensa_categoria_contador_diseccionado/{ApiKey}/{idzona}/{idcategoria}/{fecha_inicial}/{fecha_final}/{idsoporte}/{idsupersoporte}:
+    get:
+      tags:
+        - "Noticias"
+      description: Obtiene el listado de las categorías incluidas en el sistema para la zona especificada.
+      parameters:
+      - name: ApiKey
+        in: path
+        description: Key de la Api
+        required: true
+        type: string
+      - name: idzona
+        in: path
+        description: Valor numérico que indica la zona  1 Canarias, 5 Colombia
+        required: true
+        type: integer
+      - name: idcategoria
+        in: path
+        description: Identificador de la categoria
+        required: true
+        type: integer
+      - name: fecha_inicial
+        in: path
+        description: Fecha inicial del periodo del que se pedirán las noticias, con formato DDMMYYYY
+        type: string
+        required: true
+      - name: fecha_final
+        in: path
+        description: Fecha final del periodo del que se pedirán las noticias, con formato DDMMYYYY
+        required: true
+        type: string
+      - name: idsoporte
+        in: path
+        description: Identificador del soporte
+        required: true
+        type: string
+      - name: idsupersoporte
+        in: path
+        description: Identificador del supersoporte
+        required: true
+        type: integer     
+      responses:
+        '200':
+          description: Ok.
+          schema:
+            type: object
+            properties:
+              NUM:
+                type: integer
+              URL:
+                type: string
+                format: url
+              URLBARRACOMPLETA:
+                type: string
+                format: url
+              VPE:
+                type: integer
+              AUDIENCIA:
+                type: integer
+
+
+
+
+
+  /getnoticiastv_categoria_contador_diseccionado/{ApiKey}/{idzona}/{idcategoria}/{fecha_inicial}/{fecha_final}/{idsoporte}/{idsupersoporte}:
+    get:
+      tags:
+        - "Noticias"
+      description: Obtiene el listado de las categorías incluidas en el sistema para la zona especificada.
+      parameters:
+      - name: ApiKey
+        in: path
+        description: Key de la Api
+        required: true
+        type: string
+      - name: idzona
+        in: path
+        description: Valor numérico que indica la zona  1 Canarias, 5 Colombia
+        required: true
+        type: integer
+      - name: idcategoria
+        in: path
+        description: Identificador de la categoria
+        required: true
+        type: integer
+      - name: fecha_inicial
+        in: path
+        description: Fecha inicial del periodo del que se pedirán las noticias, con formato DDMMYYYY
+        type: string
+        required: true
+      - name: fecha_final
+        in: path
+        description: Fecha final del periodo del que se pedirán las noticias, con formato DDMMYYYY
+        required: true
+        type: string
+      - name: idsoporte
+        in: path
+        description: Identificador del soporte
+        required: true
+        type: string
+      - name: idsupersoporte
+        in: path
+        description: Identificador del supersoporte
+        required: true
+        type: integer     
+      responses:
+        '200':
+          description: Ok.
+          schema:
+            type: object
+            properties:
+              totalCount:
+                type: integer
+              totalCountVpe:
+                type: integer
+              totalCountAudiencia:
+                type: integer
+              totalCountUrl:
+                type: string
+                format: url
+              prensaCount:
+                type: integer
+              prensaCountVpe:
+                type: integer
+              prensaCountAudiencia:
+                type: integer
+              prensaCountUrl:
+                type: string
+                format: url
+              radioCount:
+                type: integer
+              radioCountVpe:
+                type: integer
+              radioCountAudiencia:
+                type: integer
+              radioCountUrl:
+                type: string
+                format: $url
+              smCount:
+                type: integer
+              smCountVpe:
+                type: integer
+              smCountAudiencia:
+                type: integer
+              smCountUrl:
+                type: string
+                format: url
+              mdCount:
+                type: integer
+              mdCountVpe:
+                type: integer
+              mdCountAudiencia:
+                type: integer
+              mdCountUrl:
+                type: string
+                format: url
+              twCount:
+                type: integer
+              twCountVpe:
+                type: integer
+              twCountAudiencia:
+                type: integer
+              twCountUrl:
+                type: string
+                format: url
+              redesCount:
+                type: integer
+              redesCountVpe:
+                type: integer
+              redesCountAudiencia:
+                type: integer
+              redesCountUrl:
+                type: string
+                format: url
+              catsDaysData:
+                type: object
+                properties:
+                  totalCount:
+                    type: integer
+                  totalCountVpe:
+                    type: integer
+                  totalCountAudiencia:
+                    type: integer
+                  totalCountUrl:
+                    type: string
+                    format: url
+                  prensaCount:
+                    type: integer
+                  prensaCoutVpe:
+                    type: integer
+                  prensaCountAudiencia:
+                    type: integer
+                  prensaCountUrl:
+                    type: string
+                    format: url
+                  radioCount:
+                    type: integer
+                  radioCountVpe:
+                    type: integer
+                  radioCountAudiencia:
+                    type: integer
+                  radioCountUrl:
+                    type: string
+                    format: $url
+                  smCount:
+                    type: integer
+                  smCountVpe:
+                    type: integer
+                  smCountAudiencia:
+                    type: integer
+                  smCountUrl:
+                    type: string
+                    format: $url
+                  mdCount:
+                    type: integer
+                  mdCountVpe:
+                    type: integer
+                  mdCountAudiencia:
+                    type: integer
+                  mdCountUrl:
+                    type: string
+                    format: url
+                  twCount:
+                    type: integer
+                  twCountVpe:
+                    type: integer
+                  twCountAudiencia:
+                    type: integer
+                  twCountUrl:
+                    type: string
+                    format: url
+                  redesCount:
+                    type: integer
+                  redesCountVpe:
+                    type: integer
+                  redesCountAudiencia:
+                    type: integer
+                  redesCountUrl:
+                    type: string
+                    format: url
+                  xaxis:
+                    type: string
+                    format: date
+              catsWeeksData:
+                type: object
+                properties:
+                  totalCount:
+                    type: integer
+                  totalCountVpe:
+                    type: integer
+                  totalCountAudiencia:
+                    type: integer
+                  totalCountUrl:
+                    type: string
+                    format: url
+                  prensaCount:
+                    type: integer
+                  prensaCountVpe:
+                      type: integer
+                  prensaCountAudiencia:
+                    type: integer
+                  prensaCountUrl:
+                    type: string
+                    format: url
+                  radioCount:
+                    type: integer
+                  radioCountVpe:
+                    type: integer
+                  radioCountAudiencia:
+                    type: integer
+                  radioCountUrl:
+                    type: string
+                    format: url
+                  smCount:
+                    type: integer
+                  smCountVpe:
+                    type: integer
+                  smCountAudiencia:
+                    type: integer
+                  smCountUrl:
+                    type: string
+                    format: url
+                  mdCount:
+                    type: integer
+                  mdCountVpe:
+                    type: integer
+                  mdCountAudiencia:
+                    type: integer
+                  mdCountUrl:
+                    type: string
+                    format: url
+                  twCount:
+                    type: integer
+                  twCountVpe:
+                    type: integer
+                  twCountAudiencia:
+                    type: integer
+                  twCountUrl:
+                    type: string
+                    format: url
+                  redesCount:
+                    type: integer
+                  redesCountVpe:
+                    type: integer
+                  redesCountAudiencia:
+                    type: integer
+                  redesCountUrl:
+                    type: string
+                    format: url
+                  xaxis:
+                    type: string
+                    format: date
+              catsMonthsData:
+                  type: object
+                  properties:
+                    totalCount:
+                      type: integer
+                    totalCountVpe:
+                      type: integer
+                    totalCountAudiencia:
+                      type: integer
+                    totalCountUrl:
+                      type: string
+                      format: url
+                    prensaCount:
+                      type: integer
+                    prensaCountVpe:
+                      type: integer
+                    prensaCountAudiencia:
+                      type: integer
+                    prensaCountUrl:
+                      type: string
+                      format: url
+                    radioCount:
+                      type: integer
+                    radioCountVpe:
+                      type: integer
+                    radioCountAudiencia:
+                      type: integer
+                    radioCountUrl:
+                      type: string
+                      format: url
+                    smCount:
+                      type: integer
+                    smCountVpe:
+                      type: integer
+                    smCountAudiencia:
+                      type: integer
+                    smCountUrl:
+                      type: string
+                      format: url
+                    mdCount:
+                      type: integer
+                    mdCountVpe:
+                      type: integer
+                    mdCountAudiencia:
+                      type: integer
+                    mdCountUrl:
+                      type: string
+                      format: url
+                    twCount:
+                      type: integer
+                    twCountVpe:
+                      type: integer
+                    twCountAudiencia:
+                      type: integer
+                    twCountUrl:
+                      type: string
+                      format: url
+                    redesCount:
+                      type: integer
+                    redesCountVpe:
+                      type: integer
+                    redesCountAudiencia:
+                      type: integer
+                    redesCountUrl:
+                      type: string
+                      format: url
+                    xaxis:
+                      type: string
+                      format: date
+              catsYearsData:
+                  type: object
+                  properties:
+                    totalCount:
+                      type: integer
+                    totalCountVpe:
+                      type: integer
+                    totalCountAudiencia:
+                      type: integer
+                    totalCountUrl:
+                      type: string
+                      format: url
+                    prensaCount:
+                      type: integer
+                    prensaCountVpe:
+                      type: integer
+                    prensaCountAudiencia:
+                      type: integer
+                    prensaCountUrl:
+                      type: string
+                      format: url
+                    radioCount:
+                      type: integer
+                    radioCountVpe:
+                      type: integer
+                    radioCountAudiencia:
+                      type: integer
+                    radioCountUrl:
+                      type: string
+                      format: url
+                    smCount:
+                      type: integer
+                    smCountVpe:
+                      type: integer
+                    smCountAudiencia:
+                      type: integer
+                    smCountUrl:
+                      type: string
+                      format: url
+                    mdCount:
+                      type: integer
+                    mdCountVpe:
+                      type: integer
+                    mdCountAudiencia:
+                      type: integer
+                    mdCountUrl:
+                      type: string
+                      format: url
+                    twCount:
+                      type: integer
+                    twCountVpe:
+                      type: integer
+                    twCountAudiencia:
+                      type: integer
+                    twCountUrl:
+                      type: string
+                      format: url
+                    redesCount:
+                      type: integer
+                    redesCountVpe:
+                      type: integer
+                    redesCountAudiencia:
+                      type: integer
+                    redesCountUrl:
+                      type: string
+                      format: url
+                    xaxis:
+                      type: string
+                      format: date
+              DaysData:
+                  type: object
+                  properties:
+                    totalCount:
+                      type: integer
+                    totalCountVpe:
+                      type: integer
+                    totalCountAudiencia:
+                      type: integer
+                    totalCountUrl:
+                      type: string
+                      format: url
+                    prensaCount:
+                      type: integer
+                    prensaCountVpe:
+                      type: integer
+                    prensaCountAudiencia:
+                      type: integer
+                    prensaCountUrl:
+                      type: string
+                      format: url
+                    radioCount:
+                      type: integer
+                    radioCountVpe:
+                      type: integer
+                    radioCountAudiencia:
+                      type: integer
+                    radioCountUrl:
+                      type: string
+                      format: url
+                    smCount:
+                      type: integer
+                    smCountVpe:
+                      type: integer
+                    smCountAudiencia:
+                      type: integer
+                    smCountUrl:
+                      type: string
+                      format: url
+                    mdCount:
+                      type: integer
+                    mdCountVpe:
+                      type: integer
+                    mdCountAudiencia:
+                      type: integer
+                    mdCountUrl:
+                      type: string
+                      format: url
+                    twCount:
+                      type: integer
+                    twCountVpe:
+                      type: integer
+                    twCountAudiencia:
+                      type: integer
+                    twCountUrl:
+                      type: string
+                      format: url
+                    redesCount:
+                      type: integer
+                    redesCountVpe:
+                      type: integer
+                    redesCountAudiencia:
+                      type: integer
+                    redesCountUrl:
+                      type: string
+                      format: url
+                    xaxis:
+                      type: string
+                      format: date
+                  WeeksData:
+                    totalCount:
+                      type: integer
+                    totalCountVpe:
+                      type: integer
+                    totalCountAudiencia:
+                      type: integer
+                    totalCountUrl:
+                      type: string
+                      format: url
+                    prensaCount:
+                      type: integer
+                    prensaCountVpe:
+                      type: integer
+                    prensaCountAudiencia:
+                      type: integer
+                    prensaCountUrl:
+                      type: string
+                      format: url
+                    radioCount:
+                      type: integer
+                    radioCountVpe:
+                      type: integer
+                    radioCountAudiencia:
+                      type: integer
+                    radioCountUrl:
+                      type: string
+                      format: url
+                    smCount:
+                      type: integer
+                    smCountVpe:
+                      type: integer
+                    smCountAudiencia:
+                      type: integer
+                    smCountUrl:
+                      type: string
+                      format: url
+                    mdCount:
+                      type: integer
+                    mdCountVpe:
+                      type: integer
+                    mdCountAudiencia:
+                      type: integer
+                    mdCountUrl:
+                      type: string
+                      format: url
+                    twCount:
+                      type: integer
+                    twCountVpe:
+                      type: integer
+                    twCountAudiencia:
+                      type: integer
+                    twCountUrl:
+                      type: string
+                      format: url
+                    redesCount:
+                      type: integer
+                    redesCountVpe:
+                      type: integer
+                    redesCountAudiencia:
+                      type: integer
+                    redesCountUrl:
+                      type: string
+                      format: url
+                    xaxis:
+                      type: string
+                      format: date
+              MonthsData:
+                  type: object
+                  properties:
+                    totalCount:
+                      type: integer
+                    totalCountVpe:
+                      type: integer
+                    totalCountAudiencia:
+                      type: integer
+                    totalCountUrl:
+                      type: string
+                      format: url
+                    prensaCount:
+                      type: integer
+                    prensaCountVpe:
+                      type: integer
+                    prensaCountAudiencia:
+                      type: integer
+                    prensaCountUrl:
+                      type: string
+                      format: url
+                    radioCount:
+                      type: integer
+                    radioCountVpe:
+                      type: integer
+                    radioCountAudiencia:
+                      type: integer
+                    radioCountUrl:
+                      type: string
+                      format: url
+                    smCount:
+                      type: integer
+                    smCountVpe:
+                      type: integer
+                    smCountAudiencia:
+                      type: integer
+                    smCountUrl:
+                      type: string
+                      format: url
+                    mdCount:
+                      type: integer
+                    mdCountVpe:
+                      type: integer
+                    mdCountAudiencia:
+                      type: integer
+                    mdCountUrl:
+                      type: string
+                      format: url
+                    twCount:
+                      type: integer
+                    twCountVpe:
+                      type: integer
+                    twCountAudiencia:
+                      type: integer
+                    twCountUrl:
+                      type: string
+                      format: url
+                    redesCount:
+                      type: integer
+                    redesCountVpe:
+                      type: integer
+                    redesCountAudiencia:
+                      type: integer
+                    redesCountUrl:
+                      type: string
+                      format: url
+                    xaxis:
+                      type: string
+                      format: date
+              YearsData:
+                  type: object
+                  properties:
+                    totalCount:
+                      type: integer
+                    totalCountVpe:
+                      type: integer
+                    totalCountAudiencia:
+                      type: integer
+                    totalCountUrl:
+                      type: string
+                      format: url
+                    prensaCount:
+                      type: integer
+                    prensaCountVpe:
+                      type: integer
+                    prensaCountAudiencia:
+                      type: integer
+                    prensaCountUrl:
+                      type: string
+                      format: url
+                    radioCount:
+                      type: integer
+                    radioCountVpe:
+                      type: integer
+                    radioCountAudiencia:
+                      type: integer
+                    radioCountUrl:
+                      type: string
+                      format: url
+                    smCount:
+                      type: integer
+                    smCountVpe:
+                      type: integer
+                    smCountAudiencia:
+                      type: integer
+                    smCountUrl:
+                      type: string
+                      format: url
+                    mdCount:
+                      type: integer
+                    mdCountVpe:
+                      type: integer
+                    mdCountAudiencia:
+                      type: integer
+                    mdCountUrl:
+                      type: string
+                      format: url
+                    twCount:
+                      type: integer
+                    twCountVpe:
+                      type: integer
+                    twCountAudiencia:
+                      type: integer
+                    twCountUrl:
+                      type: string
+                      format: url
+                    redesCount:
+                      type: integer
+                    redesCountVpe:
+                      type: integer
+                    redesCountAudiencia:
+                      type: integer
+                    redesCountUrl:
+                      type: string
+                      format: url
+                    xaxis:
+                      type: string
+                      format: date
+                
+  /getnoticiasradio_categoria_contador_diseccionado/{ApiKey}/{idzona}/{idcategoria}/{fecha_inicial}/{fecha_final}/{idsoporte}/{idsupersoporte}:
+    get:
+      tags:
+        - "Noticias"
+      description: Obtiene el listado de las categorías incluidas en el sistema para la zona especificada.
+      parameters:
+      - name: ApiKey
+        in: path
+        description: Key de la Api
+        required: true
+        type: string
+      - name: idzona
+        in: path
+        description: Valor numérico que indica la zona  1 Canarias, 5 Colombia
+        required: true
+        type: integer
+      - name: idcategoria
+        in: path
+        description: Identificador de la categoria
+        required: true
+        type: integer
+      - name: fecha_inicial
+        in: path
+        description: Fecha inicial del periodo del que se pedirán las noticias, con formato DDMMYYYY
+        type: string
+        required: true
+      - name: fecha_final
+        in: path
+        description: Fecha final del periodo del que se pedirán las noticias, con formato DDMMYYYY
+        required: true
+        type: string
+      - name: idsoporte
+        in: path
+        description: Identificador del soporte
+        required: true
+        type: string
+      - name: idsupersoporte
+        in: path
+        description: Identificador del supersoporte
+        required: true
+        type: integer     
+      responses:
+        '200':
+          description: Ok.
+          schema:
+            type: object
+            properties:
+              NUM:
+                type: integer
+              URL:
+                type: string
+                format: url
+              URLBARRACOMPLETA:
+                type: string
+                format: url
+              VPE:
+                type: integer
+              AUDIENCIA:
+                type: integer
+
+# http://api.mmi-e.com/mmiapi.php/getnoticiasprensa_categoria_contador_diseccionado/DFKGMKLJOIRJNG/1/153/01012016/31012016/1-2/0
+  /getnoticias_desglose_categoria_contador_y_vpe/{ApiKey}/{idzona}/{idcategoria}/{fecha_inicial}/{fecha_final}:
+    get:
+      tags:
+        - "Noticias"
+      description: Obtiene el listado de las categorías incluidas en el sistema para la zona especificada.
+      parameters:
+      - name: ApiKey
+        in: path
+        description: Key de la Api
+        required: true
+        type: string
+      - name: idzona
+        in: path
+        description: Valor numérico que indica la zona  1 Canarias, 5 Colombia
+        required: true
+        type: integer
+      - name: idcategoria
+        in: path
+        description: Identificador de la categoria
+        required: true
+        type: integer
+      - name: fecha_inicial
+        in: path
+        description: Fecha inicial del periodo del que se pedirán las noticias, con formato DDMMYYYY
+        type: string
+        required: true
+      - name: fecha_final
+        in: path
+        description: Fecha final del periodo del que se pedirán las noticias, con formato DDMMYYYY
+        required: true
+        type: string     
+      responses:
+        '200':
+          description: Ok.
+          schema:
+            type: object
+            properties:
+              NUM:
+                type: integer
+              URL:
+                type: string
+                format: url
+              URLBARRACOMPLETA:
+                type: string
+                format: url
+              VPE:
+                type: integer
+              AUDIENCIA:
+                type: integer
+
+
+  /setalertas_configuracion_alertas/{ApiKey}/{idzona}:
+    post:
+      tags:
+        - "Alertas"
+      description: "Establece la configuración de las alertas"
+      deprecated : true
+      parameters:
+      - name: ApiKey
+        in: path
+        description: Key de la Api
+        required: true
+        type: string
+      - name: idzona
+        in: path
+        description: Valor numérico que indica la zona  1 Canarias, 5 Colombia
+        required: true
+        type: integer 
+      responses:
+        '200':
+          description: Ok.
+          schema:
+            type: object
+            properties:
+              TEXTO: 
+                type: string
+
+  /getalertas_configuracion_alertas/{ApiKey}/{idzona}/{tipoalerta}/{config}/{profileid}:
+    get:
+      tags:
+        - "Alertas"
+      description: "Obtiene la configuración de las alertas"
+      deprecated : true
+      parameters:
+      - name: ApiKey
+        in: path
+        description: Key de la Api
+        required: true
+        type: string
+      - name: idzona
+        in: path
+        description: Valor numérico que indica la zona  1 Canarias, 5 Colombia
+        required: true
+        type: integer 
+      - name: tipoalerta
+        in: path
+        description: Valor numérico que indica el tipo de alerta
+        required: true
+        type: integer 
+      - name: config
+        in: path
+        description: Cadena de texto con el tipo de configuración
+        required: true
+        type: string
+      - name: profileid
+        in: path
+        description: Identificador del usuario.
+        required: true
+        type: integer 
+      responses:
+        '200':
+          description: Ok.
+          schema:
+            type: object
+            properties:
+              TEXTO: 
+                type: string
+
+  /funcion_get_alertas_templates/{ApiKey}/{idzona}:
+    get:
+      tags:
+        - "Alertas"
+      description: "Obtiene una lista con el nombre de los templates de las alertas"
+      deprecated : true
+      parameters:
+      - name: ApiKey
+        in: path
+        description: Key de la Api
+        required: true
+        type: string
+      - name: idzona
+        in: path
+        description: Valor numérico que indica la zona  1 Canarias, 5 Colombia
+        required: true
+        type: integer 
+      responses:
+        '200':
+          description: Ok.
+          schema:
+            type: object
+            properties:
+              List: 
+                type: string
+  
+
+  /get_alertas_template/{ApiKey}/{idzona}/{nameTemplate}:
+    get:
+      tags:
+        - "Alertas"
+      description: "Obtiene una lista con el nombre de los templates de las alertas"
+      deprecated : true
+      parameters:
+      - name: ApiKey
+        in: path
+        description: Key de la Api
+        required: true
+        type: string
+      - name: idzona
+        in: path
+        description: Valor numérico que indica la zona  1 Canarias, 5 Colombia
+        required: true
+        type: integer
+      - name: nameTemplate
+        in: path
+        description: Nombre identificador de la template
+        required: true
+        type: string 
+      responses:
+        '200':
+          description: Ok.
+          schema:
+            type: object
+            properties:
+              List: 
+                type: string
+                format: base64
+
+
+  /get_transcription_for_radio_news/{ApiKey}/{idzona}/{fecha}/{soporte}/{numNoticia}:
+    get:
+      tags:
+        - "Transcripciones"
+      description: "Devuelve una transcripción en forma de texto sobre una noticia de radio"
+      deprecated : true
+      parameters:
+      - name: ApiKey
+        in: path
+        description: Key de la Api
+        required: true
+        type: string
+      - name: idzona
+        in: path
+        description: Valor numérico que indica la zona  1 Canarias, 5 Colombia
+        required: true
+        type: integer 
+      - name: fecha
+        in: path
+        description: "Fecha de la notica"
+        type: integer
+        required: true
+      - name: soporte
+        in: path
+        description: "Valor que indica soporte de la noticia"
+        type: integer    
+        required: true      
+      - name: numNoticia
+        in: path
+        description: "Identificador de la noticia"
+        type: integer
+        required: true
+      responses:
+        '200':
+          description: Ok.
+          schema:
+            type: object
+            properties:
+              TEXTO: 
+                type: string
+
+  /get_transcription_for_tv_news/{ApiKey}/{idzona}/{fecha}/{soporte}/{numNoticia}:
+    get:
+      tags:
+        - "Transcripciones"
+      description: "Devuelve una transcripción en forma de texto sobre una noticia de televisión"
+      deprecated : true
+      parameters:
+      - name: ApiKey
+        in: path
+        description: Key de la Api
+        required: true
+        type: string
+      - name: idzona
+        in: path
+        description: Valor numérico que indica la zona  1 Canarias, 5 Colombia
+        required: true
+        type: integer 
+      - name: fecha
+        in: path
+        description: "Fecha de la notica"
+        type: integer
+        required: true
+      - name: soporte
+        in: path
+        description: "Valor que indica soporte de la noticia"
+        type: integer      
+        required: true    
+      - name: numNoticia
+        in: path
+        description: "Identificador de la noticia"
+        type: integer
+        required: true
+      responses:
+        '200':
+          description: Ok.
+          schema:
+            type: object
+            properties:
+              TEXTO: 
+                type: string
+
+
+  /get_transcription_for_press_news/{ApiKey}/{idzona}/{fecha}/{soporte}/{numNoticia}:
+    get:
+      tags:
+        - "Transcripciones"
+      description: "Devuelve una transcripción en forma de texto sobre una noticia de prensa"
+      deprecated : true
+      parameters:
+      - name: ApiKey
+        in: path
+        description: Key de la Api
+        required: true
+        type: string
+      - name: idzona
+        in: path
+        description: Valor numérico que indica la zona  1 Canarias, 5 Colombia
+        required: true
+        type: integer 
+      - name: fecha
+        in: path
+        description: "Fecha de la notica"
+        type: integer
+        required: true
+      - name: soporte
+        in: path
+        description: "Valor que indica soporte de la noticia"
+        type: string        
+        required: true         
+      - name: numNoticia
+        in: path
+        description: "Identificador de la noticia"
+        required: true
+        type: integer
+      responses:
+        '200':
+          description: Ok.
+          schema:
+            type: object
+            properties:
+              TEXTO: 
+                type: string
+
+
+
+
+
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"
